@@ -21,7 +21,7 @@ export default function SectionTitle({ data }: SectionTitleProps) {
       </div>
       {data.isBtn && (
         <Link href={data.btnLink || "#"} >
-          <button className="group relative px-8 py-2.5 font-bold text-[#191C1E] transition-all duration-300 ease-in-out hover:text-white hover:shadow-lg hover:shadow-primary-color/40 overflow-hidden border border-[#8D7168] rounded-full active:scale-95 cursor-pointer">
+          <button className="group relative px-8 py-2.5 font-bold text-primary-black transition-all duration-300 ease-in-out hover:text-white hover:shadow-lg hover:shadow-primary-color/40 overflow-hidden border border-[#8D7168] rounded-full active:scale-95 cursor-pointer">
             <span className="absolute inset-0 w-full h-full bg-primary-color scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.68,-0.55,0.265,1.55)] origin-left"></span>
 
             <span className="relative z-10 flex items-center gap-3 tracking-widest text-sm font-medium ">
