@@ -11,7 +11,7 @@ export default function FAQSection() {
           Frequently asked questions
         </h2>
 
-        <p className="mt-4 text-lg text-[#565E74]">
+        <p className="mt-4 text-lg text-primary-gray">
           Everything you need to know before getting started.
         </p>
       </div>

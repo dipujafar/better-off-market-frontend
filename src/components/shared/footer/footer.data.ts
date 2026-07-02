@@ -1,31 +1,27 @@
 export const quickLinks = [
     {
-        label: "Homepage",
+        label: "Home",
         href: "/"
     },
     {
-        label: "About Us",
+        label: "Browse Listings",
         href: "/about-us"
     },
     {
-        label: "Services",
-        href: "/services"
+        label: "My Offer",
+        href: "#"
     },
     {
-        label: "Resources",
-        href: "/resources"
+        label: "About us",
+        href: "/about-us"
     },
     {
-        label: "Books",
-        href: "/books"
-    },
-    {
-        label: "Blogs",
-        href: "/blogs"
-    },
+        label: "FAQ",
+        href: "#"
+    }
 ]
 
-export const settingsLinks = [
+export const legalLinks = [
     {
         label: "Terms & Conditions",
         href: "/terms-conditions"

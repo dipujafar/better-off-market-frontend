@@ -6,7 +6,8 @@
 
 @theme{
   --color-primary-color: #00214C;
-  --color-primary-black: #191C1E
+  --color-primary-black: #191C1E;
+  --color-primary-gray: #565E74
 }
 
 @theme inline {

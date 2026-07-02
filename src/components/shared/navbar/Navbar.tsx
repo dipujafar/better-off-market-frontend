@@ -32,7 +32,7 @@ const navLinks = [
   },
   {
     label: "FAQ",
-    path: "/faq",
+    path: "/faqs",
   },
   {
     label: "Contact Us",

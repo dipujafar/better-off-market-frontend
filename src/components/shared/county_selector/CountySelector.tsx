@@ -146,7 +146,7 @@ export function CountySelector({
           <div className="grid grid-cols-3 gap-6 mb-3 max-h-80 overflow-y-auto  px-5">
             {Object.entries(COUNTY_DATA).map(([state, counties]) => (
               <div key={state}>
-                <h3 className="font-semibold text-[#565E74] mb-3 text-sm uppercase tracking-wide">
+                <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">
                   {state}
                 </h3>
                 <div className="space-y-2">

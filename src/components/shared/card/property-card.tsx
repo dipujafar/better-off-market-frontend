@@ -91,7 +91,7 @@ export function PropertyCard({
 
         {/* Address Section */}
         <div className="flex items-start gap-2">
-          <Home size={18} className="mt-0.5 flex-shrink-0 text-gray-400" />
+          <Home size={18} className="mt-0.5 shrink-0 text-gray-400" />
           <p className="text-sm font-medium text-gray-700 line-clamp-2">{address}</p>
         </div>
 
