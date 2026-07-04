@@ -1,5 +1,3 @@
-"use client";
-
 import Container from "@/components/shared/container/Container";
 import SubscriptionForm from "./SubscriptionForm";
 

@@ -1,127 +1,97 @@
 'use client';
 
-import { Heart, Home, Ruler, Bath } from 'lucide-react';
+import { IProperty } from '@/types';
+import { Heart } from 'lucide-react';
 import { useState } from 'react';
-import Image from 'next/image';
-
-interface PropertyCardProps {
-  image?: string;
-  timeMin?: number;
-  price: number;
-  arv?: number;
-  address: string;
-  beds: number;
-  baths: number;
-  sqft: number;
-}
 
 export function PropertyCard({
-  image = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-d9KVnwAZjfLmCxiwfRN8RnhxJzUIzP.png',
-  timeMin = 10,
+  imageUrl,
+  timeEstimate,
   price,
   arv,
   address,
   beds,
   baths,
-  sqft,
-}: PropertyCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  sqft
+}: IProperty) {
+  // const [favorited, setFavorited] = useState(isFavorited);
 
-  const formattedPrice = new Intl.NumberFormat('en-US', {
+  // const handleFavoriteClick = () => {
+  //   const newState = !favorited;
+  //   setFavorited(newState);
+  //   onFavoriteClick?.(newState);
+  // };
+
+  const priceFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(price);
-
-  const formattedArv = arv
-    ? new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 0,
-      }).format(arv)
-    : null;
-
-  const formattedSqft = new Intl.NumberFormat('en-US').format(sqft);
+    minimumFractionDigits: 0,
+  });
 
   return (
-    <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-lg transition-all hover:shadow-xl">
+    <div className="w-full  rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white">
       {/* Image Container */}
-      <div className="relative h-56 w-full bg-gray-200">
-        <Image
-          src={image}
+      <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+        <img
+          src={imageUrl}
           alt={address}
-          fill
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
 
         {/* Time Badge */}
-        {timeMin && (
-          <div className="absolute left-4 top-4 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-            {timeMin} min
-          </div>
-        )}
+        <div className="absolute top-3 left-3 bg-gray-800 text-white px-2.5 py-1 rounded-md text-sm font-semibold">
+          {timeEstimate}
+        </div>
 
         {/* Favorite Button */}
         <button
-          onClick={() => setIsFavorite(!isFavorite)}
-          className="absolute right-4 top-4 rounded-full bg-white/80 p-2 transition-all hover:bg-white"
+          // onClick={handleFavoriteClick}
+          className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition-colors shadow-sm"
           aria-label="Add to favorites"
         >
           <Heart
             size={20}
-            className={`transition-colors ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+            className={
+              // favorited ? 'fill-red-500 text-red-500' : 
+              'text-gray-400'}
           />
         </button>
       </div>
 
       {/* Content Container */}
-      <div className="space-y-4 p-4">
-        {/* Price Section */}
-        <div>
-          <div className="text-2xl font-bold text-gray-900">
-            {formattedPrice}
-            {formattedArv && (
-              <span className="text-base font-normal text-gray-600">
-                {' '}
-                (ARV: {formattedArv})
+      <div className="p-4 space-y-3">
+        {/* Price */}
+        <div className="space-y-1">
+          <p className="text-2xl font-bold text-blue-600">
+            {priceFormatter.format(price)}
+            {arv && (
+              <span className="text-gray-600 text-sm font-normal ml-2">
+                (ARV: {priceFormatter.format(arv)})
               </span>
             )}
-          </div>
+          </p>
         </div>
 
-        {/* Address Section */}
-        <div className="flex items-start gap-2">
-          <Home size={18} className="mt-0.5 shrink-0 text-gray-400" />
-          <p className="text-sm font-medium text-gray-700 line-clamp-2">{address}</p>
-        </div>
+        {/* Address */}
+        <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+          {address}
+        </h3>
 
         {/* Property Details */}
-        <div className="flex gap-6 border-t border-gray-200 pt-4">
-          {/* Beds */}
-          <div className="flex items-center gap-2">
-            <Home size={16} className="text-gray-600" />
-            <div>
-              <p className="text-xs text-gray-500">Beds</p>
-              <p className="font-semibold text-gray-900">{beds}</p>
-            </div>
+        <div className="flex items-center gap-4 text-gray-700 pt-1">
+          <div className="flex items-center gap-1">
+            <span className="text-sm">🛏️</span>
+            <span className="text-sm font-semibold">{beds} Beds</span>
           </div>
-
-          {/* Baths */}
-          <div className="flex items-center gap-2">
-            <Bath size={16} className="text-gray-600" />
-            <div>
-              <p className="text-xs text-gray-500">Bath</p>
-              <p className="font-semibold text-gray-900">{baths}</p>
-            </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm">🚿</span>
+            <span className="text-sm font-semibold">{baths} Bath</span>
           </div>
-
-          {/* Sqft */}
-          <div className="flex items-center gap-2">
-            <Ruler size={16} className="text-gray-600" />
-            <div>
-              <p className="text-xs text-gray-500">Sqft</p>
-              <p className="font-semibold text-gray-900">{formattedSqft}</p>
-            </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm">📐</span>
+            <span className="text-sm font-semibold">
+              {(sqft / 1000).toFixed(0)}k sqft
+            </span>
           </div>
         </div>
       </div>

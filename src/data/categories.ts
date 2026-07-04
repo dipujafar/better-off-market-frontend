@@ -1,6 +1,6 @@
-import { TCategory } from "@/types";
+import { ICategory } from "@/types";
 
-export const categories: TCategory[] = [
+export const categories: ICategory[] = [
   {
     id: 1,
     title: "Residential",

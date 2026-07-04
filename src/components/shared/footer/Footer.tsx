@@ -9,7 +9,7 @@ import Container from "../container/Container";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#E0E3E5]">
+    <footer className="bg-[#E0E3E5] xl:mt-24 lg:mt-20 mt-16">
       <div className="xl:pt-16 md:pt-12 pt-8 xl:pb-7 pb-6 border-b border-[#E2BFB54D]">
         <Container>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -28,7 +28,7 @@ export default function Footer() {
             </div>
 
             {/* Quick Access Column */}
-            <div className="mx-auto">
+            <div className="lg:mx-auto">
               <h3 className="sm:mb-4 mb-3 xl:text-sm font-semibold uppercase tracking-wide text-primary-color ">
                 QUICK LINKS
               </h3>
@@ -47,7 +47,7 @@ export default function Footer() {
             </div>
 
             {/* legal Column */}
-            <div className="mx-auto">
+            <div className="lg:mx-auto">
               <h3 className="sm:mb-4 mb-3 xl:text-sm font-semibold uppercase tracking-wide text-primary-color ">
                 LEGAL
               </h3>
@@ -66,7 +66,7 @@ export default function Footer() {
             </div>
 
             {/* Contact Column */}
-            <div className="mx-auto">
+            <div className="lg:mx-auto">
               <h3 className="sm:mb-4 mb-3 xl:text-sm font-semibold uppercase tracking-wide text-primary-color ">
                 CONTACT
               </h3>
