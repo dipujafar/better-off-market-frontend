@@ -1,24 +1,20 @@
-import FAQS from "@/components/modules/home/faqs/FAQS";
-import { GetInTouch } from "@/components/modules/home/get_in_touch/GetInTouch";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 
 export const metadata = {
-    title: "FAQs",
+    title: "Terms & Conditions",
     description: "This the official website of Better Off Market",
-};
+}
 
-export default function page() {
+export default function TermsConditionsPage() {
   const bannerData = {
-    title: "Frequently asked questions",
-    description: "Everything you need to know before getting started.",
+    title: "Terms and Conditions",
+    description: "Agreement of Terms",
     className: "min-h-[50vh]",
     dataClassName: "md:grid-cols-1 text-center gap-y-4",
   };
   return (
     <div className="space-y-16">
       <HeroBanner data={bannerData} />
-      <FAQS />
-      <GetInTouch />
     </div>
   );
 }

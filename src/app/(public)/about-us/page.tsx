@@ -1,4 +1,7 @@
-import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
+export const metadata = {
+  title: "About us",
+  description: "This the official website of Better Off Market",
+}
 
 export default function page() {
   return (

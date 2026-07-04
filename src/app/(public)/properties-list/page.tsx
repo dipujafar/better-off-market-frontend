@@ -2,7 +2,11 @@ import { PropertyCard } from "@/components/shared/card/property-card";
 import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import { properties } from "@/data/properties";
-import React from "react";
+
+export const metadata = {
+  title: "Properties",
+  description: "This the official website of Better Off Market",
+};
 
 export default function page() {
   const bannerData = {

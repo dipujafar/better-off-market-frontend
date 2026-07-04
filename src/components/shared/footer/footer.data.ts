@@ -5,7 +5,7 @@ export const quickLinks = [
     },
     {
         label: "Browse Listings",
-        href: "/about-us"
+        href: "/properties-list"
     },
     {
         label: "My Offer",
@@ -17,7 +17,7 @@ export const quickLinks = [
     },
     {
         label: "FAQ",
-        href: "#"
+        href: "/faqs"
     }
 ]
 
