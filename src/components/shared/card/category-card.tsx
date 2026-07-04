@@ -1,9 +1,9 @@
-import { TCategory } from "@/types";
+import { ICategory } from "@/types";
 import Image from "next/image";
 import CCountUp from "../utils/CCountUp";
 import Link from "next/link";
 
-export default function CategoryCard({ category }: { category: TCategory }) {
+export default function CategoryCard({ category }: { category: ICategory }) {
     const { image, title, listingCount} = category;
   return (
     <Link href={`#`} className="relative w-full max-h-64 rounded-lg overflow-hidden group ">

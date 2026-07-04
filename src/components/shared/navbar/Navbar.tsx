@@ -24,7 +24,7 @@ const navLinks = [
   },
   {
     label: "Browse List",
-    path: "/browse-list",
+    path: "/properties-list",
   },
   {
     label: "About Us",
