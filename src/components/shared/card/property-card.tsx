@@ -1,71 +1,82 @@
-'use client';
-
-import { IProperty } from '@/types';
-import { Heart } from 'lucide-react';
-import { useState } from 'react';
+import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
+import { IProperty } from "@/types";
+import Image from "next/image";
+import FavoriteIcon from "../favorite_icon/FavoriteIcon";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function PropertyCard({
+  id,
   imageUrl,
   timeEstimate,
+  originalPrice,
   price,
   arv,
   address,
   beds,
   baths,
-  sqft
-}: IProperty) {
-  // const [favorited, setFavorited] = useState(isFavorited);
-
-  // const handleFavoriteClick = () => {
-  //   const newState = !favorited;
-  //   setFavorited(newState);
-  //   onFavoriteClick?.(newState);
-  // };
-
-  const priceFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  sqft,
+  className,
+}: IProperty & { className?: string }) {
+  const priceFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 0,
   });
 
   return (
-    <div className="w-full  rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white">
+    <Link href={`/properties-list/${id}`} className="w-full  rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white group">
       {/* Image Container */}
-      <div className="relative h-48 w-full overflow-hidden bg-gray-100">
-        <img
+      <div className={cn("relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100", className)}>
+        <Image
           src={imageUrl}
           alt={address}
-          className="w-full h-full object-cover"
+          width={1200}
+          height={1200}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
         {/* Time Badge */}
-        <div className="absolute top-3 left-3 bg-gray-800 text-white px-2.5 py-1 rounded-md text-sm font-semibold">
+        <div className="absolute top-3 left-3 bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
           {timeEstimate}
         </div>
 
+        {/* Time Badge */}
+        {originalPrice && (
+          <div
+            className={cn(
+              "absolute top-3 left-3 bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
+              timeEstimate && "left-18",
+            )}
+          >
+            ↓ <span className="ml-0.5">{priceFormatter.format(originalPrice)}</span>
+          </div>
+        )}
+
         {/* Favorite Button */}
-        <button
-          // onClick={handleFavoriteClick}
-          className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition-colors shadow-sm"
-          aria-label="Add to favorites"
-        >
-          <Heart
-            size={20}
-            className={
-              // favorited ? 'fill-red-500 text-red-500' : 
-              'text-gray-400'}
-          />
-        </button>
+        <FavoriteIcon />
       </div>
 
       {/* Content Container */}
-      <div className="p-4 space-y-3">
+      <div className="xl:p-6  p-4 space-y-1">
         {/* Price */}
         <div className="space-y-1">
-          <p className="text-2xl font-bold text-blue-600">
+          <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
             {priceFormatter.format(price)}
+
+            {originalPrice && (
+              <span className="text-base text-[#594139] font-normal  line-through ml-2">
+                {priceFormatter.format(originalPrice)}
+              </span>
+            )}
+
             {arv && (
-              <span className="text-gray-600 text-sm font-normal ml-2">
+              <span
+                className={cn(
+                  "text-primary-gray  font-medium ml-2",
+                  originalPrice && "block ml-0",
+                )}
+              >
                 (ARV: {priceFormatter.format(arv)})
               </span>
             )}
@@ -73,28 +84,32 @@ export function PropertyCard({
         </div>
 
         {/* Address */}
-        <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+        <h3 className="xl:text-xl text-lg font-semibold text-primary-black line-clamp-1">
           {address}
         </h3>
 
         {/* Property Details */}
-        <div className="flex items-center gap-4 text-gray-700 pt-1">
-          <div className="flex items-center gap-1">
-            <span className="text-sm">🛏️</span>
-            <span className="text-sm font-semibold">{beds} Beds</span>
+        <div className="flex justify-between items-center gap-4 text-gray-700 pt-1">
+          <div className="flex items-center xl:gap-2 gap-1">
+            <BedIcon />
+            <span className=" text-[#594139] font-semibold">
+              {beds} Beds
+            </span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="text-sm">🚿</span>
-            <span className="text-sm font-semibold">{baths} Bath</span>
+          <div className="flex items-center xl:gap-2 gap-1">
+            <ShawarIcon />
+            <span className=" text-[#594139] font-semibold">
+              {baths} Bath
+            </span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="text-sm">📐</span>
-            <span className="text-sm font-semibold">
+          <div className="flex items-center xl:gap-2 gap-1">
+            <AreaIcon />
+            <span className=" text-[#594139] font-semibold">
               {(sqft / 1000).toFixed(0)}k sqft
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -7,6 +7,7 @@ export interface ICategory  {
 
 
 export interface IProperty {
+  id: number;
   imageUrl: string;
   timeEstimate: string;
   price: number;

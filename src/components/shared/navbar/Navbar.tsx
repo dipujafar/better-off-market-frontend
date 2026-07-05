@@ -20,7 +20,7 @@ type TProps = {
 const navLinks = [
   {
     label: "Home",
-    path: "/",
+    path: "/home",
   },
   {
     label: "Browse List",
@@ -49,7 +49,7 @@ export default function Navbar({ className, variant = "colored" }: TProps) {
       <div className="flex items-center  2xl:gap-x-12 gap-8">
         <Link href="/">
           {variant === "colored" ? (
-            <Image src={blue_logo} alt="logo" />
+            <Image src={blue_logo} alt="logo" className="max-w-25" />
           ) : (
             <Image src={white_log} alt="logo" />
           )}
@@ -63,7 +63,7 @@ export default function Navbar({ className, variant = "colored" }: TProps) {
           )}
         >
           {navLinks.map((link) => (
-            <NavLinks key={link.label} link={link} />
+            <NavLinks key={link.label} link={link} variant={variant} />
           ))}
         </div>
       </div>

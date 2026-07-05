@@ -7,7 +7,7 @@ import ContactUs from "@/components/shared/contact/ContactUs";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 
 export const metadata = {
-  title: "Home | Better Off Market",
+  title: "Home",
   description: "This the official website of Better Off Market",
 };
 

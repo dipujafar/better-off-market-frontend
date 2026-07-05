@@ -2,6 +2,7 @@ import { PropertyCard } from "@/components/shared/card/property-card";
 import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import { properties } from "@/data/properties";
+import FilterOptions from "./_components/filter-options/FilterOptions";
 
 export const metadata = {
   title: "Properties",
@@ -18,10 +19,15 @@ export default function page() {
   return (
     <div className="space-y-16">
       <HeroBanner data={bannerData} />
-      <Container className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-        {properties.slice(0, 9).map((property, index) => (
-          <PropertyCard key={index} {...property} />
-        ))}
+      <Container className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4  gap-4 " >
+        <div>
+            <FilterOptions />
+        </div>
+        <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-4">
+          {properties.slice(0, 9).map((property, index) => (
+            <PropertyCard key={index} {...property} className="xl:h-56" />
+          ))}
+        </div>
       </Container>
     </div>
   );

@@ -12,7 +12,7 @@ export default function NewlyAddedSection() {
   return (
     <Container className="lg:space-y-8 space-y-6">
       <SectionTitle data={sectionTitleData} />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  xl:gap-6 gap-4">
         {properties.slice(0, 3).map((property, index) => (
           <PropertyCard key={index} {...property} />
         ))}

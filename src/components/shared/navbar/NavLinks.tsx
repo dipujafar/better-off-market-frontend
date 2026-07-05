@@ -7,9 +7,10 @@ import { motion } from "motion/react";
 
 type TProps = {
   link: { label: string; path: string };
+  variant: "colored" | "transparent";
 };
 
-export default function NavLinks({ link }: TProps) {
+export default function NavLinks({ link, variant }: TProps) {
   const pathName = usePathname();
   const isActive = pathName === link.path;
 
@@ -24,7 +25,7 @@ export default function NavLinks({ link }: TProps) {
       {isActive && (
         <motion.span
           layoutId="active-nav-pill"
-          className="absolute inset-0 -z-10 rounded-full bg-white"
+          className={"absolute inset-0  rounded-full bg-white"}
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
