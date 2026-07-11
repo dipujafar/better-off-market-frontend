@@ -1,0 +1,222 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import logo from "@/assets/images/logo_blue.png";
+import Image from "next/image";
+
+// Zod validation schema
+const loginSchema = z.object({
+  userType: z.enum(["Buyer", "Seller"] as const, "Please select a user type"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean().default(false),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export default function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema as any),
+    defaultValues: {
+      userType: "Buyer",
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Simulate API call
+      console.log("Form submitted:", data);
+      // Add your sign-in logic here
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full xl:max-w-4xl md:max-w-xl mx-auto rounded-lg bg-white p-8 shadow-lg">
+      {/* Logo */}
+      <div className="mb-1 text-center">
+        <div className="inline-flex flex-col items-center">
+          <Image
+            src={logo}
+            alt="logo"
+            width={1200}
+            height={1200}
+            className="w-32"
+          />
+        </div>
+      </div>
+
+      {/* Title and Subtitle */}
+      <h1 className="mb-2 text-center lg:text-3xl md:text-2xl text-xl font-bold text-gray-900">
+        Welcome To BetterOffMarket
+      </h1>
+      <p className="mb-6 text-center">Sign up to your account</p>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* User Type Dropdown */}
+        <div>
+          <label
+            htmlFor="userType"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Select User
+          </label>
+          <div className="relative">
+            <select
+              id="userType"
+              {...register("userType")}
+              className="w-full appearance-none rounded-lg border border-[#3D3D3D] bg-white px-4 py-2.5 text-gray-900 placeholder-gray-400 transition focus:border-[#3D3D3D] focus:outline-none focus:ring-1 focus:ring-gray-400"
+            >
+              <option value="Buyer">Buyer</option>
+              <option value="Seller">Seller</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-3.5 h-5 w-5 text-gray-400" />
+          </div>
+          {errors.userType && (
+            <p className="mt-1 text-xs text-red-600">
+              {errors.userType.message}
+            </p>
+          )}
+        </div>
+
+        {/* Email Input */}
+        <div>
+          <label
+            htmlFor="email"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Email address
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="example@gmail.com"
+            {...register("email")}
+            className="w-full rounded-lg border border-[#3D3D3D] px-4 py-2.5 text-gray-900 placeholder-gray-400 transition focus:border-[#3D3D3D] focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
+          {errors.email && (
+            <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+          )}
+        </div>
+
+        {/* Password Input */}
+        <div>
+          <label
+            htmlFor="password"
+            className="mb-2 block text-sm font-medium text-gray-900"
+          >
+            Password
+          </label>
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              {...register("password")}
+              className="w-full rounded-lg border border-[#3D3D3D] px-4 py-2.5 pr-10 text-gray-900 placeholder-gray-400 transition focus:border-[#3D3D3D] focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 z-30 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="mt-1 text-xs text-red-600">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        {/* Remember Me & Forgot Password */}
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="rememberMe"
+            className="flex items-center gap-2 text-sm text-primary-black cursor-pointer"
+          >
+            <input
+              id="rememberMe"
+              type="checkbox"
+              {...register("rememberMe")}
+              className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 transition focus:ring-blue-500 accent-primary-color"
+            />
+            Remember me
+          </label>
+          <Link
+            href="/forgot-password"
+            className="text-sm font-medium text-[#2563EB] hover:text-blue-700"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
+        {/* Sign Up Link */}
+        <p className="mb-4 text-center text-sm text-gray-700">
+          Don&apos;t have Account?{" "}
+          <Link
+            href="/sign-up"
+            className="font-medium text-[#2563EB] hover:text-blue-700"
+          >
+            Sign Up
+          </Link>
+        </p>
+
+        {/* Continue without Sign In */}
+        <div>
+          <Link href="/">
+            <button
+              type="button"
+              className="w-full text-center  font-medium text-[#0095FF] hover:text-blue-700 cursor-pointer"
+            >
+              Continue without Sign In
+            </button>
+          </Link>
+        </div>
+
+        {/* Sign In Button */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-lg bg-[#2A2A2A] cursor-pointer px-4 py-2.5 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? "Signing in..." : "Sign In"}
+        </button>
+      </form>
+    </div>
+  );
+}

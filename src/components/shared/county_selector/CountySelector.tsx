@@ -119,7 +119,7 @@ export function CountySelector({
 
       {/* Dropdown Modal */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50  ">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
           {/* All Counties Option */}
           <div className="mb-3 pb-1 p-5" >
             <label className="flex items-center gap-2.5 cursor-pointer">

@@ -67,8 +67,6 @@ export default function SubscriptionForm() {
   return (
     <div className="max-w-95.25 ml-auto w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      
-
         {/* County Selection */}
         <div>
           <label className="block text-sm font-medium mb-2 text-blue-100  uppercase">
