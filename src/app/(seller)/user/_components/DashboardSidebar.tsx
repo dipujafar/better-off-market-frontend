@@ -73,7 +73,7 @@ export default function DashboardSidebar() {
   }, [isSidebarVisible]);
 
   return (
-    <div>
+    <div className="border-r-2 border-[#ECEEF0] pr-4 h-full">
       {/* Menu Toggle Button for mobile/tablet devices */}
       <div className="p-4 xl:hidden">
         <button
@@ -101,11 +101,11 @@ export default function DashboardSidebar() {
                 href={link.href}
                 key={link.key}
                 className={cn(
-                  "flex items-center gap-x-3 px-5 py-3 text-gray-scale-600 transition-all duration-300 ease-in-out",
+                  "flex items-center gap-x-3 px-5 py-3 text-gray-scale-600 transition-all duration-300 ease-in-out text-sm",
                   pathname === link.href &&
-                    "border-l-4 border-l-primary-color bg-primary-color rounded-xl text-white",
+                    "border-l-4 border-l-primary-color bg-primary-color rounded-xl text-base text-white",
                   link.href.includes(path) &&
-                    "border-l-4 border-l-primary-color bg-primary-color text-white",
+                    "border-l-4 border-l-primary-color bg-primary-color text-base text-white",
                 )}
               >
                 {link.icon}
@@ -118,11 +118,12 @@ export default function DashboardSidebar() {
                 router.push("/sign-in");
               }}
               type="button"
-              className="flex items-center gap-x-3 px-5 py-4 text-lg text-gray-scale-600"
+              className="flex items-center gap-x-3 px-5 py-4 text-base text-[#BA1A1A] "
             >
-              <LogOut size={25} />
+              <LogOut size={20} />
               <span>Logout</span>
             </button>
+            <div className="border border-b border-[#ECEEF0] mt-5"></div>
           </div>
         </div>
       </div>

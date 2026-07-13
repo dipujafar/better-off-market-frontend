@@ -11,7 +11,7 @@ const properties = [
     saved: 48,
     offers: 2,
     image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EIkwA0cr0rlh8kRv3SxbvHk4ka8KLe.png",
+      "/properties/property_image_1.png",
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ const properties = [
     saved: 48,
     offers: 2,
     image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EIkwA0cr0rlh8kRv3SxbvHk4ka8KLe.png",
+      "/properties/property_image_2.png",
   },
   {
     id: 3,
@@ -33,14 +33,14 @@ const properties = [
     saved: 48,
     offers: 2,
     image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EIkwA0cr0rlh8kRv3SxbvHk4ka8KLe.png",
+      "/properties/property_image_3.png",
   },
 ];
 
 export default function RecentProperties() {
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      {properties.map((property) => (
+    <div className="space-y-4 lg:p-6 p-4">
+      {properties?.map((property) => (
         <PropertyCard
           key={property.id}
           image={property.image}
