@@ -13,7 +13,7 @@ interface PropertyCardProps {
   offers: number;
 }
 
-export default function PropertyCard({
+export default function DashboardPropertyCard({
   image,
   type,
   location,
@@ -77,13 +77,13 @@ export default function PropertyCard({
           </Button>
           <Button
             variant="outline"
-            className="rounded-md cursor-pointer border border-[#E2BFB5] px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
+            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
           >
             View Details
           </Button>
           <Button
             variant="outline"
-            className="rounded-md cursor-pointer border border-[#E2BFB5] px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
+            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
           >
             Update Price
           </Button>

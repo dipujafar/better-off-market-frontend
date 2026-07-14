@@ -9,6 +9,10 @@ import {
   X,
   Settings,
   ShoppingCart,
+  HousePlus,
+  Receipt,
+  ChartNoAxesCombined,
+  User,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -28,17 +32,29 @@ export default function DashboardSidebar() {
       href: "/user/dashboard",
     },
     {
-      key: "orderHistory",
-      label: "Order History",
-      icon: <History size={25} />,
-      href: "/user/order-history",
+      key: "my-listings",
+      label: "My Listings",
+      icon: <HousePlus size={25} />,
+      href: "/user/my-listings",
     },
 
     {
-      key: "shopping-cart",
-      label: "Shopping Cart",
-      icon: <ShoppingCart size={25} />,
-      href: "/cart",
+      key: "offers-received",
+      label: "Offers Received",
+      icon: <Receipt size={25} />,
+      href: "/user/offers-received",
+    },
+    {
+      key: "analytics",
+      label: "Analytics",
+      icon: <ChartNoAxesCombined size={25} />,
+      href: "/user/analytics",
+    },
+    {
+      key: "edit-profile",
+      label: "Edit Profile",
+      icon: <User size={25} />,
+      href: "/user/edit-profile",
     },
     {
       key: "settings",

@@ -93,7 +93,7 @@ export default function OfferList() {
       {offers.map((offer) => (
         <div
           key={offer.id}
-          className="border  rounded-lg p-6 bg-white hover:shadow-md transition-shadow border-[#E2BFB5]"
+          className="border  rounded-lg p-6 bg-white hover:shadow-md transition-shadow border-primary-border-color"
         >
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             <div className="flex-1 flex md:items-center gap-6">

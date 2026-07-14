@@ -34,9 +34,20 @@ const properties = [
     image:
       "/properties/property_image_3.png",
   },
+  {
+    id: 4,
+    type: "Land",
+    location: "Hamilton County",
+    price: 48500,
+    views: 48,
+    saved: 48,
+    offers: 2,
+    image:
+      "/properties/property_image_2.png",
+  }
 ];
 
-export default function RecentProperties() {
+export default function ListingList() {
   return (
     <div className="space-y-4 lg:p-6 p-4">
       {properties?.map((property) => (

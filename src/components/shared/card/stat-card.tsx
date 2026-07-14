@@ -9,7 +9,7 @@ interface StatItem {
 export function StatsCard({ data }: { data: StatItem }) {
   const { icon: Icon, label, value } = data;
   return (
-    <div className="bg-white rounded-lg border border-[#E2BFB54D] p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg border border-primary-border-color p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-primary-gray  mb-2">{label}</p>

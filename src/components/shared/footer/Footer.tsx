@@ -10,7 +10,7 @@ import Container from "../container/Container";
 export default function Footer() {
   return (
     <footer className="bg-[#E0E3E5] xl:mt-24 lg:mt-20 mt-16">
-      <div className="xl:pt-16 md:pt-12 pt-8 xl:pb-7 pb-6 border-b border-[#E2BFB54D]">
+      <div className="xl:pt-16 md:pt-12 pt-8 xl:pb-7 pb-6 border-b border-primary-border-color">
         <Container>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {/* Logo Column */}

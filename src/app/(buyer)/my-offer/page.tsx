@@ -20,7 +20,7 @@ export default function MyOfferPage() {
       <HeroBanner data={bannerData} />
       <Container>
         {/* ===========================  page title =============================*/}
-        <div className="flex-between">
+        <div className="flex-between flex-wrap gap-1">
           <h4 className="lg:text-[32px] md:text-3xl text-2xl font-semibold">
             My Offers
           </h4>
