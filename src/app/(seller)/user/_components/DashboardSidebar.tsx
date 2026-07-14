@@ -13,6 +13,7 @@ import {
   Receipt,
   ChartNoAxesCombined,
   User,
+  Lock,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -57,11 +58,11 @@ export default function DashboardSidebar() {
       href: "/user/edit-profile",
     },
     {
-      key: "settings",
-      label: "Settings",
-      icon: <Settings size={25} />,
-      href: "/user/account-settings",
-    },
+      key: "change-password",
+      label: "Change Password",
+      icon: <Lock size={25} />,
+      href: "/user/change-password",
+    }
   ];
 
   // Toggle the sidebar visibility
