@@ -4,7 +4,7 @@ import PropertyContainer from "./_components/PropertyContainer";
 export default function PropertyDetailsPage() {
   return (
     <div>
-      <Navbar />
+      <Navbar className="pt-10" />
       <PropertyContainer />;
     </div>
   );

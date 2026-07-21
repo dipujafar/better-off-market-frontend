@@ -7,12 +7,11 @@ import { motion } from "motion/react";
 
 type TProps = {
   link: { label: string; path: string };
-  variant: "colored" | "transparent";
 };
 
-export default function NavLinks({ link, variant }: TProps) {
+export default function NavLinks({ link }: TProps) {
   const pathName = usePathname();
-  const isActive = pathName === link.path;
+  const isActive = pathName === link.path || pathName.includes(link.path);
 
   return (
     <Link

@@ -4,15 +4,20 @@ import { PropertyListing } from "./BasicPropertyDetails";
 import { ActionBtns } from "./ActionBtns";
 import { PropertyInfo } from "./PropertyInfo";
 import ProfileCard from "./ProfileCard";
+import { Documents } from "./Documents";
+import { LocationMap } from "./LocationMap";
+import { OpenHouse } from "./OpenHouse";
 
 export default function PropertyContainer() {
   return (
     <Container className="mt-12">
       <PropertyImages />
-      <div className="grid md:grid-cols-6 gap-6 mt-4">
-        <div className="md:col-span-4">
+      <div className="grid lg:grid-cols-6 gap-6 mt-4">
+        <div className="lg:col-span-4 space-y-6">
           <PropertyListing
-            price="$48,500"
+            price="48,500"
+            buyItNowPrice="52,000"
+            anticipatedPrice="55,000"
             address="1245 Willow Lane, Memphis, TN 38104"
             bedrooms={3}
             bathrooms={2}
@@ -22,9 +27,12 @@ export default function PropertyContainer() {
             isActive={true}
           />
           <PropertyInfo />
+          <Documents />
+          <LocationMap lat={23.811056} lng={90.407608} />
         </div>
-        <div className="md:col-span-2">
+        <div className="lg:col-span-2 md:flex lg:flex-col gap-4 space-y-4">
           <ActionBtns />
+          <OpenHouse />
           <ProfileCard
             image="/user_profile.jpg"
             name="Sarah Jenkins"

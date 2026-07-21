@@ -1,0 +1,76 @@
+"use client";
+import { PDFIcon } from "@/icons";
+import { Download, FileText } from "lucide-react";
+
+interface Document {
+  id: string;
+  name: string;
+  size: string;
+  updated: string;
+  url?: string;
+}
+
+interface DocumentsProps {
+  documents?: Document[];
+}
+
+export function Documents({ documents = [] }: DocumentsProps) {
+  const defaultDocuments: Document[] = [
+    {
+      id: "1",
+      name: "Property_Disclosures_Willow_Memphis.pdf",
+      size: "2.4 MB",
+      updated: "Oct 12, 2024",
+    },
+    {
+      id: "2",
+      name: "Structural_Inspection_Report.pdf",
+      size: "4.1 MB",
+      updated: "Sep 28, 2024",
+    },
+  ];
+
+  const displayDocuments = documents.length > 0 ? documents : defaultDocuments;
+
+  const handleDownload = (doc: Document) => {
+    if (doc.url) {
+      const link = document.createElement("a");
+      link.href = doc.url;
+      link.download = doc.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-white rounded-lg border border-[#EFEAE8]">
+      <h1 className="text-2xl font-semibold mb-4 text-primary-black">Documents</h1>
+      <div className="space-y-3">
+        {displayDocuments.map((doc) => (
+          <div
+            key={doc.id}
+            className="flex items-center gap-4 bg-gray-100 p-4 rounded-lg hover:bg-gray-150 transition-colors"
+          >
+            <PDFIcon className="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-medium text-primary-black truncate">
+                {doc.name}
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                {doc.size} • Updated {doc.updated}
+              </p>
+            </div>
+            <button
+              onClick={() => handleDownload(doc)}
+              className="shrink-0 p-2 text-gray-600 hover:text-primary-black transition-colors"
+              aria-label={`Download ${doc.name}`}
+            >
+              <Download className="h-5 w-5" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

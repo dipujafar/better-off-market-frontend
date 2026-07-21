@@ -64,7 +64,7 @@ export default function Navbar({ className, variant = "colored", authPage = fals
           )}
         >
           {navLinks.map((link) => (
-            <NavLinks key={link.label} link={link} variant={variant} />
+            <NavLinks key={link.label} link={link} />
           ))}
         </div>
       </div>

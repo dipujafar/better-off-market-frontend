@@ -6,12 +6,14 @@ type IProductProps = {
   title: string;
   link: string;
   className?: string;
+  children?: React.ReactNode;
 };
 
 export default function Share({
   className,
   title,
   link,
+  children,
 }: IProductProps) {
   const handleShare = () => {
     navigator.share({
@@ -21,8 +23,12 @@ export default function Share({
   };
 
   return (
-    <button onClick={handleShare} className={cn("rounded p-2 hover:bg-gray-100", className)}>
-      <Share2 className="text-primary-gray text-xl" />
-    </button>
+    <div onClick={handleShare}>
+      {children || (
+        <button className={cn("rounded p-2 hover:bg-gray-100 text-primary-gray text-xl", className)}>
+          <Share2/>
+        </button>
+      )}
+    </div>
   );
 }
