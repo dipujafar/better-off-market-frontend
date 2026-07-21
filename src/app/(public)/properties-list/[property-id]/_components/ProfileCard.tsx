@@ -37,7 +37,7 @@ export default function ProfileCard({
           <div className="flex items-start justify-between gap-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
-              <p className="text-sm text-gray-600">{title}</p>
+              <p className="text-sm text-[#434655] font-semibold">{title}</p>
             </div>
           </div>
 
