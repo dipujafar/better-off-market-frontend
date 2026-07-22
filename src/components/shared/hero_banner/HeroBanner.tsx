@@ -28,7 +28,7 @@ export default function HeroBanner({ data }: TProps) {
           <h1 className="col-span-2 2xl:text-7xl lg:text-5xl md:text-4xl text-3xl font-semibold">
             {data?.title }
           </h1>
-          <p className="font-medium">
+          <p className="font-medium mt-4 lg:mt-0">
             {data?.description }
           </p>
         </Container>

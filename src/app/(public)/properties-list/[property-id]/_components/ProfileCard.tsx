@@ -1,13 +1,14 @@
-import { Star } from 'lucide-react'
-import Image from 'next/image'
+import { Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface ProfileCardProps {
-  image: string
-  name: string
-  title: string
-  rating: number
-  memberSince: string
-  listings: number
+  image: string;
+  name: string;
+  title: string;
+  rating: number;
+  memberSince: string;
+  listings: number;
 }
 
 export default function ProfileCard({
@@ -23,20 +24,24 @@ export default function ProfileCard({
       <div className="flex gap-4">
         {/* Profile Image */}
         <div className="shrink-0">
-          <Image
-            src={image}
-            alt={name}
-            width={1200}
-            height={1200}
-            className="w-24 h-24 rounded-full object-cover"
-          />
+          <Link href="/seller-profile">
+            <Image
+              src={image}
+              alt={name}
+              width={1200}
+              height={1200}
+              className="size-20 rounded-full object-cover"
+            />
+          </Link>
         </div>
 
         {/* Profile Info */}
         <div className="flex-1">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
+              <Link href="/seller-profile">
+                <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
+              </Link>
               <p className="text-sm text-[#434655] font-semibold">{title}</p>
             </div>
           </div>
@@ -58,9 +63,11 @@ export default function ProfileCard({
       </div>
 
       {/* View Profile Link */}
-      <button className="mt-4 w-full text-center text-[#1F4E8B] font-semibold hover:text-blue-900 transition-colors cursor-pointer">
-        View profile
-      </button>
+      <Link href="/seller-profile">
+        <button className="mt-4 w-full text-center text-[#1F4E8B] font-semibold hover:text-blue-900 transition-colors cursor-pointer">
+          View profile
+        </button>
+      </Link>
     </div>
-  )
+  );
 }
