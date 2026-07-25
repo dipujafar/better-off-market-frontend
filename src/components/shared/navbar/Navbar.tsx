@@ -112,14 +112,14 @@ export default function Navbar({
               className={cn(
                 "rounded-full",
                 variant === "colored"
-                  ? "text-white hover:bg-white/10"
+                  ? "text-black/70 hover:bg-white/10"
                   : "text-white hover:bg-white/20",
               )}
             >
               <Menu className="size-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+          <SheetContent side="right" className="w-70 sm:w-[320px]">
             <SheetHeader>
               <SheetTitle>
                 <Image src={blue_logo} alt="logo" className="max-w-20" />

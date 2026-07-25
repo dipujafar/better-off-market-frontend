@@ -1,8 +1,8 @@
 import { PropertyCard } from "@/components/shared/card/property-card";
 import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
+import FilterOptions from "@/components/shared/utils/FilterOptions";
 import { properties } from "@/data/properties";
-import FilterOptions from "./_components/filter-options/FilterOptions";
 
 export const metadata = {
   title: "Properties",

@@ -5,6 +5,7 @@ import NewlyAddedSection from "@/components/modules/home/NewlyAddedSection";
 import PriceDropsSection from "@/components/modules/home/PriceDropsSection";
 import ContactUs from "@/components/shared/contact/ContactUs";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
+import LocationSearch from "@/components/utils/location-search";
 
 export const metadata = {
   title: "Home",
@@ -16,6 +17,7 @@ export default function Home() {
     title: "Find your next investment property",
     description:
       "Browse verified listings — no agents, no middlemen. Professional real estate investment, simplified for the modern investor.",
+    children: <LocationSearch />,
   };
   return (
     <div className="space-y-16">

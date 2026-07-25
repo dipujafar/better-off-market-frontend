@@ -39,11 +39,13 @@ export const COUNTY_DATA = {
 interface CountySelectorProps {
   selectedCounties: string[];
   onCountiesChange: (counties: string[]) => void;
+  className?: string;
 }
 
 export function CountySelector({
   selectedCounties,
   onCountiesChange,
+  className,
 }: CountySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tempSelected, setTempSelected] = useState<string[]>(selectedCounties);
@@ -84,11 +86,14 @@ export function CountySelector({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-5 py-2.5 rounded-full bg-white text-gray-700 border border-gray-300 flex items-center justify-between hover:border-gray-400 transition-colors "
+        className={cn(
+          "w-full px-5 py-2.5 rounded-full bg-white text-gray-700 border border-gray-300 flex items-center justify-between hover:border-gray-400 transition-colors ",
+          className,
+        )}
       >
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 overflow-x-auto">
           {selectedCounties.length === 0 ? (
-            <span className="text-gray-400">Select counties...</span>
+            <span className="text-gray-400 text-sm lg:text-base line-clamp-1">Select counties...</span>
           ) : (
             selectedCounties.map((county) => (
               <span
@@ -121,7 +126,7 @@ export function CountySelector({
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
           {/* All Counties Option */}
-          <div className="mb-3 pb-1 p-5" >
+          <div className="mb-3 pb-1 p-5">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input
                 type="checkbox"
@@ -143,7 +148,7 @@ export function CountySelector({
           </div>
 
           {/* States and Counties */}
-          <div className="grid grid-cols-3 gap-6 mb-3 max-h-80 overflow-y-auto  px-5">
+          <div className="flex flex-wrap gap-2 mb-3 max-h-80 overflow-y-auto  px-5">
             {Object.entries(COUNTY_DATA).map(([state, counties]) => (
               <div key={state}>
                 <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">
@@ -169,7 +174,9 @@ export function CountySelector({
                         }}
                         className="w-4 h-4 rounded cursor-pointer accent-primary-color"
                       />
-                      <span className="text-primary-black text-sm">{county}</span>
+                      <span className="text-primary-black text-sm">
+                        {county}
+                      </span>
                     </label>
                   ))}
                 </div>

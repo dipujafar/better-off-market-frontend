@@ -13,7 +13,7 @@ type Props = {
 
 export default function ChatHeader({ contact, onBack }: Props) {
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 border-b border-slate-100">
+    <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 border-b border-primary-border-color">
       <div className="flex items-center gap-3 min-w-0">
         {onBack && (
           <button

@@ -17,18 +17,20 @@ export default function NavLinks({ link }: TProps) {
     <Link
       href={link.path}
       className={cn(
-        "relative py-1.5 px-4 rounded-full transition-colors duration-300",
-        isActive ? "text-black/80" : "text-white/80"
+        "relative py-1.5 px-4 rounded-full transition-colors duration-300 text-center",
+        isActive
+          ? " text-white lg:text-black/80"
+          : "text-black lg:text-white/80",
       )}
     >
       {isActive && (
         <motion.span
           layoutId="active-nav-pill"
-          className={"absolute inset-0  rounded-full bg-white"}
+          className={"absolute inset-0  rounded-full lg:bg-white bg-black/80"}
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
-      <span className="relative z-10">{link.label}</span>
+      <span className="relative z-10 ">{link.label}</span>
     </Link>
   );
 }

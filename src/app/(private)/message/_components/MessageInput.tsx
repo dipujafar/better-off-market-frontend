@@ -74,7 +74,7 @@ export default function MessageInput({ onSend }: Props) {
   };
 
   return (
-    <div className="border-t border-slate-100">
+    <div className="border-t border-primary-border-color">
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2 px-4 pt-3 sm:px-5">
           {attachments.map((a, i) =>
@@ -100,7 +100,7 @@ export default function MessageInput({ onSend }: Props) {
             ) : (
               <div
                 key={`${a.file.name}-${i}`}
-                className="flex items-center gap-1.5 bg-slate-100 text-slate-600 text-xs rounded-full pl-2.5 pr-1 py-1 max-w-[180px] h-fit"
+                className="flex items-center gap-1.5 bg-slate-100 text-slate-600 text-xs rounded-full pl-2.5 pr-1 py-1 max-w-45 h-fit"
               >
                 <Paperclip className="size-3 shrink-0" />
                 <span className="truncate">{a.file.name}</span>
