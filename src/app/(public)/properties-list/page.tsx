@@ -3,6 +3,7 @@ import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import FilterOptions from "@/components/shared/utils/FilterOptions";
 import { properties } from "@/data/properties";
+import { PropertiesSortBar } from "./_components/PropertiesSortBar";
 
 export const metadata = {
   title: "Properties",
@@ -19,14 +20,17 @@ export default function page() {
   return (
     <div className="space-y-16">
       <HeroBanner data={bannerData} />
-      <Container className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4  gap-4 " >
+      <Container className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4  gap-4 ">
         <div>
-            <FilterOptions />
+          <FilterOptions />
         </div>
-        <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-4">
-          {properties.slice(0, 9).map((property, index) => (
-            <PropertyCard key={index} {...property} className="xl:h-56" />
-          ))}
+        <div className="lg:col-span-2 xl:col-span-3">
+          <PropertiesSortBar total={properties.length} />
+          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-4">
+            {properties.slice(0, 9).map((property, index) => (
+              <PropertyCard key={index} {...property} className="xl:h-56" />
+            ))}
+          </div>
         </div>
       </Container>
     </div>

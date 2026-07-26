@@ -7,6 +7,7 @@ import ProfileCard from "./ProfileCard";
 import { Documents } from "./Documents";
 import { LocationMap } from "./LocationMap";
 import { OpenHouse } from "./OpenHouse";
+import Link from "next/link";
 
 export default function PropertyContainer() {
   return (
@@ -33,6 +34,24 @@ export default function PropertyContainer() {
         <div className="lg:col-span-2 md:flex lg:flex-col gap-4 space-y-4">
           <ActionBtns />
           <OpenHouse />
+          <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1">
+            <p className="text-sm font-medium text-primary-gray">
+              You need a free account to submit offers or message sellers.{" "}
+              <Link
+                href="/sign-up"
+                className="text-[#1F4E8B] hover:underline font-semibold"
+              >
+                Sign up free
+              </Link>{" "}
+              or{" "}
+              <Link
+                href="/login"
+                className="text-[#1F4E8B] hover:underline font-semibold"
+              >
+                log in
+              </Link>
+            </p>
+          </div>
           <ProfileCard
             image="/user_profile.jpg"
             name="Sarah Jenkins"

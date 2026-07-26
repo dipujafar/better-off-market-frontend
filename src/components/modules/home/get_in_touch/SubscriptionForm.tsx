@@ -2,13 +2,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  subscriptionFormSchema,
-  type SubscriptionFormData,
-} from "./schemas";
+import { subscriptionFormSchema, type SubscriptionFormData } from "./schemas";
 
 import { Upload, Loader2, Check, AlertCircle, X } from "lucide-react";
 import { CountySelector } from "@/components/shared/county_selector/CountySelector";
+import { PropertyTypeSelector } from "@/components/shared/property_selector/PropertyTypeSelector";
+
+type SubscriptionFormValues = SubscriptionFormData & {
+  propertyType: string[];
+};
 
 export default function SubscriptionForm() {
   const [status, setStatus] = useState<
@@ -23,20 +25,20 @@ export default function SubscriptionForm() {
     watch,
     setValue,
     reset,
-  } = useForm<SubscriptionFormData>({
+  } = useForm<SubscriptionFormValues>({
     resolver: zodResolver(subscriptionFormSchema as any),
     defaultValues: {
       email: "",
       counties: [],
+      propertyType: [],
       image: undefined,
     },
   });
 
   const counties = watch("counties");
+  const propertyType = watch("propertyType") as string[] | undefined;
 
-
-
-  const onSubmit = async (data: SubscriptionFormData) => {
+  const onSubmit = async (data: SubscriptionFormValues) => {
     setStatus("loading");
     setErrorMessage("");
 
@@ -47,6 +49,7 @@ export default function SubscriptionForm() {
       console.log("Form submitted:", {
         email: data.email,
         counties: data.counties,
+        propertyType: data.propertyType,
         hasImage: !!data.image,
         imageSize: data.image?.size,
       });
@@ -85,6 +88,22 @@ export default function SubscriptionForm() {
           )}
         </div>
 
+        {/* Property Type Selection */}
+        <div>
+          <label className="block text-sm font-medium mb-2 text-blue-100 uppercase">
+            Property Type
+          </label>
+          <PropertyTypeSelector
+            selectedTypes={propertyType ? [...propertyType] : []}
+            onTypesChange={(types) => setValue("propertyType", types)}
+          />
+          {errors.propertyType && (
+            <p className="text-red-300 text-sm mt-1">
+              {errors.propertyType.message}
+            </p>
+          )}
+        </div>
+
         {/* Email Input */}
         <div>
           <label className="block text-sm font-medium mb-2 text-blue-100 uppercase">
@@ -94,7 +113,7 @@ export default function SubscriptionForm() {
             type="email"
             placeholder="you@email.com"
             {...register("email")}
-            className="w-full  px-5 py-2.5 rounded-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full  px-5 py-2.5 rounded-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color"
           />
           {errors.email && (
             <p className="text-red-300 text-sm mt-1">{errors.email.message}</p>

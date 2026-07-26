@@ -25,7 +25,7 @@ export function PropertyCard({
   });
 
   return (
-    <Link href={`/properties-list/${id}`} className="w-full  rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white group">
+    <Link href={`/properties-list/${id}`} className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group">
       {/* Image Container */}
       <div className={cn("relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100", className)}>
         <Image

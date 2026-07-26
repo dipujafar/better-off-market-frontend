@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/sheet";
 import { CirclePlus, Menu } from "lucide-react";
 import NavLinks from "./NavLinks";
+import NavDropdown from "./NavDropdown";
+
 
 const navClassVariant = {
   colored: "bg-black text-primary-foreground",
@@ -29,9 +31,22 @@ type TProps = {
   authPage?: boolean;
 };
 
-const navLinks = [
+type NavLink = {
+  label: string;
+  path: string;
+  dropdown?: { label: string; path: string }[];
+};
+
+const navLinks: NavLink[] = [
   { label: "Home", path: "/home" },
-  { label: "Browse List", path: "/properties-list" },
+  {
+    label: "Browse List",
+    path: "/properties-list",
+    dropdown: [
+      { label: "Browse List", path: "/properties-list" },
+      { label: "Browse Map", path: "/properties-map" },
+    ],
+  },
   { label: "About Us", path: "/about-us" },
   { label: "FAQ", path: "/faqs" },
   { label: "Contact Us", path: "/contact-us" },
@@ -59,16 +74,24 @@ export default function Navbar({
         </Link>
         <div
           className={cn(
-            "hidden lg:flex py-2 px-4 text-white/80 rounded-full text-sm",
+            "hidden lg:flex items-center py-2 px-4 text-white/80 rounded-full text-sm",
             authPage && "hidden",
             variant === "colored"
               ? navClassVariant.colored
               : navClassVariant.transparent,
           )}
         >
-          {navLinks.map((link) => (
-            <NavLinks key={link.label} link={link} />
-          ))}
+          {navLinks.map((link) =>
+            link.dropdown ? (
+              <NavDropdown
+                key={link.label}
+                label={link.label}
+                items={link.dropdown}
+              />
+            ) : (
+              <NavLinks key={link.label} link={link} />
+            ),
+          )}
         </div>
       </div>
 
@@ -127,9 +150,27 @@ export default function Navbar({
             </SheetHeader>
 
             <div className="flex flex-col gap-1 px-4 mt-6">
-              {navLinks.map((link) => (
-                <NavLinks key={link.label} link={link} />
-              ))}
+              {navLinks.map((link) =>
+                link.dropdown ? (
+                  <div key={link.label} className="flex flex-col">
+                    <span className="px-3 py-2 text-sm font-medium text-gray-500 uppercase tracking-wide">
+                      {link.label}
+                    </span>
+                    {link.dropdown.map((item) => (
+                      <Link
+                        key={item.path}
+                        href={item.path}
+                        onClick={() => setOpen(false)}
+                        className="px-6 py-2 text-sm text-primary-black hover:text-primary-color transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <NavLinks key={link.label} link={link} />
+                ),
+              )}
             </div>
 
             {!authPage && (

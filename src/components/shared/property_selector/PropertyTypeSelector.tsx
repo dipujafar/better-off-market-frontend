@@ -4,51 +4,26 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const COUNTY_DATA = {
-  OHIO: [
-    "Adams",
-    "Butler",
-    "Clermont",
-    "Clinton",
-    "Hamilton",
-    "Highland",
-    "Montgomery",
-    "Preble",
-    "Warren",
-  ],
-  KENTUCKY: [
-    "Boone",
-    "Bracken",
-    "Campbell",
-    "Carroll",
-    "Gallatin",
-    "Kenton",
-    "Pendleton",
-  ],
-  INDIANA: [
-    "Dearborn",
-    "Fayette",
-    "Franklin",
-    "Ohio",
-    "Ripley",
-    "Switzerland",
-    "Union",
-  ],
-};
+export const PROPERTY_TYPES = [
+  "Residential",
+  "Multi-Family",
+  "Commercial",
+  "Land",
+];
 
-interface CountySelectorProps {
-  selectedCounties: string[];
-  onCountiesChange: (counties: string[]) => void;
+interface PropertyTypeSelectorProps {
+  selectedTypes: string[];
+  onTypesChange: (types: string[]) => void;
   className?: string;
 }
 
-export function CountySelector({
-  selectedCounties,
-  onCountiesChange,
+export function PropertyTypeSelector({
+  selectedTypes,
+  onTypesChange,
   className,
-}: CountySelectorProps) {
+}: PropertyTypeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [tempSelected, setTempSelected] = useState<string[]>(selectedCounties);
+  const [tempSelected, setTempSelected] = useState<string[]>(selectedTypes);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,7 +41,7 @@ export function CountySelector({
   }, []);
 
   const handleApply = () => {
-    onCountiesChange(tempSelected);
+    onTypesChange(tempSelected);
     setIsOpen(false);
   };
 
@@ -74,15 +49,15 @@ export function CountySelector({
     setTempSelected([]);
   };
 
-  const removeCounty = (county: string) => {
-    const updated = selectedCounties.filter((c) => c !== county);
-    onCountiesChange(updated);
+  const removeType = (type: string) => {
+    const updated = selectedTypes.filter((t) => t !== type);
+    onTypesChange(updated);
     setTempSelected(updated);
   };
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      {/* Selected Counties Display */}
+      {/* Selected Types Display */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -92,20 +67,22 @@ export function CountySelector({
         )}
       >
         <div className="flex items-center gap-2 overflow-x-auto">
-          {selectedCounties.length === 0 ? (
-            <span className="text-gray-400 text-sm lg:text-base line-clamp-1">Select counties...</span>
+          {selectedTypes.length === 0 ? (
+            <span className="text-gray-400 text-sm lg:text-base line-clamp-1">
+              Select property type...
+            </span>
           ) : (
-            selectedCounties.map((county) => (
+            selectedTypes.map((type) => (
               <span
-                key={county}
+                key={type}
                 className="inline-flex items-center gap-1 bg-[#E0EEFF] border border-[#00214C29] px-3 py-1 rounded-full text-sm"
               >
-                {county}
+                {type}
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeCounty(county);
+                    removeType(type);
                   }}
                   className="text-[#BA1A1A] hover:text-[#ff0909] cursor-pointer"
                 >
@@ -125,67 +102,51 @@ export function CountySelector({
       {/* Dropdown Modal */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
-          {/* All Counties Option */}
+          {/* Any Type Option */}
           <div className="mb-3 pb-1 p-5">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input
                 type="checkbox"
-                checked={
-                  tempSelected.length ===
-                  Object.values(COUNTY_DATA).flat().length
-                }
+                checked={tempSelected.length === PROPERTY_TYPES.length}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setTempSelected(Object.values(COUNTY_DATA).flat());
+                    setTempSelected(PROPERTY_TYPES);
                   } else {
                     setTempSelected([]);
                   }
                 }}
                 className="w-4 h-4 rounded cursor-pointer accent-primary-color"
               />
-              <span className="text-sm text-primary-black">Any County</span>
+              <span className="text-sm text-primary-black">Any Type</span>
             </label>
           </div>
 
-          {/* States and Counties */}
-          <div className="flex flex-wrap gap-2 mb-3 max-h-80 overflow-y-auto  px-5">
-            {Object.entries(COUNTY_DATA).map(([state, counties]) => (
-              <div key={state}>
-                <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">
-                  {state}
-                </h3>
-                <div className="space-y-2">
-                  {counties.map((county) => (
-                    <label
-                      key={county}
-                      className="flex items-center gap-2.5 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={tempSelected.includes(county)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setTempSelected((prev) => [...prev, county]);
-                          } else {
-                            setTempSelected((prev) =>
-                              prev.filter((c) => c !== county),
-                            );
-                          }
-                        }}
-                        className="w-4 h-4 rounded cursor-pointer accent-primary-color"
-                      />
-                      <span className="text-primary-black text-sm">
-                        {county}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+          {/* Property Types */}
+          <div className="space-y-2 mb-3 max-h-80 overflow-y-auto px-5">
+            {PROPERTY_TYPES.map((type) => (
+              <label
+                key={type}
+                className="flex items-center gap-2.5 cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={tempSelected.includes(type)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setTempSelected((prev) => [...prev, type]);
+                    } else {
+                      setTempSelected((prev) => prev.filter((t) => t !== type));
+                    }
+                  }}
+                  className="w-4 h-4 rounded cursor-pointer accent-primary-color"
+                />
+                <span className="text-primary-black text-sm">{type}</span>
+              </label>
             ))}
           </div>
 
           {/* Actions */}
-          <div className="flex justify-between items-center  border-t border-[#E0E3E5] bg-[#F2F4F6] p-3.5 ">
+          <div className="flex justify-between items-center border-t border-[#E0E3E5] bg-[#F2F4F6] p-3.5">
             <button
               type="button"
               onClick={handleClearAll}

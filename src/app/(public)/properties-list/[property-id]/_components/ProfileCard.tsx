@@ -20,7 +20,7 @@ export default function ProfileCard({
   listings,
 }: ProfileCardProps) {
   return (
-    <div className="w-full  bg-white rounded-lg  lg:p-6 p-4 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]">
+    <div className="w-full  bg-white rounded-lg  lg:p-6 p-4 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] border border-[#FAEEEA]">
       <div className="flex gap-4">
         {/* Profile Image */}
         <div className="shrink-0">

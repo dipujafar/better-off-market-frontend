@@ -130,7 +130,7 @@ export default function PropertiesList({ id }: { id: string }) {
 
       {/* Desktop */}
       <div className="hidden max-w-95.75 max-h-[calc(100vh-145px)] overflow-y-auto px-4 lg:block">
-        <h1 className="text-2xl font-semibold">Off-Market Opportunities</h1>
+        <h1 className="text-2xl font-semibold mb-3">Off-Market Opportunities</h1>
         <PropertyGrid />
       </div>
     </>
