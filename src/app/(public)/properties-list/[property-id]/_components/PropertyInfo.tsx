@@ -1,125 +1,120 @@
-import {
-  HomeIcon,
-  LandScapeIcon,
-  MajoComponentsIcon,
-  PeopleIcon,
-  PoolIcon,
-  SpecificationsIcon,
-} from "@/icons";
-import { Club, LandPlot } from "lucide-react";
+import { HomeIcon, ClosingPreferencesIcon, MajorComponentsIcon } from "@/icons";
 
 interface SpecItem {
   label: string;
-  value: string | number;
-}
-
-interface HoaInclude {
-  label: string;
-  icon: React.ReactNode;
+  value: string;
+  note?: string; // e.g. "8 years old", "Updated 2018"
 }
 
 interface PropertyInfoProps {
+  componentsLeft?: SpecItem[];
+  componentsRight?: SpecItem[];
   hoaFee?: string;
-  hoaIncludes?: HoaInclude[];
-  components?: SpecItem[];
-  specifications?: SpecItem[];
+  hoaAmenities?: string[];
+  closingPreferences?: SpecItem[];
+}
+
+function InfoCard({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg bg-gray-100 p-6">
+      <div className="mb-5 flex items-center gap-2">
+        {icon}
+        <h2 className="text-xl font-semibold text-primary-black">{title}</h2>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function SpecRow({ label, value, note }: SpecItem) {
+  return (
+    <div className="flex justify-between py-2.5 text-sm">
+      <span className="text-[#594139]">{label}</span>
+      <span className="font-medium text-primary-black">
+        {value}
+        {note && (
+          <span className="ml-1 font-normal text-[#767676]">({note})</span>
+        )}
+      </span>
+    </div>
+  );
 }
 
 export function PropertyInfo({
+  componentsLeft = [
+    { label: "Lot Size", value: "6,200 sqft" },
+    { label: "HVAC", value: "Functional", note: "4 years old" },
+    { label: "Plumbing", value: "Copper/PEX", note: "Updated 2018" },
+  ],
+  componentsRight = [
+    { label: "Roof", value: "Good Condition", note: "8 years old" },
+    { label: "HVAC", value: "Functional", note: "4 years old" },
+    { label: "Plumbing", value: "Copper/PEX", note: "Updated 2018" },
+  ],
   hoaFee = "$150/mo",
-  hoaIncludes = [
-    { label: "Pool", icon: <PoolIcon /> },
-    { label: "Clubhouse", icon: <PeopleIcon className="size-4" /> },
-    { label: "Landscaping", icon: <LandScapeIcon /> },
-  ],
-  components = [
-    { label: "Roof", value: "Shingle / 5 years" },
-    { label: "Heating", value: "Gas / 8 years" },
-    { label: "Cooling", value: "Central AC / 4 years" },
-    { label: "Sewer", value: "Public Sewer" },
-  ],
-  specifications = [
-    { label: "Lot Size", value: "0.25 Acres" },
-    { label: "Year Built", value: "1995" },
-    { label: "Garage Spaces", value: "2" },
-    { label: "Parking", value: "Driveway" },
+  hoaAmenities = ["Pool", "Clubhouse", "Gym", "Common area maintenance"],
+  closingPreferences = [
+    { label: "Title Company", value: "Preferred title co" },
+    { label: "Closing Date", value: "24 June 2026" },
+    { label: "Occupancy", value: "At Closing" },
   ],
 }: PropertyInfoProps) {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* HOA Details Card */}
-        <div className="rounded-lg bg-gray-100 p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)]">
-          <div className="mb-6 flex items-center gap-2">
-            <HomeIcon />
-            <h2 className="text-2xl font-semibold text-primary-black">
-              HOA Details
-            </h2>
-          </div>
-
-          <div className="mb-4 flex justify-between">
-            <span className="text-gray-600">Monthly Fee</span>
-            <span className="font-semibold text-primary-black">{hoaFee}</span>
-          </div>
-
-          <div>
-            <span className="text-gray-600">Includes:</span>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {hoaIncludes.map((item, index) => (
-                <span
-                  key={index}
-                  className="flex items-center gap-1.5 rounded-full border border-primary-border-color bg-white px-3 py-1 text-sm text-primary-black"
-                >
-                  {item.icon}
-                  {item.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Major Components Card */}
-        <div className="rounded-lg bg-gray-100 p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)]">
-          <div className="mb-6 flex items-center gap-2">
-            <MajoComponentsIcon />
-            <h2 className="text-2xl font-semibold text-primary-black">
-              Major Components
-            </h2>
-          </div>
-          <div className="space-y-4">
-            {components.map((item, index) => (
-              <div key={index} className="flex justify-between">
-                <span className="text-gray-600">{item.label}</span>
-                <span className="font-semibold text-primary-black">
-                  {item.value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Specifications Card - Full Width */}
-      <div className="rounded-lg bg-gray-100 p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)]">
-        <div className="mb-6 flex items-center gap-2">
-          <SpecificationsIcon />
-          <h2 className="text-2xl font-semibold text-primary-black">
-            Specifications
-          </h2>
-        </div>
-        <div className="space-y-4">
-          {specifications.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between border-b border-gray-200 pb-4 last:border-0 last:pb-0"
-            >
-              <span className="text-gray-600">{item.label}</span>
-              <span className="font-semibold text-primary-black">
-                {item.value}
-              </span>
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <InfoCard icon={<MajorComponentsIcon />} title="Major Components">
+          {componentsLeft.map((item, i) => (
+            <div key={i}>
+              <SpecRow {...item} />
+              {i !== componentsLeft.length - 1 && (
+                <div className="h-px bg-[#DEDEDE]"></div>
+              )}
             </div>
           ))}
-        </div>
+        </InfoCard>
+
+        <InfoCard icon={<MajorComponentsIcon />} title="Major Components">
+          {componentsRight.map((item, i) => (
+            <div key={i}>
+              <SpecRow {...item} />
+              {i !== componentsLeft.length - 1 && (
+                <div className="h-px bg-[#DEDEDE]"></div>
+              )}
+            </div>
+          ))}
+        </InfoCard>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+        <InfoCard icon={<HomeIcon />} title="HOA Details">
+          <SpecRow label="Monthly Fee" value={hoaFee} />
+          <div className="h-px bg-[#DEDEDE]"></div>
+          <div className="pt-2">
+            <span className="text-sm text-[#594139]">Amenities</span>
+            <p className="mt-1 text-sm text-[#594139]">
+              Includes: {hoaAmenities.join(", ")}
+            </p>
+          </div>
+        </InfoCard>
+
+        <InfoCard icon={<ClosingPreferencesIcon />} title="Closing Preferences">
+          {closingPreferences.map((item, i) => (
+            <div key={i}>
+              <SpecRow {...item} />
+              {i !== componentsLeft.length - 1 && (
+                <div className="h-px bg-[#DEDEDE]"></div>
+              )}
+            </div>
+          ))}
+        </InfoCard>
       </div>
     </div>
   );

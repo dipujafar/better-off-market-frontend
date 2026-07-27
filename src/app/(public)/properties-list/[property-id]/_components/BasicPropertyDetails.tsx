@@ -1,8 +1,17 @@
-import { MapPin } from "lucide-react";
+import {
+  BathPoolIcon,
+  BedIcon,
+  CalendarIcon,
+  LandScapeIcon,
+  PoolIcon,
+  SQFTIcon,
+} from "@/icons";
+import { MapPin, TrendingDown } from "lucide-react";
 
 interface PropertyListingProps {
+  title: string;
   price: string;
-  buyItNowPrice: string;
+  originalPrice: string;
   anticipatedPrice: string;
   address: string;
   bedrooms: number;
@@ -14,8 +23,9 @@ interface PropertyListingProps {
 }
 
 export function PropertyListing({
+  title,
   price,
-  buyItNowPrice,
+  originalPrice,
   anticipatedPrice,
   address,
   bedrooms,
@@ -31,9 +41,12 @@ export function PropertyListing({
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
           <div className="flex-1">
-            <div className="flex items-start gap-2 text-primary-gray">
-              <MapPin className="w-5 h-5  shrink-0 mt-0.5" />
-              <p className=" text-base md:text-xl font-semibold">{address}</p>
+            <h2 className="text-primary-black lg:text-3xl text-2xl font-semibold">
+              {title}
+            </h2>
+            <div className="flex items-start gap-1 text-[#594139] text-lg">
+              <MapPin className="w-4.5  shrink-0 mt-0.5" />
+              <p className=" ">{address}</p>
             </div>
           </div>
 
@@ -47,80 +60,85 @@ export function PropertyListing({
         </div>
 
         {/* ------------------ Pricing details ---------------- */}
-        <div className="grid md:grid-cols-3 grid-cols-2 gap-4 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] md:p-8 p-6">
-          <div className="border-r border-primary-border-color ">
-            <p className="text-xs font-semibold text-[#594139] mb-1">
-              LISTING PRICE
-            </p>
-            <p className="lg:text-3xl text-xl font-bold text-primary-black ">
-              ${price}
-            </p>
-          </div>
-          <div className="border-r border-primary-border-color ">
-            <p className="text-xs font-semibold text-[#594139] mb-1">
-              BUY IT NOW
-            </p>
-            <p className="lg:text-3xl text-xl font-bold text-primary-black ">
-              ${buyItNowPrice}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-[#594139] mb-1">
-              ANTICIPATED ARV
-            </p>
-            <p className="lg:text-3xl text-xl font-bold text-primary-black ">
-              ${anticipatedPrice}
-            </p>
-          </div>
+        <div className="rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
+          {originalPrice && (
+            <div className="inline-flex items-center gap-1.5 bg-[#E9F0FA] text-[#1F4E8B] text-sm font-medium px-3 py-1.5 rounded-full mb-3">
+              <TrendingDown className="w-4 h-4" />
+              <span>
+                Price Reduced{" "}
+                <span className="line-through opacity-70">
+                  ${originalPrice}
+                </span>
+              </span>
+            </div>
+          )}
+
+          <p className="text-xl md:text-2xl font-bold text-[#1F4E8B]">
+            ${price}{" "}
+            <span className="text-blue-900/40 font-normal mx-1">|</span> ARV $
+            {anticipatedPrice}
+          </p>
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gray-200 mb-6 mt-2" />
+        {/* <div className="h-px bg-gray-200 mb-6 mt-2" /> */}
 
         {/* Property Details Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 max-w-[90%]">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold text-primary-black">
-                {bedrooms} <span>Beds</span>
-              </span>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 lg:mt-5 mt-4 rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
+          <div className="flex items-center gap-2">
+            <BedIcon className="size-5" />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-primary-black">
+                  {bedrooms} <span>Beds</span>
+                </span>
+              </div>
 
-            <p className="text-primary-gray text-sm">Bedrooms</p>
+              <p className="text-primary-gray text-sm">Bedrooms</p>
+            </div>
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold text-primary-black">
-                {bathrooms} <span>Baths</span>
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <BathPoolIcon className="size-5" />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-primary-black">
+                  {bathrooms} <span>Baths</span>
+                </span>
+              </div>
 
-            <p className="text-primary-gray text-sm">Bathrooms</p>
+              <p className="text-primary-gray text-sm">Bathrooms</p>
+            </div>
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold text-primary-black">
-                {sqft} <span>Sqft</span>{" "}
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <SQFTIcon className="size-5" />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-primary-black">
+                  {sqft} <span>Sqft</span>{" "}
+                </span>
+              </div>
 
-            <p className="text-primary-gray text-sm">Living Space</p>
+              <p className="text-primary-gray text-sm">Living Space</p>
+            </div>
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold text-primary-black">
-                {yearBuilt}
-              </span>
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="size-5" />
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-primary-black">
+                  {yearBuilt}
+                </span>
+              </div>
+              <p className="text-primary-gray text-sm">Year Built</p>
             </div>
-            <p className="text-primary-gray text-sm">Year Built</p>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gray-200 mb-6" />
+        {/* <div className="h-px bg-gray-200 mb-6" /> */}
 
         {/* About Section */}
         <div className="mt-8">

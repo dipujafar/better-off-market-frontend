@@ -8,6 +8,7 @@ import { Documents } from "./Documents";
 import { LocationMap } from "./LocationMap";
 import { OpenHouse } from "./OpenHouse";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function PropertyContainer() {
   return (
@@ -16,10 +17,11 @@ export default function PropertyContainer() {
       <div className="grid lg:grid-cols-6 gap-6 mt-4">
         <div className="lg:col-span-4 space-y-6">
           <PropertyListing
+            title="1245 Willow Lane"
             price="48,500"
-            buyItNowPrice="52,000"
-            anticipatedPrice="55,000"
-            address="1245 Willow Lane, Memphis, TN 38104"
+            originalPrice="53,000"
+            anticipatedPrice="26,000"
+            address="Memphis, TN 38103"
             bedrooms={3}
             bathrooms={2}
             sqft="1,850"
@@ -30,8 +32,13 @@ export default function PropertyContainer() {
           <PropertyInfo />
           <Documents />
           <LocationMap lat={23.811056} lng={90.407608} />
+          <Link href={"/properties-list"}>
+            <Button className="w-full mt-5 bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-5 px-4 rounded-lg transition-colors cursor-pointer">
+              Back listing
+            </Button>
+          </Link>
         </div>
-        <div className="lg:col-span-2 md:flex lg:flex-col gap-4 space-y-4">
+        <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
           <ActionBtns />
           <OpenHouse />
           <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1">

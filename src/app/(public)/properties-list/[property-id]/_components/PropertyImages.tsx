@@ -55,7 +55,7 @@ export default function PropertyImages() {
               alt="property_image_2"
               width={1200}
               height={1200}
-              className="w-full h-full object-cover max-h-32 sm:max-h-40 lg:max-h-60.5"
+              className="w-full h-full object-cover max-h-32 sm:max-h-40 xl:max-h-60.5 lg:max-h-43.5"
             />
           </Preview>
         </div>
@@ -68,7 +68,7 @@ export default function PropertyImages() {
               alt="property_image_3"
               width={1200}
               height={1200}
-              className="w-full h-full object-cover max-h-32 sm:max-h-40 lg:max-h-60.5 lg:rounded-tr-xl"
+              className="w-full h-full object-cover max-h-32 sm:max-h-40 xl:max-h-60.5 lg:max-h-43.5 lg:rounded-tr-xl"
             />
           </Preview>
 
@@ -98,7 +98,7 @@ export default function PropertyImages() {
               alt="property_image_4"
               width={1200}
               height={1200}
-              className="w-full h-full object-cover max-h-40 lg:max-h-60.5"
+              className="w-full h-full object-cover max-h-40 xl:max-h-60.5 lg:max-h-43.5"
             />
           </Preview>
         </div>
@@ -111,7 +111,7 @@ export default function PropertyImages() {
               alt="property_image_5"
               width={1200}
               height={1200}
-              className="w-full h-full object-cover max-h-40 lg:max-h-60.5 lg:rounded-br-xl"
+              className="w-full h-full object-cover max-h-40 xl:max-h-60.5 lg:max-h-43.5 lg:rounded-br-xl"
             />
           </Preview>
           <div
