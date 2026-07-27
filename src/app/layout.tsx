@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import "yet-another-react-lightbox/styles.css";
+import Providers from "@/lib/provider/Provider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
@@ -32,7 +33,9 @@ export default function RootLayout({
         {/* <nav>
           <Navbar />
         </nav> */}
-        <main className="min-h-[calc(100vh-150px)]">{children}</main>
+        <main className="min-h-[calc(100vh-150px)]">
+          <Providers>{children}</Providers>
+        </main>
       </body>
     </html>
   );

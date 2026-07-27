@@ -25,7 +25,7 @@ export default function DashboardPage() {
         <div className="lg:p-6 p-4 flex items-center justify-between border-b border-primary-border-color ">
           <h4 className="text-2xl font-semibold">Recent listings</h4>
           <Link
-            href="/user/listings"
+            href="/user/my-listings"
             className="text-[#AC3400] hover:font-bold duration-500 "
           >
             View all

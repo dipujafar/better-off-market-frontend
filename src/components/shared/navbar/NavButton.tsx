@@ -1,0 +1,145 @@
+"use client";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { CirclePlus, Heart, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { MessageIcon, ProfileIcon } from "@/icons";
+import { logout } from "@/redux/features/authSlice";
+import { useRouter } from "next/navigation";
+
+export default function NavButton({
+  setOpen,
+  authPage = false,
+}: {
+  setOpen: (open: boolean) => void;
+  authPage?: boolean;
+}) {
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/login");
+  };
+  return (
+    <>
+      <div className="hidden lg:flex gap-x-3">
+        <Button
+          size={"lg"}
+          className={cn(
+            "bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full",
+            authPage && "hidden",
+          )}
+        >
+          Post a Deal{" "}
+          <CirclePlus className="bg-primary-color rounded-full text-white" />{" "}
+        </Button>
+        {user ? (
+          <div className="flex gap-x-3">
+            <Link href="/save-properties">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500  group">
+                <Heart size={20} />
+              </div>
+            </Link>
+            <Link href="/message">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <MessageIcon />
+              </div>
+            </Link>
+            {/* <Link href="/user/dashboard">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <BellDotIcon size={20} />
+              </div>
+            </Link> */}
+            <Link href="/user/dashboard">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <ProfileIcon />
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <Link href="/login">
+              <Button
+                size={"lg"}
+                className="bg-[#FFF] hover:bg-[#FFF]/70 text-black font-semibold cursor-pointer px-4 rounded-full"
+              >
+                Login
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button
+                size={"lg"}
+                className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full"
+              >
+                Sign Up
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* mobile nav */}
+      <div className="lg:hidden ">
+        <div className="flex flex-col gap-3 px-4 mt-8">
+          <Button
+            size={"lg"}
+            onClick={() => setOpen(false)}
+            className="bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full w-full"
+          >
+            Post a Deal{" "}
+            <CirclePlus className="bg-primary-color rounded-full text-white" />
+          </Button>
+          {user ? (
+            <div className="flex items-center justify-center gap-x-3">
+              <Link href="/save-properties">
+                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500  group">
+                  <Heart size={20} />
+                </div>
+              </Link>
+              <Link href="/message">
+                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                  <MessageIcon />
+                </div>
+              </Link>
+              {/* <Link href="/user/dashboard">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <BellDotIcon size={20} />
+              </div>
+            </Link> */}
+              <Link href="/user/dashboard">
+                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                  <ProfileIcon />
+                </div>
+              </Link>
+
+              <div onClick={handleLogout} className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <LogOut size={20} color="red" />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <Link href="/login" onClick={() => setOpen(false)}>
+                <Button
+                  size={"lg"}
+                  className="bg-[#F3F4F6] hover:bg-[#F3F4F6]/70 text-black font-semibold cursor-pointer px-4 rounded-full w-full"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/sign-up" onClick={() => setOpen(false)}>
+                <Button
+                  size={"lg"}
+                  className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full w-full"
+                >
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

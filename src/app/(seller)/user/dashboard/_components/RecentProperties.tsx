@@ -11,6 +11,7 @@ const properties = [
     offers: 2,
     image:
       "/properties/property_image_1.png",
+    rsvp: 234
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const properties = [
     offers: 2,
     image:
       "/properties/property_image_2.png",
+    rsvp: 34
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ const properties = [
     offers: 2,
     image:
       "/properties/property_image_3.png",
+    rsvp: 24
   },
 ];
 
@@ -49,6 +52,7 @@ export default function RecentProperties() {
           views={property.views}
           saved={property.saved}
           offers={property.offers}
+          rsvp={property.rsvp}
         />
       ))}
     </div>

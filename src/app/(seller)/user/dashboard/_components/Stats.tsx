@@ -1,20 +1,21 @@
 import { StatsCard } from "@/components/shared/card/stat-card";
-import { Briefcase, Tag, Eye } from "lucide-react";
+import { ActingListingIcon, NewOfferIcon, ViewIcon } from "@/icons";
+
 const statsData = [
   {
     label: "Active listings",
     value: 12,
-    icon: Briefcase,
+    icon: ActingListingIcon,
   },
   {
     label: "New offers",
     value: 4,
-    icon: Tag,
+    icon: NewOfferIcon,
   },
   {
     label: "Total views this week",
     value: 284,
-    icon: Eye,
+    icon: ViewIcon,
   },
 ];
 

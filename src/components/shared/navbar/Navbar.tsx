@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import blue_logo from "@/assets/images/logo_blue.png";
 import white_log from "@/assets/images/Logo_white.png";
@@ -15,10 +14,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { CirclePlus, Menu } from "lucide-react";
+import {  Menu } from "lucide-react";
 import NavLinks from "./NavLinks";
 import NavDropdown from "./NavDropdown";
-
+import NavButton from "./NavButton";
 
 const navClassVariant = {
   colored: "bg-black text-primary-foreground",
@@ -67,9 +66,17 @@ export default function Navbar({
       <div className={cn("flex items-center 2xl:gap-x-12 gap-8")}>
         <Link href="/">
           {variant === "colored" ? (
-            <Image src={blue_logo} alt="logo" className="max-w-20 sm:max-w-25" />
+            <Image
+              src={blue_logo}
+              alt="logo"
+              className="max-w-20 sm:max-w-25"
+            />
           ) : (
-            <Image src={white_log} alt="logo" className="max-w-20 sm:max-w-none" />
+            <Image
+              src={white_log}
+              alt="logo"
+              className="max-w-20 sm:max-w-none"
+            />
           )}
         </Link>
         <div
@@ -96,34 +103,7 @@ export default function Navbar({
       </div>
 
       {/* ========================== desktop buttons ============================ */}
-      <div className="hidden lg:flex gap-x-3">
-        <Button
-          size={"lg"}
-          className={cn(
-            "bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full",
-            authPage && "hidden",
-          )}
-        >
-          Post a Deal{" "}
-          <CirclePlus className="bg-primary-color rounded-full text-white" />{" "}
-        </Button>
-        <Link href="/login">
-          <Button
-            size={"lg"}
-            className="bg-[#FFF] hover:bg-[#FFF]/70 text-black font-semibold cursor-pointer px-4 rounded-full"
-          >
-            Login
-          </Button>
-        </Link>
-        <Link href="/sign-up">
-          <Button
-            size={"lg"}
-            className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full"
-          >
-            Sign Up
-          </Button>
-        </Link>
-      </div>
+     <div className="hidden lg:flex"><NavButton setOpen={setOpen} authPage={authPage} /></div> 
 
       {/* ========================== mobile trigger ============================ */}
       <div className="flex lg:hidden">
@@ -152,8 +132,8 @@ export default function Navbar({
             <div className="flex flex-col gap-1 px-4 mt-6">
               {navLinks.map((link) =>
                 link.dropdown ? (
-                  <div key={link.label} className="flex flex-col">
-                    <span className="px-3 py-2 text-sm font-medium text-gray-500 uppercase tracking-wide">
+                  <div key={link.label} className="flex flex-col border-b">
+                    <span className="px-3 py-2 text-sm font-medium text-gray-500 uppercase tracking-wide text-center border-b">
                       {link.label}
                     </span>
                     {link.dropdown.map((item) => (
@@ -161,7 +141,7 @@ export default function Navbar({
                         key={item.path}
                         href={item.path}
                         onClick={() => setOpen(false)}
-                        className="px-6 py-2 text-sm text-primary-black hover:text-primary-color transition-colors"
+                        className="px-6 py-2 text-sm text-primary-black hover:text-primary-color transition-colors text-center "
                       >
                         {item.label}
                       </Link>
@@ -173,34 +153,7 @@ export default function Navbar({
               )}
             </div>
 
-            {!authPage && (
-              <div className="flex flex-col gap-3 px-4 mt-8">
-                <Button
-                  size={"lg"}
-                  onClick={() => setOpen(false)}
-                  className="bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full w-full"
-                >
-                  Post a Deal{" "}
-                  <CirclePlus className="bg-primary-color rounded-full text-white" />
-                </Button>
-                <Link href="/login" onClick={() => setOpen(false)}>
-                  <Button
-                    size={"lg"}
-                    className="bg-[#F3F4F6] hover:bg-[#F3F4F6]/70 text-black font-semibold cursor-pointer px-4 rounded-full w-full"
-                  >
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/sign-up" onClick={() => setOpen(false)}>
-                  <Button
-                    size={"lg"}
-                    className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full w-full"
-                  >
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
+            {!authPage && <NavButton setOpen={setOpen} />}
           </SheetContent>
         </Sheet>
       </div>

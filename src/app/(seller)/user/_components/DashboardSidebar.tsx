@@ -1,14 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
-  History,
   LayoutDashboard,
   LogOut,
-  Menu,
-  X,
-  Settings,
-  ShoppingCart,
   HousePlus,
   Receipt,
   ChartNoAxesCombined,
@@ -17,101 +11,74 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
+import { useAppDispatch } from "@/redux/hooks";
+import { logout } from "@/redux/features/authSlice";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const path = pathname?.split("/")[2];
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-
+  const path = pathname?.split("/")[2] ?? "";
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/login");
+  };
 
   const SIDEBAR_LINKS = [
     {
       key: "dashboard",
       label: "Dashboard",
-      icon: <LayoutDashboard size={25} />,
+      icon: <LayoutDashboard size={22} />,
       href: "/user/dashboard",
     },
     {
       key: "my-listings",
       label: "My Listings",
-      icon: <HousePlus size={25} />,
+      icon: <HousePlus size={22} />,
       href: "/user/my-listings",
     },
-
     {
       key: "offers-received",
       label: "Offers Received",
-      icon: <Receipt size={25} />,
+      icon: <Receipt size={22} />,
       href: "/user/offers-received",
     },
     {
       key: "analytics",
       label: "Analytics",
-      icon: <ChartNoAxesCombined size={25} />,
+      icon: <ChartNoAxesCombined size={22} />,
       href: "/user/analytics",
     },
     {
       key: "edit-profile",
       label: "Edit Profile",
-      icon: <User size={25} />,
+      icon: <User size={22} />,
       href: "/user/edit-profile",
     },
     {
       key: "change-password",
       label: "Change Password",
-      icon: <Lock size={25} />,
+      icon: <Lock size={22} />,
       href: "/user/change-password",
-    }
+    },
   ];
 
-  // Toggle the sidebar visibility
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
-
-  // Close the sidebar when clicking outside
-  const handleClickOutside = (event: MouseEvent) => {
-    const sidebar = document.getElementById("dashboardSidebar");
-    if (sidebar && !sidebar.contains(event.target as Node)) {
-      setIsSidebarVisible(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isSidebarVisible) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
-      document.removeEventListener("click", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isSidebarVisible]);
+  const isActive = (href: string) =>
+    pathname === href || (path && href.includes(path));
 
   return (
-    <div className="border-r-2 border-[#ECEEF0] pr-4 h-full">
-      {/* Menu Toggle Button for mobile/tablet devices */}
-      <div className="p-4 xl:hidden">
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          {isSidebarVisible ? <X size={28} /> : <Menu size={28} />}{" "}
-          {/* Toggle between Menu and Close (X) icons */}
-        </button>
-      </div>
-
-      {/* Sidebar */}
-      <div
-        id="dashboardSidebar"
-        className={`fixed inset-y-0 left-0 z-30 xl:z-10 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out xl:relative xl:transform-none xl:shadow-none ${
-          isSidebarVisible
-            ? "translate-x-0"
-            : "-translate-x-full xl:translate-x-0"
-        }`}
-      >
-        <div className="dashboard-card bg-white py-5">
+    <>
+      {/* ---------- Large devices: fixed vertical sidebar ---------- */}
+      <div className="hidden xl:block border-r-2 border-[#ECEEF0] pr-4 h-full">
+        <div className="dashboard-card w-64 bg-white py-5">
           <div className="space-y-2">
             {SIDEBAR_LINKS.map((link) => (
               <Link
@@ -119,10 +86,8 @@ export default function DashboardSidebar() {
                 key={link.key}
                 className={cn(
                   "flex items-center gap-x-3 px-5 py-3 text-gray-scale-600 transition-all duration-300 ease-in-out text-sm",
-                  pathname === link.href &&
+                  isActive(link.href) &&
                     "border-l-4 border-l-primary-color bg-primary-color rounded-xl text-base text-white",
-                  link.href.includes(path) &&
-                    "border-l-4 border-l-primary-color bg-primary-color text-base text-white",
                 )}
               >
                 {link.icon}
@@ -131,11 +96,9 @@ export default function DashboardSidebar() {
             ))}
 
             <button
-              onClick={() => {
-                router.push("/sign-in");
-              }}
+              onClick={handleLogout}
               type="button"
-              className="flex items-center gap-x-3 px-5 py-4 text-base text-[#BA1A1A] "
+              className="flex items-center gap-x-3 px-5 py-4 text-base text-[#BA1A1A]"
             >
               <LogOut size={20} />
               <span>Logout</span>
@@ -144,6 +107,50 @@ export default function DashboardSidebar() {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* ---------- Medium/small devices: horizontal carousel nav ---------- */}
+      <div className="xl:hidden border-b-2 border-[#ECEEF0] bg-white py-3">
+        <Carousel
+          opts={{
+            loop: false,
+            align: "start",
+            dragFree: true,
+          }}
+          className="relative px-10"
+        >
+          <CarouselContent className="-ml-2">
+            {SIDEBAR_LINKS.map((link) => (
+              <CarouselItem key={link.key} className="basis-auto pl-2">
+                <Link
+                  href={link.href}
+                  className={cn(
+                    "flex items-center gap-x-2 whitespace-nowrap rounded-full border border-[#ECEEF0] px-4 py-2 text-sm text-gray-scale-600 transition-all duration-300 ease-in-out",
+                    isActive(link.href) &&
+                      "bg-primary-color border-primary-color text-white",
+                  )}
+                >
+                  {link.icon}
+                  <span>{link.label}</span>
+                </Link>
+              </CarouselItem>
+            ))}
+
+            <CarouselItem className="basis-auto pl-2">
+              <button
+                onClick={() => handleLogout()}
+                type="button"
+                className="flex items-center gap-x-2 whitespace-nowrap rounded-full border border-[#BA1A1A]/30 px-4 py-2 text-sm text-[#BA1A1A]"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </CarouselItem>
+          </CarouselContent>
+
+          <CarouselPrevious className="left-0 top-1/2 -translate-y-1/2 size-8 border-none bg-primary-color hover:bg-primary-color/80 text-white shadow-md hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
+          <CarouselNext className="right-0 top-1/2 -translate-y-1/2 size-8 border-none bg-primary-color hover:bg-primary-color/80 text-white shadow-md hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
+        </Carousel>
+      </div>
+    </>
   );
 }

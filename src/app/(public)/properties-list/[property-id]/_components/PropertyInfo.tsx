@@ -24,7 +24,7 @@ function InfoCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg bg-gray-100 p-6">
+    <div className="rounded-lg bg-[#F2F4F6] border border-[#E2E8F0] p-6">
       <div className="mb-5 flex items-center gap-2">
         {icon}
         <h2 className="text-xl font-semibold text-primary-black">{title}</h2>
@@ -69,7 +69,7 @@ export function PropertyInfo({
 }: PropertyInfoProps) {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InfoCard icon={<MajorComponentsIcon />} title="Major Components">
           {componentsLeft.map((item, i) => (
             <div key={i}>
@@ -93,7 +93,7 @@ export function PropertyInfo({
         </InfoCard>
       </div>
 
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InfoCard icon={<HomeIcon />} title="HOA Details">
           <SpecRow label="Monthly Fee" value={hoaFee} />
           <div className="h-px bg-[#DEDEDE]"></div>

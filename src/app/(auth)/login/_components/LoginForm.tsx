@@ -8,6 +8,9 @@ import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import logo from "@/assets/images/logo_blue.png";
 import Image from "next/image";
+import { useAppDispatch } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
+import { setUser } from "@/redux/features/authSlice";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -23,6 +26,8 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
+  const route = useRouter();
 
   const {
     register,
@@ -44,6 +49,15 @@ export default function LoginForm() {
     try {
       // Simulate API call
       console.log("Form submitted:", data);
+      dispatch(
+        setUser({
+          // user: jwtDecode(res?.data?.accessToken),
+          // token: res?.data?.accessToken,
+          user: data,
+          token: "token",
+        }),
+      );
+      route.push("/user/dashboard");
       // Add your sign-in logic here
     } catch (err) {
       setError("An error occurred. Please try again.");
@@ -82,7 +96,7 @@ export default function LoginForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* User Type Dropdown */}
-        <div>
+        {/* <div>
           <label
             htmlFor="userType"
             className="mb-2 block text-sm font-medium text-gray-900"
@@ -105,7 +119,7 @@ export default function LoginForm() {
               {errors.userType.message}
             </p>
           )}
-        </div>
+        </div> */}
 
         {/* Email Input */}
         <div>

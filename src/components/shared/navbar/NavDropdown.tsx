@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { motion } from "motion/react";
 
 interface DropdownLink {
   label: string;
@@ -16,7 +17,11 @@ interface NavDropdownProps {
   onSelect?: () => void;
 }
 
-export default function NavDropdown({ label, items, onSelect }: NavDropdownProps) {
+export default function NavDropdown({
+  label,
+  items,
+  onSelect,
+}: NavDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -46,16 +51,26 @@ export default function NavDropdown({ label, items, onSelect }: NavDropdownProps
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
           "flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-sm transition-colors cursor-pointer",
-          isActive ? "text-white" : "text-white/80 hover:text-white",
+          isActive
+            ? " text-white lg:text-black/80"
+            : "text-black lg:text-white/80",
         )}
       >
-        {displayLabel}
+        <span className="z-10">{displayLabel}</span>
         <span
           className={cn(
             "inline-block h-0 w-0 border-x-4 border-x-transparent border-t-[6px] border-t-current opacity-70 transition-transform duration-200",
             isOpen ? "rotate-180" : "",
           )}
         />
+
+        {isActive && (
+          <motion.span
+            layoutId="active-nav-pill"
+            className={"absolute inset-0  rounded-full lg:bg-white bg-black/80 "}
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
+          />
+        )}
       </button>
 
       {isOpen && (

@@ -1,9 +1,9 @@
-import { LucideIcon } from "lucide-react";
+import {  ElementType } from "react";
 
 interface StatItem {
   label: string;
   value: number | string;
-  icon: LucideIcon;
+  icon: ElementType;
 }
 
 export function StatsCard({ data }: { data: StatItem }) {

@@ -9,8 +9,8 @@ const properties = [
     views: 48,
     saved: 48,
     offers: 2,
-    image:
-      "/properties/property_image_1.png",
+    image: "/properties/property_image_1.png",
+    rsvp: 24,
   },
   {
     id: 2,
@@ -20,8 +20,8 @@ const properties = [
     views: 48,
     saved: 48,
     offers: 2,
-    image:
-      "/properties/property_image_2.png",
+    image: "/properties/property_image_2.png",
+    rsvp: 24,
   },
   {
     id: 3,
@@ -31,8 +31,8 @@ const properties = [
     views: 48,
     saved: 48,
     offers: 2,
-    image:
-      "/properties/property_image_3.png",
+    image: "/properties/property_image_3.png",
+    rsvp: 24,
   },
   {
     id: 4,
@@ -42,9 +42,9 @@ const properties = [
     views: 48,
     saved: 48,
     offers: 2,
-    image:
-      "/properties/property_image_2.png",
-  }
+    image: "/properties/property_image_2.png",
+    rsvp: 24,
+  },
 ];
 
 export default function ListingList() {
@@ -60,6 +60,7 @@ export default function ListingList() {
           views={property.views}
           saved={property.saved}
           offers={property.offers}
+          rsvp={property.rsvp}
         />
       ))}
     </div>

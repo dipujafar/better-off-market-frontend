@@ -1,4 +1,4 @@
-import { Eye, Tag,Trash2, MapPin, Heart } from "lucide-react";
+import { Eye, Tag, Trash2, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Share from "@/components/utils/share";
@@ -11,6 +11,7 @@ interface PropertyCardProps {
   views: number;
   saved: number;
   offers: number;
+  rsvp: number;
 }
 
 export default function DashboardPropertyCard({
@@ -21,6 +22,7 @@ export default function DashboardPropertyCard({
   views,
   saved,
   offers,
+  rsvp,
 }: PropertyCardProps) {
   return (
     <div className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow-sm sm:flex-row sm:gap-6">
@@ -41,7 +43,7 @@ export default function DashboardPropertyCard({
               <h3 className="text-sm font-semibold text-primary-black">
                 {type}
               </h3>
-              <div className="mt-1 flex items-center gap-1 text-sm text-primary-gray">
+              <div className="mt-1 flex items-center font-semibold gap-1 text-sm text-primary-gray">
                 <span>
                   <MapPin size={16} />
                 </span>
@@ -56,41 +58,44 @@ export default function DashboardPropertyCard({
           {/* Stats Row */}
           <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-700">
             <div className="flex items-center gap-1">
-              <Eye size={18} className="text-primary-gray" />
+              <Eye size={18} className="text-[#505F76]" />
               <span>{views} views</span>
             </div>
             <div className="flex items-center gap-1">
-              <Heart size={18} className="text-primary-gray" />
+              <Heart size={18} className="text-[#505F76]" />
               <span>{saved} Saved</span>
             </div>
             <div className="flex items-center gap-1">
-              <Tag size={18} className="text-primary-gray" />
+              <Tag size={18} className="text-[#505F76]" />
               <span>{offers} offers</span>
+            </div>
+            <div className="flex items-center text-[#505F76] gap-1">
+              <span>{rsvp} rsvp</span>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3">
-          <Button className="rounded-md cursor-pointer bg-[#1F4E8B] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1F4E8B]">
+          <Button className="rounded-md cursor-pointer bg-[#1F4E8B] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1F4E8B] hover:opacity-95">
             Edit Listing
           </Button>
           <Button
             variant="outline"
-            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
+            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-100 duration-300 ease-in-out transition-transform"
           >
             View Details
           </Button>
           <Button
             variant="outline"
-            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-50"
+            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-100 duration-300 ease-in-out transition-transform"
           >
             Update Price
           </Button>
 
           {/* Right Icons */}
           <div className="ml-auto flex items-center gap-2">
-            <Share title="property" link="/properties-list/1"  />
+            <Share title="property" link="/properties-list/1" />
             <button className="rounded p-2 hover:bg-gray-100">
               <Trash2 size={20} className="text-primary-gray" />
             </button>
