@@ -96,7 +96,7 @@ export default function DashboardPropertyCard({
           {/* Right Icons */}
           <div className="ml-auto flex items-center gap-2">
             <Share title="property" link="/properties-list/1" />
-            <button className="rounded p-2 hover:bg-gray-100">
+            <button className="rounded p-2 hover:bg-gray-100 cursor-pointer">
               <Trash2 size={20} className="text-primary-gray" />
             </button>
           </div>
