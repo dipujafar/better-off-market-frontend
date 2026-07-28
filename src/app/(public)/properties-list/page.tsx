@@ -4,6 +4,7 @@ import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import FilterOptions from "@/components/shared/utils/FilterOptions";
 import { properties } from "@/data/properties";
 import { PropertiesSortBar } from "./_components/PropertiesSortBar";
+import PaginationSection from "@/components/shared/pagination/PaginationSection";
 
 export const metadata = {
   title: "Properties",
@@ -31,6 +32,7 @@ export default function page() {
               <PropertyCard key={index} {...property} className="xl:h-56" />
             ))}
           </div>
+          <PaginationSection total={properties.length} current={1} />
         </div>
       </Container>
     </div>

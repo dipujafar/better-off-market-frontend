@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { CirclePlus, Heart, LogOut } from "lucide-react";
+import { BellDotIcon, CirclePlus, Heart, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { MessageIcon, ProfileIcon } from "@/icons";
@@ -47,11 +47,11 @@ export default function NavButton({
                 <MessageIcon />
               </div>
             </Link>
-            {/* <Link href="/user/dashboard">
+            <Link href="/notifications">
               <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
                 <BellDotIcon size={20} />
               </div>
-            </Link> */}
+            </Link>
             <Link href="/user/dashboard">
               <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
                 <ProfileIcon />
@@ -103,11 +103,11 @@ export default function NavButton({
                   <MessageIcon />
                 </div>
               </Link>
-              {/* <Link href="/user/dashboard">
+              <Link href="/notifications">
               <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
                 <BellDotIcon size={20} />
               </div>
-            </Link> */}
+            </Link>
               <Link href="/user/dashboard">
                 <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
                   <ProfileIcon />

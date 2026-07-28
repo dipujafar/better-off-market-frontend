@@ -1,4 +1,5 @@
 import DashboardPropertyCard from "@/components/shared/card/dashboard-property-card";
+import PaginationSection from "@/components/shared/pagination/PaginationSection";
 
 const properties = [
   {
@@ -63,6 +64,7 @@ export default function ListingList() {
           rsvp={property.rsvp}
         />
       ))}
+      <PaginationSection total={50} current={1} />
     </div>
   );
 }

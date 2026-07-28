@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import "yet-another-react-lightbox/styles.css";
 import Providers from "@/lib/provider/Provider";
+import "react-pagination-bar/dist/index.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
