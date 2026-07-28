@@ -151,7 +151,7 @@ export default function LocationSearch({
     <div ref={containerRef} className="relative  w-full">
       {/* Search bar */}
       <div className="flex items-center gap-2 rounded-xl bg-white p-4 shadow-lg">
-        <div className="flex flex-1 bg-[#F2F4F6] items-center gap-2 rounded-md px-4 py-2">
+        <div className="flex flex-1  items-center gap-2 rounded-md px-4 py-2">
           <Search className="h-5 w-5 shrink-0 text-[#8D7168]" />
           <input
             type="text"

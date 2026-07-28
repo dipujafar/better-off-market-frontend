@@ -12,15 +12,17 @@ export function ActionBtns() {
       </h2>
 
       {/* Submit an offer button */}
-      <button className="w-full cursor-pointer bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
-        Submit an offer
-      </button>
+      <Link href="/submit-offer" className="block">
+        <button className="w-full cursor-pointer bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+          Submit an offer
+        </button>
+      </Link>
 
       {/* Message seller button */}
       <Link href="/message" className="block">
-      <button className="w-full cursor-pointer bg-[#2D3133] hover:bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
-        Message seller
-      </button>
+        <button className="w-full cursor-pointer bg-[#2D3133] hover:bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+          Message seller
+        </button>
       </Link>
 
       <div className="flex gap-2.5">
@@ -52,7 +54,6 @@ export function ActionBtns() {
           Listed 42 days ago
         </span>
       </div>
-
     </div>
   );
 }
