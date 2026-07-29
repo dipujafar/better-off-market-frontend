@@ -14,10 +14,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {  Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import NavLinks from "./NavLinks";
 import NavDropdown from "./NavDropdown";
 import NavButton from "./NavButton";
+import { useAppSelector } from "@/redux/hooks";
 
 const navClassVariant = {
   colored: "bg-black text-primary-foreground",
@@ -36,27 +37,51 @@ type NavLink = {
   dropdown?: { label: string; path: string }[];
 };
 
-const navLinks: NavLink[] = [
-  { label: "Home", path: "/home" },
-  {
-    label: "Browse List",
-    path: "/properties-list",
-    dropdown: [
-      { label: "Browse List", path: "/properties-list" },
-      { label: "Browse Map", path: "/properties-map" },
-    ],
-  },
-  { label: "About Us", path: "/about-us" },
-  { label: "FAQ", path: "/faqs" },
-  { label: "Contact Us", path: "/contact-us" },
-];
-
 export default function Navbar({
   className,
   variant = "colored",
   authPage = false,
 }: TProps) {
   const [open, setOpen] = useState(false);
+  const user = useAppSelector((state) => state.auth.user);
+
+  const navLinks = () => {
+    if (user) {
+      return [
+        { label: "Home", path: "/home" },
+        {
+          label: "Browse List",
+          path: "/properties-list",
+          dropdown: [
+            { label: "Browse List", path: "/properties-list" },
+            { label: "Browse Map", path: "/properties-map" },
+          ],
+        },
+        {
+          label: "My Offer",
+          path: "/my-offer",
+        },
+        { label: "About Us", path: "/about-us" },
+        { label: "FAQ", path: "/faqs" },
+        { label: "Contact Us", path: "/contact-us" },
+      ];
+    }
+
+    return [
+      { label: "Home", path: "/home" },
+      {
+        label: "Browse List",
+        path: "/properties-list",
+        dropdown: [
+          { label: "Browse List", path: "/properties-list" },
+          { label: "Browse Map", path: "/properties-map" },
+        ],
+      },
+      { label: "About Us", path: "/about-us" },
+      { label: "FAQ", path: "/faqs" },
+      { label: "Contact Us", path: "/contact-us" },
+    ];
+  };
 
   return (
     <Container
@@ -88,7 +113,7 @@ export default function Navbar({
               : navClassVariant.transparent,
           )}
         >
-          {navLinks.map((link) =>
+          {navLinks().map((link) =>
             link.dropdown ? (
               <NavDropdown
                 key={link.label}
@@ -103,7 +128,9 @@ export default function Navbar({
       </div>
 
       {/* ========================== desktop buttons ============================ */}
-     <div className="hidden lg:flex"><NavButton setOpen={setOpen} authPage={authPage} /></div> 
+      <div className="hidden lg:flex">
+        <NavButton setOpen={setOpen} authPage={authPage} />
+      </div>
 
       {/* ========================== mobile trigger ============================ */}
       <div className="flex lg:hidden">
@@ -130,7 +157,7 @@ export default function Navbar({
             </SheetHeader>
 
             <div className="flex flex-col gap-1 px-4 mt-6">
-              {navLinks.map((link) =>
+              {navLinks().map((link) =>
                 link.dropdown ? (
                   <div key={link.label} className="flex flex-col border-b">
                     <span className="px-3 py-2 text-sm font-medium text-gray-500 uppercase tracking-wide text-center border-b">

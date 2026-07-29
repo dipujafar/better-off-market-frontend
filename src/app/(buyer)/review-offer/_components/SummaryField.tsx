@@ -8,18 +8,18 @@ interface SummaryFieldProps {
 }
 
 /** Uppercase muted label with a bold value beneath it, e.g. OFFER AMOUNT / $48,500 */
-export function SummaryField({ label, value, className, muted }: SummaryFieldProps) {
+export function SummaryField({
+  label,
+  value,
+  className,
+  muted,
+}: SummaryFieldProps) {
   return (
     <div className={cn("min-w-0", className)}>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
         {label}
       </p>
-      <p
-        className={cn(
-          "mt-1 truncate text-sm",
-          muted ? "text-muted-foreground" : "font-semibold text-foreground"
-        )}
-      >
+      <p className={cn("mt-1  md:text-lg text-sm text-primary-black")}>
         {value}
       </p>
     </div>

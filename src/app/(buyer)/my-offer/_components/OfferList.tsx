@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Offer {
   id: string;
@@ -12,6 +13,7 @@ interface Offer {
   offerAmount: number;
   status: "pending" | "counter-offer" | "accepted" | "rejected";
   actions: string[];
+  link?: string;
 }
 
 const offers: Offer[] = [
@@ -34,6 +36,7 @@ const offers: Offer[] = [
     offerAmount: 168000,
     status: "counter-offer",
     actions: ["Review Counter"],
+    link: "/review-counter-offer",
   },
   {
     id: "3",
@@ -54,6 +57,7 @@ const offers: Offer[] = [
     offerAmount: 19500,
     status: "rejected",
     actions: ["View Details"],
+    link: "/review-counter-offer",
   },
 ];
 
@@ -144,21 +148,25 @@ export default function OfferList() {
             <div className="flex flex-col items-end gap-3">
               <div className="flex gap-2">
                 {offer.actions.map((action) => (
-                  <Button
-                    key={action}
-                    variant={
-                      action === "Review Counter" || action === "Sign Agreement"
-                        ? "default"
-                        : "outline"
-                    }
-                    className={
-                      action === "Review Counter" || action === "Sign Agreement"
-                        ? "bg-primary-color hover:bg-blue-900 text-white"
-                        : ""
-                    }
-                  >
-                    {action}
-                  </Button>
+                  <Link key={action} href={offer.link || "#"}>
+                    <Button
+                      key={action}
+                      variant={
+                        action === "Review Counter" ||
+                        action === "Sign Agreement"
+                          ? "default"
+                          : "outline"
+                      }
+                      className={
+                        action === "Review Counter" ||
+                        action === "Sign Agreement"
+                          ? "bg-primary-color hover:bg-blue-900 text-white"
+                          : ""
+                      }
+                    >
+                      {action}
+                    </Button>
+                  </Link>
                 ))}
               </div>
             </div>

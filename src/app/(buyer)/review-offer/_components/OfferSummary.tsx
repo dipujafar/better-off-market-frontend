@@ -9,12 +9,19 @@ import {
   File,
   Download,
   MessageSquare,
+  MessageSquareText,
 } from "lucide-react";
 import { SummaryCard } from "./SummaryCard";
 import { SummaryField } from "./SummaryField";
 import { ContingencyItem } from "./ContingencyItem";
 import { Pill } from "./Pill";
-import { DollarIcon } from "@/icons";
+import {
+  DocIcon,
+  DollarIcon,
+  PDFIcon,
+  PersonalPropertyIcon,
+  SellerConcessionsIcon,
+} from "@/icons";
 
 export interface OfferSummaryDocument {
   name: string;
@@ -95,7 +102,7 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
 
         <SummaryCard
           title="Seller Concessions"
-          icon={<AlertCircle size={18} />}
+          icon={<SellerConcessionsIcon />}
         >
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <SummaryField label="Closing costs" value={data.closingCosts} />
@@ -106,7 +113,7 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
           </div>
         </SummaryCard>
 
-        <SummaryCard title="Contingencies" icon={<AlertCircle size={18} />}>
+        <SummaryCard title="Contingencies" icon={<SellerConcessionsIcon />}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <ContingencyItem
               icon={<Search size={16} />}
@@ -130,10 +137,10 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
           </SummaryCard>
         ) : null}
 
-        <SummaryCard title="Personal Property" icon={<Archive size={18} />}>
+        <SummaryCard title="Personal Property" icon={<PersonalPropertyIcon />}>
           <div className="flex flex-col gap-4">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                 Included items
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -150,10 +157,10 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
             </div>
             {data.personalProperty.itemsToRemove ? (
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                   Items to be removed
                 </p>
-                <p className="mt-1 text-sm italic text-foreground">
+                <p className="mt-1 text-sm italic text-primary-black">
                   &ldquo;{data.personalProperty.itemsToRemove}&rdquo;
                 </p>
               </div>
@@ -177,25 +184,26 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
             />
           </div>
         </SummaryCard>
+        <div className="hidden lg:flex">{sidebarFooter}</div>
       </div>
 
       {/* Sidebar column */}
       <div className="flex flex-col gap-6">
         {data.documents && data.documents.length > 0 ? (
-          <SummaryCard title="Documents" icon={<File size={18} />}>
+          <SummaryCard title="Documents" icon={<DocIcon />}>
             <ul className="flex flex-col gap-2">
               {data.documents.map((doc) => (
                 <li key={doc.url}>
                   <a
                     href={doc.url}
                     download
-                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/40 px-3 py-2 text-sm text-foreground hover:border-primary/50"
+                    className="flex items-center justify-between gap-3 rounded-lg border border-primary-border-color bg-[#F7F9FB] px-3 py-3 text-sm text-foreground hover:border-primary/50"
                   >
-                    <span className="truncate">{doc.name}</span>
-                    <Download
-                      size={16}
-                      className="shrink-0 text-muted-foreground"
-                    />
+                    <div className="flex items-center gap-1.5">
+                      <PDFIcon className="size-5" />
+                      <span className="truncate">{doc.name}</span>
+                    </div>
+                    <Download size={16} className="shrink-0 text-[#594139]" />
                   </a>
                 </li>
               ))}
@@ -206,15 +214,14 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
         {data.notesToSeller ? (
           <SummaryCard
             title="Notes to Seller"
-            icon={<MessageSquare size={18} />}
+            icon={<MessageSquareText color="#00214C" size={20} />}
           >
-            <p className="rounded-xl bg-muted/40 p-3 text-sm italic leading-relaxed text-foreground">
+            <p className="rounded-lg bg-[#F2F4F6] p-3 md:text-base text-sm text-[#594139] italic leading-relaxed">
               &ldquo;{data.notesToSeller}&rdquo;
             </p>
           </SummaryCard>
         ) : null}
-
-        {sidebarFooter}
+        <div className="lg:hidden ">{sidebarFooter}</div>
       </div>
     </div>
   );
