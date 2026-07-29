@@ -10,6 +10,7 @@ export default function NewlyAddedSection() {
     title: "Newly Added",
     description: "The latest arrivals to the marketplace.",
     isBtn: true,
+    btnLink:"/properties-list"
   };
   return (
     <Container className="lg:space-y-8 space-y-6">

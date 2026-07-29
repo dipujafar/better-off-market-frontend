@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import MyListingContainer from "./_components/MyListingContainer";
+import Link from "next/link";
 
 export default function MyListingPage() {
   return (
@@ -13,14 +14,14 @@ export default function MyListingPage() {
             Manage your properties and track their performance.
           </p>
         </div>
-        <Button className="cursor-pointe px-3 py-5 text-base cursor-pointer bg-[#2D3133]">
-          <Plus className="mr-0.5" /> Add Listing
-        </Button>
+        <Link href={'/user/my-listings/property-listing'}>
+          <Button  className="cursor-pointe px-3 py-4.5 text-base cursor-pointer bg-[#2D3133]">
+            <Plus className="mr-0.5" /> Add Listing
+          </Button>
+        </Link>
       </div>
       {/* ============================== my listing list ======================= */}
       <MyListingContainer />
-
-      
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import Container from "@/components/shared/container/Container";
+import { Button } from "@/components/ui/button";
+import { OctagonAlert } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface SellerProfileProps {
   name?: string;
@@ -43,7 +46,7 @@ export function SellerProfileCard({
           <div className="my-4 border-t border-gray-200 sm:my-5" />
 
           {/* Stats */}
-          <div className="flex flex-wrap gap-x-10 gap-y-4 sm:gap-x-16">
+          <div className="flex flex-wrap items-center gap-x-10 gap-y-4 sm:gap-x-16">
             <div>
               <p className="text-xs font-semibold tracking-wide text-[#594139]">
                 ACTIVE LISTINGS
@@ -69,6 +72,14 @@ export function SellerProfileCard({
               <p className="mt-1 flex items-center gap-1 text-xl font-semibold text-primary-blue text-primary-black sm:text-xl">
                 {avgRating} <span className="text-primary-blue">★</span>
               </p>
+            </div>
+            <div>
+              <Link href="/message">
+                <Button className="lg:px-10 px-5 py-5 cursor-pointer">Message Seller</Button>
+              </Link>
+            </div>
+            <div className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer">
+             <OctagonAlert size="20"/> Report this seller
             </div>
           </div>
         </div>

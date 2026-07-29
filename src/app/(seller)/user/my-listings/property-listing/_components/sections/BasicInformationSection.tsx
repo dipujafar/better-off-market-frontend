@@ -1,0 +1,144 @@
+"use client";
+import { useFormContext } from "react-hook-form";
+import { TextField } from "../form-fields/TextField";
+import { SelectField } from "../form-fields/SelectField";
+import { TextareaField } from "../form-fields/TextareaField";
+import { FieldTooltip } from "../form-fields/FieldTooltip";
+import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
+import { LocationEditIcon } from "lucide-react";
+import { BASIC_INFO_CONFIG, COUNTY_OPTIONS } from "../config/property-type.config";
+
+export function BasicInformationSection() {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext<PropertyListingFormValues>();
+
+  const propertyType = watch("propertyType");
+  const config = BASIC_INFO_CONFIG[propertyType];
+
+  return (
+    <section className="rounded-lg border border-[#E2E8F0]  shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)] p-6">
+      <div className="mb-5 flex items-center gap-2">
+        <LocationEditIcon className="text-primary-blue" />
+        <h2 className="text-xl font-semibold text-primary-black">
+          Basic Information
+        </h2>
+      </div>
+
+      <div className="space-y-5">
+        <TextField
+          label="Street Address"
+          placeholder="1234 Main Street"
+          registration={register("streetAddress")}
+          error={errors.streetAddress?.message}
+        />
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <TextField
+            label="State"
+            required
+            placeholder="OH"
+            registration={register("state")}
+            error={errors.state?.message}
+          />
+          <TextField
+            label="City"
+            required
+            placeholder="Cincinnati"
+            registration={register("city")}
+            error={errors.city?.message}
+          />
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <TextField
+            label="ZIP Code"
+            required
+            placeholder="45202"
+            registration={register("zipCode")}
+            error={errors.zipCode?.message}
+            tooltip={
+              <FieldTooltip text="This can be found on the County Auditor's website under Property Search." />
+            }
+          />
+          <SelectField
+            label="County"
+            required
+            name="county"
+            control={control}
+            options={COUNTY_OPTIONS}
+            placeholder="Select county"
+            error={errors.county?.message}
+            tooltip={
+              <FieldTooltip text="If the County is not on the dropdown list, then this property is unfortunately outside our current scope, and you will not be able to add this listing. Please contact support with any questions." />
+            }
+          />
+        </div>
+
+        {config.showParcelId && (
+          <TextField
+            label="Parcel ID(s) Included in Sale"
+            required
+            placeholder="e.g. 12-345-678"
+            registration={register("parcelIds")}
+            error={errors.parcelIds?.message}
+            tooltip={
+              <FieldTooltip text="Enter every parcel number included in this sale, separated by commas, exactly as they appear on the county record." />
+            }
+          />
+        )}
+
+        <div
+          className={`grid gap-5 ${
+            config.showBuyItNowPrice ? "sm:grid-cols-3" : "sm:grid-cols-2"
+          }`}
+        >
+          <TextField
+            label="Listing Price ($)"
+            required
+            type="number"
+            step="0.01"
+            placeholder="0.00"
+            registration={register("listingPrice")}
+            error={errors.listingPrice?.message}
+          />
+          {config.showBuyItNowPrice && (
+            <TextField
+              label="Buy it Now Price ($)"
+              required
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              registration={register("buyItNowPrice")}
+              error={errors.buyItNowPrice?.message}
+            />
+          )}
+          <TextField
+            label="ARV ($)"
+            type="number"
+            step="0.01"
+            placeholder="0.00"
+            registration={register("arv")}
+            error={errors.arv?.message}
+            tooltip={
+              <FieldTooltip text='ARV stands for "After-Repair Value." It is the estimated future worth of a property after all planned renovations and repairs are completed.' />
+            }
+          />
+        </div>
+
+        <TextareaField
+          label="Marketing Description"
+          required
+          rows={5}
+          placeholder="Describe the key features, amenities, and unique selling points. This is where you can also provide building financials and comparable sales to support your listing price and/or ARV."
+          registration={register("marketingDescription")}
+          error={errors.marketingDescription?.message}
+          className="h-28"
+        />
+      </div>
+    </section>
+  );
+}

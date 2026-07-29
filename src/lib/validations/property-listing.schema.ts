@@ -1,0 +1,106 @@
+import {
+  BASIC_INFO_CONFIG,
+  PROPERTY_TYPES,
+} from "@/app/(seller)/user/my-listings/property-listing/_components/config/property-type.config";
+import { z } from "zod";
+
+const fileSchema = z
+  .instanceof(File)
+  .refine((f) => f.size <= 20 * 1024 * 1024, "File must be under 20MB");
+
+export const propertyListingSchema = z
+  .object({
+    propertyType: z.enum(PROPERTY_TYPES, {
+      error: "Property type is required",
+    }),
+
+    // Ownership
+    ownership: z.enum(["own", "assignable"], {
+      error: "Select an ownership type",
+    }),
+    assignableContractFile: fileSchema.optional().nullable(),
+
+    // Basic Information
+    streetAddress: z.string().min(1, "Street address is required"),
+    state: z.string().min(1, "State is required"),
+    city: z.string().min(1, "City is required"),
+    zipCode: z.string().min(5, "Enter a valid ZIP code"),
+    county: z.string().min(1, "County is required"),
+    parcelIds: z.string().optional(),
+    listingPrice: z.coerce
+      .number({ error: "Enter a valid amount" })
+      .positive("Listing price is required"),
+    buyItNowPrice: z.coerce.number().optional(),
+    arv: z.coerce.number().optional(),
+    marketingDescription: z
+      .string()
+      .min(1, "Marketing description is required")
+      .max(3000),
+
+    // Property Specifications — dynamic, keyed by SpecField.name
+    specifications: z
+      .record(z.string(), z.union([z.string(), z.number()]))
+      .default({}),
+
+    // Major Components & Ages
+    roofMaterial: z.string().optional(),
+    roofAge: z.coerce.number().optional(),
+    heatingSystem: z.string().optional(),
+    heatingAge: z.coerce.number().optional(),
+    cooling: z.string().optional(),
+    coolingAge: z.coerce.number().optional(),
+    waterHeating: z.string().optional(),
+    waterHeatingAge: z.coerce.number().optional(),
+    water: z.string().optional(),
+    sewer: z.string().optional(),
+    foundation: z.string().optional(),
+    otherUpdates: z.string().optional(),
+
+    // HOA
+    hasHoa: z.enum(["yes", "no"]).default("no"),
+    hoaAmount: z.coerce.number().optional(),
+    hoaFrequency: z.enum(["Monthly", "Quarterly", "Annually"]).optional(),
+    hoaIncludes: z.string().optional(),
+
+    // Closing
+    titleCompany: z.string().optional(),
+    closingDate: z.string().min(1, "Closing preference is required"),
+
+    // Files
+    photos: z.array(fileSchema).min(5, "Minimum 5 high-res photos required"),
+    documents: z.array(fileSchema).optional(),
+  })
+  .superRefine((data, ctx) => {
+    const config = BASIC_INFO_CONFIG[data.propertyType];
+
+    if (config.showParcelId && !data.parcelIds?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["parcelIds"],
+        message: "Parcel ID(s) are required for this property type",
+      });
+    }
+    if (config.showBuyItNowPrice && !data.buyItNowPrice) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["buyItNowPrice"],
+        message: "Buy it now price is required",
+      });
+    }
+    if (data.ownership === "assignable" && !data.assignableContractFile) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["assignableContractFile"],
+        message: "Assignable contract PDF is required for verification",
+      });
+    }
+    if (data.hasHoa === "yes" && !data.hoaAmount) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["hoaAmount"],
+        message: "HOA amount is required",
+      });
+    }
+  });
+
+export type PropertyListingFormValues = z.infer<typeof propertyListingSchema>;

@@ -25,16 +25,18 @@ export default function NavButton({
   return (
     <>
       <div className="hidden lg:flex gap-x-3">
-        <Button
-          size={"lg"}
-          className={cn(
-            "bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full",
-            authPage && "hidden",
-          )}
-        >
-          Post a Deal{" "}
-          <CirclePlus className="bg-primary-color rounded-full text-white" />{" "}
-        </Button>
+        <Link href={"/user/my-listings/property-listing"}>
+          <Button
+            size={"lg"}
+            className={cn(
+              "bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full",
+              authPage && "hidden",
+            )}
+          >
+            Post a Deal{" "}
+            <CirclePlus className="bg-primary-color rounded-full text-white" />{" "}
+          </Button>
+        </Link>
         {user ? (
           <div className="flex gap-x-3">
             <Link href="/save-properties">
@@ -83,14 +85,16 @@ export default function NavButton({
       {/* mobile nav */}
       <div className="lg:hidden ">
         <div className="flex flex-col gap-3 px-4 mt-8">
-          <Button
-            size={"lg"}
-            onClick={() => setOpen(false)}
-            className="bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full w-full"
-          >
-            Post a Deal{" "}
-            <CirclePlus className="bg-primary-color rounded-full text-white" />
-          </Button>
+          <Link href={"/user/my-listings/property-listing"}>
+            <Button
+              size={"lg"}
+              onClick={() => setOpen(false)}
+              className="bg-[#CEE3FF] hover:bg-[#CEE3FF]/85 text-[#1F4E8B] cursor-pointer px-4 rounded-full w-full"
+            >
+              Post a Deal{" "}
+              <CirclePlus className="bg-primary-color rounded-full text-white" />
+            </Button>
+          </Link>
           {user ? (
             <div className="flex items-center justify-center gap-x-3">
               <Link href="/save-properties">
@@ -104,17 +108,20 @@ export default function NavButton({
                 </div>
               </Link>
               <Link href="/notifications">
-              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
-                <BellDotIcon size={20} />
-              </div>
-            </Link>
+                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                  <BellDotIcon size={20} />
+                </div>
+              </Link>
               <Link href="/user/dashboard">
                 <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
                   <ProfileIcon />
                 </div>
               </Link>
 
-              <div onClick={handleLogout} className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+              <div
+                onClick={handleLogout}
+                className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500"
+              >
                 <LogOut size={20} color="red" />
               </div>
             </div>

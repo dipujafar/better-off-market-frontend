@@ -1,0 +1,81 @@
+"use client";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  propertyListingSchema,
+  type PropertyListingFormValues,
+} from "@/lib/validations/property-listing.schema";
+
+import { PropertyTypeSection } from "./sections/PropertyTypeSection";
+import { PropertyOwnershipSection } from "./sections/PropertyOwnershipSection";
+import { BasicInformationSection } from "./sections/BasicInformationSection";
+import { PropertySpecificationsSection } from "./sections/PropertySpecificationsSection";
+import { MajorComponentsSection } from "./sections/MajorComponentsSection";
+import { HoaInformationSection } from "./sections/HoaInformationSection";
+import { ClosingPreferencesSection } from "./sections/ClosingPreferencesSection";
+import { PropertyPhotosSection } from "./sections/PropertyPhotosSection";
+import { DocumentsSection } from "./sections/DocumentsSection";
+
+interface PropertyListingFormProps {
+  defaultValues?: Partial<PropertyListingFormValues>;
+  onSubmit: (values: PropertyListingFormValues) => Promise<void> | void;
+}
+
+export function PropertyListingForm({
+  defaultValues,
+  onSubmit,
+}: PropertyListingFormProps) {
+  const methods = useForm<PropertyListingFormValues>({
+    resolver: zodResolver(propertyListingSchema),
+    mode: "onBlur",
+    defaultValues: {
+      propertyType: "Multi-Family",
+      ownership: "own",
+      hasHoa: "no",
+      photos: [],
+      documents: [],
+      specifications: {},
+      ...defaultValues,
+    },
+  });
+
+  const {
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = methods;
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <PropertyTypeSection />
+        <PropertyOwnershipSection />
+        <BasicInformationSection />
+        <PropertySpecificationsSection />
+        <MajorComponentsSection />
+        <HoaInformationSection />
+        <ClosingPreferencesSection />
+        <PropertyPhotosSection />
+        <DocumentsSection />
+
+        <div className="flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => reset()}
+            className="text-sm font-medium text-[#434655] hover:text-gray-700 cursor-pointer"
+          >
+            Discard Changes
+          </button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-primary-color hover:bg-primary-color/90 cursor-pointer px-8 py-5 text-sm font-semibold"
+          >
+            {isSubmitting ? "Publishing..." : "Publish Listing Now"}
+          </Button>
+        </div>
+      </form>
+    </FormProvider>
+  );
+}

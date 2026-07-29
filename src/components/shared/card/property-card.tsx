@@ -17,7 +17,8 @@ export function PropertyCard({
   baths,
   sqft,
   className,
-}: IProperty & { className?: string }) {
+  savedProperty
+}: IProperty & { className?: string, savedProperty?: boolean }) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -54,7 +55,7 @@ export function PropertyCard({
         )}
 
         {/* Favorite Button */}
-        <FavoriteIcon />
+        <FavoriteIcon savedProperty={savedProperty} />
       </div>
 
       {/* Content Container */}

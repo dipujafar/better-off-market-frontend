@@ -16,7 +16,7 @@ export default function Home() {
   const bannerData = {
     title: "The Place for Off-Market Real Estate",
     description:
-      "Browse verified listings — no agents, no middlemen. Professional real estate investment, simplified for the modern investor.",
+      "Where property owners, wholesalers, investors, and buyers connect to discover opportunities, negotiate directly",
     children: <LocationSearch />,
   };
   return (

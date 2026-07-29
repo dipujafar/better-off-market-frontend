@@ -41,7 +41,7 @@ export function CounterOfferActionBar({
         Accept counter
       </button>
 
-      <Link href={"/send-counter-offer"} className="block flex-1">
+      <Link href={"#"} className="block flex-1">
         <button
           type="button"
           // onClick={onCounterOffer}

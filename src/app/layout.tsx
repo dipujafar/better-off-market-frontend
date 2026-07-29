@@ -4,6 +4,7 @@ import "./globals.css";
 import "yet-another-react-lightbox/styles.css";
 import Providers from "@/lib/provider/Provider";
 import "react-pagination-bar/dist/index.css";
+import NextTopLoader from "nextjs-toploader";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
@@ -35,7 +36,23 @@ export default function RootLayout({
           <Navbar />
         </nav> */}
         <main className="min-h-[calc(100vh-150px)]">
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+
+            <NextTopLoader
+              color="#00214C"
+              initialPosition={0.08}
+              crawlSpeed={200}
+              height={3}
+              crawl={true}
+              showSpinner={true}
+              easing="ease"
+              speed={200}
+              shadow="0 0 10px #232323,0 0 5px #EA5326"
+              zIndex={1600}
+              showAtBottom={false}
+            />
+          </Providers>
         </main>
       </body>
     </html>

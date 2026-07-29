@@ -9,6 +9,7 @@ export default function PriceDropsSection() {
     title: "Price Drops",
     description: "The most sought-after listings moving fast in today's market.",
     isBtn: true,
+    btnLink:"/properties-list"
   };
   return (
     <Container className="lg:space-y-8 space-y-6">
