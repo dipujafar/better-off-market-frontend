@@ -14,7 +14,7 @@ export function ContingencyItem({ icon, label, value }: ContingencyItemProps) {
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
           {label}
         </p>
         <p className="text-sm font-semibold text-foreground">{value}</p>

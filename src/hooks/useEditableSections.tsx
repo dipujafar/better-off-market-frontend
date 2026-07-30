@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useWatch, type Control, type UseFormSetValue } from "react-hook-form";
 import type { OfferFormValues } from "@/lib/validations/offer-form";
-import { SECTION_FIELDS, fieldsChanged, pickFields, type SectionKey } from "@/lib/counter-offer-helpers";
+import { pickFields,  SECTION_FIELDS, fieldsChanged, type SectionKey } from "@/app/(buyer)/send-counter-offer/_components/counter-offer-helpers";
 
 interface UseEditableSectionsArgs {
   control: Control<OfferFormValues>;

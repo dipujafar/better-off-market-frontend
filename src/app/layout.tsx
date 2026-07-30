@@ -5,6 +5,7 @@ import "yet-another-react-lightbox/styles.css";
 import Providers from "@/lib/provider/Provider";
 import "react-pagination-bar/dist/index.css";
 import NextTopLoader from "nextjs-toploader";
+// import CustomCursor from "@/components/shared/Customcursor";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
@@ -37,6 +38,7 @@ export default function RootLayout({
         </nav> */}
         <main className="min-h-[calc(100vh-150px)]">
           <Providers>
+            {/* <CustomCursor /> */}
             {children}
 
             <NextTopLoader

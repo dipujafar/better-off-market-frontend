@@ -9,6 +9,7 @@ import {
   File,
   Download,
   MessageSquare,
+  MessageSquareText,
 } from "lucide-react";
 import { CounterOfferBanner } from "./CounterOfferBanner";
 import { ChangedSummaryCard } from "./ChangedSummaryCard";
@@ -19,7 +20,12 @@ import { SummaryField } from "../../review-offer/_components/SummaryField";
 import { Pill } from "../../review-offer/_components/Pill";
 import { ContingencyItem } from "../../review-offer/_components/ContingencyItem";
 import { OfferSummaryData } from "../../review-offer/_components/OfferSummary";
-import { CalendarIcon, DollarIcon, PersonalPropertyIcon } from "@/icons";
+import {
+  CalendarIcon,
+  DollarIcon,
+  PDFIcon,
+  PersonalPropertyIcon,
+} from "@/icons";
 
 function formatCurrency(amount: number) {
   return amount.toLocaleString("en-US", {
@@ -236,11 +242,15 @@ export function CounterOfferSummary({
                     <a
                       href={doc.url}
                       download
-                      className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/40 px-3 py-2 text-sm text-foreground hover:border-primary/50"
+                      className="flex items-center justify-between gap-3 rounded-lg border border-primary-border-color bg-[#F7F9FB] px-3 py-3 text-sm text-foreground hover:border-primary/50"
                     >
-                      <span className="truncate">{doc.name}</span>
+                      <div className="flex gap-2">
+                        <PDFIcon  className="size-5"/>
+                        <span className="truncate font-medium text-primary-black">{doc.name}</span>
+                      </div>
                       <Download
                         size={16}
+                        color="#594139"
                         className="shrink-0 text-muted-foreground"
                       />
                     </a>
@@ -253,9 +263,9 @@ export function CounterOfferSummary({
           {data.notesToSeller ? (
             <SummaryCard
               title="Notes to Seller"
-              icon={<MessageSquare size={18} />}
+              icon={<MessageSquareText size={18} />}
             >
-              <p className="rounded-xl bg-muted/40 p-3 text-sm italic leading-relaxed text-foreground">
+              <p className="rounded-lg bg-[#F2F4F6] p-3 text-sm italic leading-relaxed text-[#594139]">
                 &ldquo;{data.notesToSeller}&rdquo;
               </p>
             </SummaryCard>

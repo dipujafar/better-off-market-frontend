@@ -56,7 +56,7 @@ export default function NavDropdown({
             : "text-black lg:text-white/80",
         )}
       >
-        <span className="z-10">{displayLabel}</span>
+        <span className="z-10  lg:text-xs   xl:text-[15px] truncate">{displayLabel}</span>
         <span
           className={cn(
             "inline-block h-0 w-0 border-x-4 border-x-transparent border-t-[6px] border-t-current opacity-70 transition-transform duration-200",

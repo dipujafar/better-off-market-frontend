@@ -30,7 +30,7 @@ export default function NavLinks({ link }: TProps) {
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
         />
       )}
-      <span className="relative z-10 ">{link.label}</span>
+      <span className="relative z-10 lg:text-xs   xl:text-[15px] truncate">{link.label}</span>
     </Link>
   );
 }

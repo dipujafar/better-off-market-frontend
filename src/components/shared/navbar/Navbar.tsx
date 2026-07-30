@@ -85,10 +85,10 @@ export default function Navbar({
 
   return (
     <Container
-      className={cn("w-full flex items-center justify-between", className)}
+      className={cn("w-full flex items-center justify-between ", className)}
     >
       {/* ========================== logo + desktop nav links ============================ */}
-      <div className={cn("flex items-center 2xl:gap-x-12 gap-8")}>
+      <div className={cn("flex items-center 2xl:gap-x-12 gap-8" )}>
         <Link href="/">
           {variant === "colored" ? (
             <Image

@@ -2,6 +2,7 @@ import { Eye, Tag, Trash2, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Share from "@/components/utils/share";
+import Link from "next/link";
 
 interface PropertyCardProps {
   image: string;
@@ -77,15 +78,20 @@ export default function DashboardPropertyCard({
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3">
-          <Button className="rounded-md cursor-pointer bg-[#1F4E8B] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1F4E8B] hover:opacity-95">
-            Edit Listing
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-100 duration-300 ease-in-out transition-transform"
-          >
-            View Details
-          </Button>
+          <Link href="/user/my-listings/property-listing">
+            <Button className="rounded-md cursor-pointer bg-[#1F4E8B] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1F4E8B] hover:opacity-90">
+              Edit Listing
+            </Button>
+          </Link>
+          <Link href="/user/my-listings/1">
+            <Button
+              variant="outline"
+              className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-100 duration-300 ease-in-out transition-transform"
+            >
+              View Details
+            </Button>
+          </Link>
+
           <Button
             variant="outline"
             className="rounded-md cursor-pointer border border-primary-border-color px-6 py-2 text-sm font-semibold text-primary-black hover:bg-gray-100 duration-300 ease-in-out transition-transform"

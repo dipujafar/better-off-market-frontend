@@ -41,7 +41,7 @@ export default function PropertyContainer() {
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
           <ActionBtns />
           <OpenHouse />
-          <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1">
+          <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1 w-full">
             <p className="text-sm font-medium text-primary-gray">
               You need a free account to submit offers or message sellers.{" "}
               <Link

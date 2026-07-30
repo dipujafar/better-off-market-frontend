@@ -165,3 +165,10 @@
 .scroll-hide::-webkit-scrollbar {
   scrollbar-width: none;
 }
+
+
+/* @media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+} */
