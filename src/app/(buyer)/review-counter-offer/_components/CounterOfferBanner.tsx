@@ -1,5 +1,6 @@
 import { History } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface CounterOfferBannerProps {
   title: string;
@@ -27,11 +28,13 @@ export function CounterOfferBanner({
     <section
       className={cn(
         "flex flex-col gap-3 rounded-xl border border-primary-color bg-[#9ACEF91A] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5",
-        className
+        className,
       )}
     >
       <div className="min-w-0">
-        <h2 className="md:text-2xl text-xl font-semibold text-primary-color">{title}</h2>
+        <h2 className="md:text-2xl text-xl font-semibold text-primary-color">
+          {title}
+        </h2>
         <p className="mt-1 md:text-base text-sm text-muted-foreground">
           {sellerName} has modified{" "}
           <span className=" text-primary-color">
@@ -41,14 +44,16 @@ export function CounterOfferBanner({
         </p>
       </div>
 
-      <button
-        type="button"
-        onClick={onViewHistory}
-        className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-primary-border-color bg-card px-3 py-1.5 text-sm font-medium text-primary-color hover:bg-muted/50 sm:self-auto"
-      >
-        <History size={14} />
-        View History
-      </button>
+      <Link href={"/offer-negotiation-story"}>
+        <button
+          type="button"
+          onClick={onViewHistory}
+          className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-primary-border-color bg-card px-3 py-1.5 text-sm font-medium text-primary-color hover:bg-muted/50 sm:self-auto cursor-pointer"
+        >
+          <History size={14} />
+          View History
+        </button>
+      </Link>
     </section>
   );
 }

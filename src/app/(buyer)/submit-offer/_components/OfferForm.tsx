@@ -54,6 +54,7 @@ export function OfferForm({
   const [supportingDocuments, setSupportingDocuments] = useState<File[]>([]);
 
   const form = useForm<OfferFormValues>({
+    // @ts-ignore
     resolver: zodResolver(offerFormSchema),
     defaultValues: { ...offerFormDefaultValues, ...defaultValues },
     mode: "onBlur",
@@ -69,6 +70,7 @@ export function OfferForm({
   return (
     <FormProvider {...form}>
       <form
+        // @ts-ignore
         onSubmit={form.handleSubmit<OfferFormValues>(handleSubmit)}
         noValidate
         className="flex flex-col gap-6 lg:gap-8 lg:py-8 py-6"

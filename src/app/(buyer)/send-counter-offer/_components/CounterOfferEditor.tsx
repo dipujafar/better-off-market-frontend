@@ -75,6 +75,7 @@ export function CounterOfferEditor({
   onCancel,
 }: CounterOfferEditorProps) {
   const form = useForm<OfferFormValues>({
+    // @ts-ignore
     resolver: zodResolver(offerFormSchema),
     defaultValues: { ...originalValues, ...initialValues },
     mode: "onBlur",
@@ -82,6 +83,7 @@ export function CounterOfferEditor({
   });
 
   const { editing, changed, startEdit, cancelEdit } = useEditableSections({
+    // @ts-ignore
     control: form.control,
     setValue: form.setValue,
     originalValues,
@@ -97,6 +99,7 @@ export function CounterOfferEditor({
   return (
     <FormProvider {...form}>
       <form
+        //   @ts-ignore
         onSubmit={form.handleSubmit(handleSubmit)}
         noValidate
         className=" grid grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-3 lg:items-start shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] mt-8"

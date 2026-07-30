@@ -1,0 +1,54 @@
+import {
+  STATUS_CONFIG,
+  avatarColorForName,
+  formatCurrency,
+  type NegotiationEvent,
+} from "./utils.data";
+import { cn } from "@/lib/utils";
+
+export function NegotiationEventCard({ event }: { event: NegotiationEvent }) {
+  const config = STATUS_CONFIG[event.status];
+  const avatarClassName = event.avatarClassName ?? avatarColorForName(event.actorName);
+
+  return (
+    <div className="flex-1 rounded-xl border border-border bg-card p-4 shadow-sm sm:p-5">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <span
+            className={cn(
+              "inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
+              config.badgeClassName
+            )}
+          >
+            {config.label}
+          </span>
+          <p className={cn("mt-1.5 text-2xl font-semibold sm:text-[28px]", config.amountClassName)}>
+            {formatCurrency(event.amount)}
+          </p>
+        </div>
+
+        <div className="text-left sm:text-right">
+          <p className="text-sm font-semibold text-foreground">{event.date}</p>
+          <p className="text-xs text-muted-foreground">{event.time}</p>
+        </div>
+      </div>
+
+      <div className={cn("my-3 border-t", config.dividerClassName)} />
+
+      <div className="flex items-center gap-2.5">
+        <span
+          className={cn(
+            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+            avatarClassName
+          )}
+        >
+          {event.actorInitials}
+        </span>
+        <div>
+          <p className="text-sm font-medium text-foreground">{event.actionLabel}</p>
+          <p className="text-xs text-muted-foreground">{event.actorRole}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
