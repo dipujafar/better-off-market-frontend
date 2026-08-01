@@ -1,3 +1,4 @@
+import { PropertySpecificationsIcon } from "@/icons";
 import { HomeIcon, ClosingPreferencesIcon, MajorComponentsIcon } from "@/icons";
 
 interface SpecItem {
@@ -7,8 +8,9 @@ interface SpecItem {
 }
 
 interface PropertyInfoProps {
-  componentsLeft?: SpecItem[];
-  componentsRight?: SpecItem[];
+  propertySpecsLeft?: SpecItem[];
+  propertySpecsRight?: SpecItem[];
+  components?: SpecItem[];
   hoaFee?: string;
   hoaAmenities?: string[];
   closingPreferences?: SpecItem[];
@@ -49,12 +51,17 @@ function SpecRow({ label, value, note }: SpecItem) {
 }
 
 export function PropertyInfo({
-  componentsLeft = [
-    { label: "Lot Size", value: "6,200 sqft" },
-    { label: "HVAC", value: "Functional", note: "4 years old" },
-    { label: "Plumbing", value: "Copper/PEX", note: "Updated 2018" },
+  propertySpecsLeft = [
+    { label: "Bedroom", value: "3" },
+    { label: "Full Baths", value: "2" },
+    { label: "Half Baths", value: "1" },
   ],
-  componentsRight = [
+  propertySpecsRight = [
+    { label: "Sq. Footage", value: "1850" },
+    { label: "Lot Size (Acres)", value: "0.25" },
+    { label: "Year Built", value: "1886" },
+  ],
+  components = [
     { label: "Roof", value: "Good Condition", note: "8 years old" },
     { label: "HVAC", value: "Functional", note: "4 years old" },
     { label: "Plumbing", value: "Copper/PEX", note: "Updated 2018" },
@@ -70,22 +77,32 @@ export function PropertyInfo({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <InfoCard icon={<MajorComponentsIcon />} title="Major Components">
-          {componentsLeft.map((item, i) => (
-            <div key={i}>
-              <SpecRow {...item} />
-              {i !== componentsLeft.length - 1 && (
-                <div className="h-px bg-[#DEDEDE]"></div>
-              )}
+        <InfoCard
+          icon={<PropertySpecificationsIcon className="size-5 text-[#1F4E8B]" />}
+          title="Property Specifications"
+        >
+          <div className="grid grid-cols-2 gap-x-8">
+            <div>
+              {propertySpecsLeft.map((item, i) => (
+                <SpecRow key={i} {...item} />
+              ))}
             </div>
-          ))}
+            <div>
+              {propertySpecsRight.map((item, i) => (
+                <SpecRow key={i} {...item} />
+              ))}
+            </div>
+          </div>
         </InfoCard>
 
-        <InfoCard icon={<MajorComponentsIcon />} title="Major Components">
-          {componentsRight.map((item, i) => (
+        <InfoCard
+          icon={<MajorComponentsIcon className="size-5 text-[#1F4E8B]" />}
+          title="Major Components"
+        >
+          {components.map((item, i) => (
             <div key={i}>
               <SpecRow {...item} />
-              {i !== componentsLeft.length - 1 && (
+              {i !== components.length - 1 && (
                 <div className="h-px bg-[#DEDEDE]"></div>
               )}
             </div>
@@ -94,7 +111,10 @@ export function PropertyInfo({
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <InfoCard icon={<HomeIcon />} title="HOA Details">
+        <InfoCard
+          icon={<HomeIcon className="size-5 text-[#1F4E8B]" />}
+          title="HOA Details"
+        >
           <SpecRow label="Monthly Fee" value={hoaFee} />
           <div className="h-px bg-[#DEDEDE]"></div>
           <div className="pt-2">
@@ -105,11 +125,14 @@ export function PropertyInfo({
           </div>
         </InfoCard>
 
-        <InfoCard icon={<ClosingPreferencesIcon />} title="Closing Preferences">
+        <InfoCard
+          icon={<ClosingPreferencesIcon className="size-5 text-[#1F4E8B]" />}
+          title="Closing Preferences"
+        >
           {closingPreferences.map((item, i) => (
             <div key={i}>
               <SpecRow {...item} />
-              {i !== componentsLeft.length - 1 && (
+              {i !== closingPreferences.length - 1 && (
                 <div className="h-px bg-[#DEDEDE]"></div>
               )}
             </div>

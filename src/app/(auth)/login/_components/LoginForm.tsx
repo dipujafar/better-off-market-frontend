@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ChevronDown, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import logo from "@/assets/images/logo_blue.png";
 import Image from "next/image";
@@ -71,13 +71,15 @@ export default function LoginForm() {
       {/* Logo */}
       <div className="mb-1 text-center">
         <div className="inline-flex flex-col items-center">
-          <Image
-            src={logo}
-            alt="logo"
-            width={1200}
-            height={1200}
-            className="w-32"
-          />
+          <Link href="/">
+            <Image
+              src={logo}
+              alt="logo"
+              width={1200}
+              height={1200}
+              className="w-32"
+            />
+          </Link>
         </div>
       </div>
 

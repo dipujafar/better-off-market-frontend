@@ -17,7 +17,8 @@ export function PropertyCard({
   baths,
   sqft,
   className,
-  savedProperty
+  savedProperty,
+  propertyType
 }: IProperty & { className?: string, savedProperty?: boolean }) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -40,6 +41,11 @@ export function PropertyCard({
         {/* Time Badge */}
         <div className="absolute top-3 left-3 bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
           {timeEstimate}
+        </div>
+
+        {/* Time Badge */}
+        <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
+          {propertyType}
         </div>
 
         {/* Time Badge */}

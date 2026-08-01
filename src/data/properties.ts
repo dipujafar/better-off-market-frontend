@@ -11,6 +11,7 @@ export const properties: IProperty[] = [
     beds: 3,
     baths: 2,
     sqft: 1850,
+    propertyType: "Residential",
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ export const properties: IProperty[] = [
     beds: 4,
     baths: 3,
     sqft: 2350,
+    propertyType: "Multi-Family",
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ export const properties: IProperty[] = [
     beds: 2,
     baths: 2,
     sqft: 1325,
+    propertyType: "Commercial",
   },
 
   {
@@ -45,6 +48,7 @@ export const properties: IProperty[] = [
     beds: 3,
     baths: 2,
     sqft: 1680,
+    propertyType: "Residential",
   },
   {
     id: 5,
@@ -56,6 +60,7 @@ export const properties: IProperty[] = [
     beds: 5,
     baths: 4,
     sqft: 3560,
+    propertyType: "Commercial",
   },
   {
     id: 6,
@@ -67,8 +72,8 @@ export const properties: IProperty[] = [
     beds: 4,
     baths: 2,
     sqft: 2150,
+    propertyType: "Multi-Family",
   },
-
   {
     id: 7,
     imageUrl: "/properties/property_image_2.png",
@@ -80,6 +85,7 @@ export const properties: IProperty[] = [
     beds: 5,
     baths: 4,
     sqft: 3120,
+    propertyType: "Residential",
   },
   {
     id: 8,
@@ -92,6 +98,7 @@ export const properties: IProperty[] = [
     beds: 3,
     baths: 2,
     sqft: 1940,
+    propertyType: "Multi-Family",
   },
   {
     id: 9,
@@ -104,6 +111,7 @@ export const properties: IProperty[] = [
     beds: 4,
     baths: 3,
     sqft: 2485,
+    propertyType: "Commercial",
   },
   {
     id: 10,
@@ -116,5 +124,6 @@ export const properties: IProperty[] = [
     beds: 3,
     baths: 2,
     sqft: 1825,
+    propertyType: "Residential",
   },
 ];

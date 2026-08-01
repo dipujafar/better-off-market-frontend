@@ -17,6 +17,7 @@ export interface IProperty {
   beds: number;
   baths: number;
   sqft: number;
+  propertyType?: string;
 }
 
 

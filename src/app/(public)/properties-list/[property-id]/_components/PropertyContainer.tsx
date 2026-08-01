@@ -21,7 +21,7 @@ export default function PropertyContainer() {
             price="48,500"
             originalPrice="53,000"
             anticipatedPrice="26,000"
-            address="Memphis, TN 38103"
+            address="1245 Willow Lane, Memphis, TN 38103"
             bedrooms={3}
             bathrooms={2}
             sqft="1,850"
@@ -40,7 +40,6 @@ export default function PropertyContainer() {
         </div>
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
           <ActionBtns />
-          <OpenHouse />
           <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1 w-full">
             <p className="text-sm font-medium text-primary-gray">
               You need a free account to submit offers or message sellers.{" "}
@@ -59,6 +58,8 @@ export default function PropertyContainer() {
               </Link>
             </p>
           </div>
+          <OpenHouse />
+
           <ProfileCard
             image="/user_profile.jpg"
             name="Sarah Jenkins"

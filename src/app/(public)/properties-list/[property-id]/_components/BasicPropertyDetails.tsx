@@ -41,10 +41,10 @@ export function PropertyListing({
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
           <div className="flex-1">
-            <h2 className="text-primary-black lg:text-3xl text-2xl font-semibold">
+            {/* <h2 className="text-primary-black lg:text-3xl text-2xl font-semibold">
               {title}
-            </h2>
-            <div className="flex items-start gap-1 text-[#594139] text-lg">
+            </h2> */}
+            <div className="flex items-center gap-1 text-primary-gray xl:text-2xl lg:text-xl md:text-lg">
               <MapPin className="w-4.5  shrink-0 mt-0.5" />
               <p className=" ">{address}</p>
             </div>
@@ -61,23 +61,23 @@ export function PropertyListing({
 
         {/* ------------------ Pricing details ---------------- */}
         <div className="rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
+          <p className="text-xl md:text-2xl font-bold text-[#1F4E8B]">
+            ${price}{" "}
+            {/* <span className="text-blue-900/40 font-normal mx-1">|</span> */}
+            <span className="text-xl md:text-2xl font-normal  text-primary-gray scroll-pl-2.5">(ARV : ${anticipatedPrice})</span>
+          </p>
+
           {originalPrice && (
-            <div className="inline-flex items-center gap-1.5 bg-[#E9F0FA] text-[#1F4E8B] text-sm font-medium px-3 py-1.5 rounded-full mb-3">
+            <div className="inline-flex items-center gap-1.5 bg-[#E9F0FA] text-[#1F4E8B] text-sm font-medium px-3 py-1.5 rounded-full mt-3">
               <TrendingDown className="w-4 h-4" />
               <span>
                 Price Reduced{" "}
-                <span className="line-through opacity-70">
-                  ${originalPrice}
+                <span className="">
+                  ~~ ${originalPrice} ~~
                 </span>
               </span>
             </div>
           )}
-
-          <p className="text-xl md:text-2xl font-bold text-[#1F4E8B]">
-            ${price}{" "}
-            <span className="text-blue-900/40 font-normal mx-1">|</span> ARV $
-            {anticipatedPrice}
-          </p>
         </div>
 
         {/* Divider */}
