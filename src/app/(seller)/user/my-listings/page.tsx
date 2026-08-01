@@ -7,7 +7,7 @@ export default function MyListingPage() {
   return (
     <div>
       {/* ============================= page title =========================== */}
-      <div className="flex-between py-6 border-b border-primary-border-color">
+      <div className="flex-between gap-2 py-6 border-b border-primary-border-color">
         <div>
           <h1 className="text-2xl font-bold text-primary-black">My Listing</h1>
           <p className="text-primary-gray">

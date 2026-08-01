@@ -1,7 +1,8 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { MapPin, MessageSquare } from 'lucide-react';
-import Image from 'next/image';
+"use client";
+import { Button } from "@/components/ui/button";
+import { MapPin, MessageSquare } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export interface PropertyCardProps {
   id: string;
@@ -9,42 +10,43 @@ export interface PropertyCardProps {
   agent: string;
   property: string;
   location: string;
-  status: 'PENDING' | 'SOLD' | 'REJECTED';
+  status: "PENDING" | "SOLD" | "REJECTED";
   price: number;
   originalPrice?: number;
-  actionType: 'review' | 'message' | 'details';
+  actionType: "review" | "message" | "details";
+  navLink: string;
 }
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'PENDING':
-      return 'text-blue-700 bg-blue-100';
-    case 'SOLD':
-      return 'bg-[#565E741A] text-[#565E74]';
-    case 'REJECTED':
-      return 'bg-[#BA1A1A1A] text-[#BA1A1A]';
+    case "PENDING":
+      return "text-blue-700 bg-blue-100";
+    case "SOLD":
+      return "bg-[#565E741A] text-[#565E74]";
+    case "REJECTED":
+      return "bg-[#BA1A1A1A] text-[#BA1A1A]";
     default:
-      return 'bg-gray-400 text-white';
+      return "bg-gray-400 text-white";
   }
 };
 
 const getButtonStyle = (status: string, actionType: string) => {
-  if (status === 'PENDING' && actionType === 'review') {
-    return 'bg-primary-color text-white hover:bg-slate-800';
+  if (status === "PENDING" && actionType === "review") {
+    return "bg-primary-color text-white hover:bg-slate-800";
   }
-  return 'bg-white text-[#594139] border border-primary-border-color hover:bg-slate-50';
+  return "bg-white text-[#594139] border border-primary-border-color hover:bg-slate-50";
 };
 
 const getButtonText = (actionType: string) => {
   switch (actionType) {
-    case 'review':
-      return 'Review Offer';
-    case 'message':
-      return 'Message';
-    case 'details':
-      return 'Details';
+    case "review":
+      return "Review Offer";
+    case "message":
+      return "Message";
+    case "details":
+      return "Details";
     default:
-      return 'Action';
+      return "Action";
   }
 };
 
@@ -57,11 +59,12 @@ export default function OfferedCard({
   price,
   originalPrice,
   actionType,
+  navLink,
 }: PropertyCardProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 p-4 border border-primary-border-color rounded-lg bg-white hover:shadow-md transition-shadow">
       {/* Property Image */}
-      <div className="shrink-0 w-full sm:w-36 h-20">
+      <div className="shrink-0 w-full sm:w-36 md:h-20 h-40">
         <Image
           width={1200}
           height={1200}
@@ -85,7 +88,7 @@ export default function OfferedCard({
         <div className="flex flex-wrap items-center gap-2">
           <span
             className={`text-xs font-semibold px-2 py-1 rounded ${getStatusColor(
-              status
+              status,
             )}`}
           >
             {status}
@@ -105,22 +108,24 @@ export default function OfferedCard({
 
       {/* Action Button */}
       <div className="flex items-center shrink-0 w-full sm:w-auto">
-        <Button
-          className={`w-full sm:w-auto px-6 rounded-lg font-semibold text-sm transition-colors cursor-pointer py-4.5 ${getButtonStyle(
-            status,
-            actionType
-          )}`}
-          variant={
-            status === 'PENDING' && actionType === 'review'
-              ? 'default'
-              : 'outline'
-          }
-        >
-          {actionType === 'message' && (
-            <MessageSquare color='#594139' className="w-4 h-4 mr-2" />
-          )}
-          {getButtonText(actionType)}
-        </Button>
+        <Link href={navLink}>
+          <Button
+            className={`w-full sm:w-auto px-6 rounded-lg font-semibold text-sm transition-colors cursor-pointer py-4.5 ${getButtonStyle(
+              status,
+              actionType,
+            )}`}
+            variant={
+              status === "PENDING" && actionType === "review"
+                ? "default"
+                : "outline"
+            }
+          >
+            {actionType === "message" && (
+              <MessageSquare color="#594139" className="w-4 h-4 mr-2" />
+            )}
+            {getButtonText(actionType)}
+          </Button>
+        </Link>
       </div>
     </div>
   );

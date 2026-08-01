@@ -12,6 +12,7 @@ const sampleListings = [
     price: 46000,
     originalPrice: 48500,
     actionType: "review" as const,
+    navLink: "/user/offers-received/1",
   },
   {
     id: "2",
@@ -23,6 +24,7 @@ const sampleListings = [
     price: 46000,
     originalPrice: 48500,
     actionType: "review" as const,
+    navLink: "/user/offers-received/2",
   },
   {
     id: "3",
@@ -33,6 +35,7 @@ const sampleListings = [
     status: "SOLD" as const,
     price: 19500,
     actionType: "message" as const,
+    navLink: "/message",
   },
   {
     id: "4",
@@ -43,6 +46,7 @@ const sampleListings = [
     status: "SOLD" as const,
     price: 19500,
     actionType: "message" as const,
+    navLink: "/message",
   },
   {
     id: "5",
@@ -53,6 +57,7 @@ const sampleListings = [
     status: "SOLD" as const,
     price: 19500,
     actionType: "message" as const,
+    navLink: "/message",
   },
   {
     id: "6",
@@ -63,6 +68,7 @@ const sampleListings = [
     status: "REJECTED" as const,
     price: 165000,
     actionType: "details" as const,
+    navLink: "/user/offers-received/1",
   },
 ];
 

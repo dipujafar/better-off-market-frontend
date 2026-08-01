@@ -2,7 +2,11 @@ import type { ComponentType } from "react";
 import { ClipboardCheck, X, ArrowLeftRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type NegotiationStatus = "pending" | "rejected" | "countered" | "accepted";
+export type NegotiationStatus =
+  | "pending"
+  | "rejected"
+  | "countered"
+  | "accepted";
 
 export interface NegotiationEvent {
   id: string;
@@ -26,32 +30,35 @@ interface StatusConfig {
   amountClassName: string;
   nodeClassName: string;
   dividerClassName: string;
+  borderClassName?: string;
 }
 
 export const STATUS_CONFIG: Record<NegotiationStatus, StatusConfig> = {
   pending: {
     label: "Pending",
     icon: ClipboardCheck,
-    badgeClassName: "bg-amber-100 text-amber-800",
-    amountClassName: "text-amber-600",
+    badgeClassName: "bg-[#FFF2D0] text-[#390B00] font-semibold",
+    amountClassName: "text-[#F19C1F]",
     nodeClassName: "bg-slate-900 text-white",
-    dividerClassName: "border-amber-300",
+    dividerClassName: "border-[#E2BFB5]",
+    borderClassName: " border-l-4 border-[#F19C1F]",
   },
   rejected: {
     label: "Rejected",
     icon: X,
-    badgeClassName: "bg-rose-100 text-rose-700",
-    amountClassName: "text-foreground",
+    badgeClassName: "bg-[#FFDAD6] text-[#93000A] font-semibold",
+    amountClassName: "text-primary-black",
     nodeClassName: "bg-muted text-muted-foreground",
-    dividerClassName: "border-border",
+    dividerClassName: "border-[#E2BFB5]",
   },
   countered: {
     label: "Countered",
     icon: ArrowLeftRight,
     badgeClassName: "bg-violet-100 text-violet-700",
     amountClassName: "text-foreground",
-    nodeClassName: "bg-violet-100 text-violet-600",
-    dividerClassName: "border-violet-200",
+    nodeClassName: "bg-[#DAE2FD] text-[#5C647A]",
+    dividerClassName: "border-[#E2BFB5]",
+    borderClassName: " border-l-4 border-[#565E74]",
   },
   accepted: {
     label: "Accepted",
@@ -59,16 +66,13 @@ export const STATUS_CONFIG: Record<NegotiationStatus, StatusConfig> = {
     badgeClassName: "bg-emerald-100 text-emerald-700",
     amountClassName: "text-emerald-600",
     nodeClassName: "bg-emerald-600 text-white",
-    dividerClassName: "border-emerald-300",
+    dividerClassName: "border-[#E2BFB5]",
   },
 };
 
 const AVATAR_PALETTE = [
-  "bg-slate-200 text-slate-600",
-  "bg-orange-200 text-orange-700",
-  "bg-sky-200 text-sky-700",
-  "bg-violet-200 text-violet-700",
-  "bg-emerald-200 text-emerald-700",
+  "bg-[#ECEEF0] text-[#565E74] text-sm",
+  "bg-[#FFB59D] text-[#5E1900] text-sm",
 ];
 
 /** Deterministic color per name so the same person's avatar is consistent across events. */

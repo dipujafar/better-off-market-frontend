@@ -109,7 +109,7 @@ export default function DashboardSidebar() {
       </div>
 
       {/* ---------- Medium/small devices: horizontal carousel nav ---------- */}
-      <div className="xl:hidden border-b-2 border-[#ECEEF0] bg-white py-3">
+      <div className="xl:hidden border-b-2 border-[#ECEEF0] bg-white py-3 mb-2">
         <Carousel
           opts={{
             loop: false,

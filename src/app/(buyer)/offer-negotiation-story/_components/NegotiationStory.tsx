@@ -18,10 +18,7 @@ export function NegotiationStory({
   events,
   onBack,
   onMessage,
-  messageLabel,
-  hasMore,
-  onLoadMore,
-  isLoadingMore,
+  messageLabel
 }: NegotiationStoryProps) {
   return (
     <div className=" px-4 py-6 sm:px-6 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] border border-[#E0E3E580] rounded-lg">
@@ -34,9 +31,9 @@ export function NegotiationStory({
 
       <NegotiationTimeline events={events} />
 
-      {hasMore ? (
+      {/* {hasMore ? (
         <div className="mt-6 flex justify-center">
-          <button
+          <button/offers-received
             type="button"
             onClick={onLoadMore}
             disabled={isLoadingMore}
@@ -45,7 +42,7 @@ export function NegotiationStory({
             {isLoadingMore ? "Loading..." : "Load more"}
           </button>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }
