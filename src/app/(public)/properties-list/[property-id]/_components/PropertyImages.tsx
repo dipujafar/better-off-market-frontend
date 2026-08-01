@@ -95,7 +95,7 @@ export default function PropertyImages() {
               <Share
                 title="property-details"
                 link="/properties-list/1"
-                className="absolute right-4 top-4 bg-primary-color text-white z-[999] cursor-pointer hover:bg-primary-color/80"
+                className="absolute right-4 top-4 bg-primary-color text-white z-999 cursor-pointer hover:bg-primary-color/80"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function PropertyImages() {
             </Preview>
             <div
               onClick={() => setPreviewImgIndex(5)}
-              className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-[999] cursor-pointer"
+              className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-999 cursor-pointer"
             >
               <LayoutGrid size={16} /> Show all photos
             </div>
