@@ -18,8 +18,8 @@ export function PropertyCard({
   sqft,
   className,
   savedProperty,
-  propertyType
-}: IProperty & { className?: string, savedProperty?: boolean }) {
+  propertyType,
+}: IProperty & { className?: string; savedProperty?: boolean }) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -27,9 +27,17 @@ export function PropertyCard({
   });
 
   return (
-    <Link href={`/properties-list/${id}`} className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group">
+    <Link
+      href={`/properties-list/${id}`}
+      className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group"
+    >
       {/* Image Container */}
-      <div className={cn("relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100", className)}>
+      <div
+        className={cn(
+          "relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100",
+          className,
+        )}
+      >
         <Image
           src={imageUrl}
           alt={address}
@@ -56,7 +64,10 @@ export function PropertyCard({
               timeEstimate && "left-18",
             )}
           >
-            ↓ <span className="ml-0.5">{priceFormatter.format(originalPrice)}</span>
+            ↓{" "}
+            <span className="ml-0.5">
+              {priceFormatter.format(originalPrice)}
+            </span>
           </div>
         )}
 
@@ -71,24 +82,19 @@ export function PropertyCard({
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
             {priceFormatter.format(price)}
 
-            {originalPrice && (
-              <span className="text-base text-[#594139] font-normal  line-through ml-2">
-                {priceFormatter.format(originalPrice)}
-              </span>
-            )}
-
             {arv && (
-              <span
-                className={cn(
-                  "text-primary-gray  font-medium ml-2",
-                  originalPrice && "block ml-0",
-                )}
-              >
+              <span className={cn("text-primary-gray  font-medium ml-2")}>
                 (ARV: {priceFormatter.format(arv)})
               </span>
             )}
           </p>
         </div>
+
+        {originalPrice && (
+          <span className="text-base text-primary-gray font-medium">
+            {priceFormatter.format(originalPrice)}
+          </span>
+        )}
 
         {/* Address */}
         <h3 className="xl:text-xl text-lg font-semibold text-primary-black line-clamp-1">
@@ -99,15 +105,11 @@ export function PropertyCard({
         <div className="flex justify-between items-center gap-4 text-gray-700 pt-1">
           <div className="flex items-center xl:gap-2 gap-1">
             <BedIcon />
-            <span className=" text-[#594139] font-semibold">
-              {beds} Beds
-            </span>
+            <span className=" text-[#594139] font-semibold">{beds} Beds</span>
           </div>
           <div className="flex items-center xl:gap-2 gap-1">
             <ShawarIcon />
-            <span className=" text-[#594139] font-semibold">
-              {baths} Bath
-            </span>
+            <span className=" text-[#594139] font-semibold">{baths} Bath</span>
           </div>
           <div className="flex items-center xl:gap-2 gap-1">
             <AreaIcon />

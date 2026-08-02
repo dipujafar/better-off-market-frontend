@@ -14,6 +14,9 @@ export const propertyListingSchema = z
       error: "Property type is required",
     }),
 
+    useType: z.string().optional(),
+    useTypeOther: z.string().optional(),
+
     // Ownership
     ownership: z.enum(["own", "assignable"], {
       error: "Select an ownership type",
@@ -36,6 +39,7 @@ export const propertyListingSchema = z
       .string()
       .min(1, "Marketing description is required")
       .max(3000),
+    utilities: z.string().optional(),
 
     // Property Specifications — dynamic, keyed by SpecField.name
     specifications: z
@@ -55,6 +59,13 @@ export const propertyListingSchema = z
     sewer: z.string().optional(),
     foundation: z.string().optional(),
     otherUpdates: z.string().optional(),
+    roofMaterialOther: z.string().optional(),
+    heatingSystemOther: z.string().optional(),
+    coolingOther: z.string().optional(),
+    waterHeatingOther: z.string().optional(),
+    waterOther: z.string().optional(),
+    sewerOther: z.string().optional(),
+    foundationOther: z.string().optional(),
 
     // HOA
     hasHoa: z.enum(["yes", "no"]).default("no"),

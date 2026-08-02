@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,15 +23,6 @@ export const COUNTY_DATA = {
     "Gallatin",
     "Kenton",
     "Pendleton",
-  ],
-  INDIANA: [
-    "Dearborn",
-    "Fayette",
-    "Franklin",
-    "Ohio",
-    "Ripley",
-    "Switzerland",
-    "Union",
   ],
 };
 
@@ -93,7 +83,9 @@ export function CountySelector({
       >
         <div className="flex items-center gap-2 overflow-x-auto">
           {selectedCounties.length === 0 ? (
-            <span className="text-gray-400 text-sm lg:text-base line-clamp-1">Select counties...</span>
+            <span className="text-gray-400 text-sm lg:text-base line-clamp-1">
+              Select counties...
+            </span>
           ) : (
             selectedCounties.map((county) => (
               <span
@@ -148,7 +140,7 @@ export function CountySelector({
           </div>
 
           {/* States and Counties */}
-          <div className="flex flex-wrap gap-2 mb-3 max-h-80 overflow-y-auto  px-5">
+          <div className="flex justify-between flex-wrap gap-2 mb-3 max-h-80 overflow-y-auto  px-5">
             {Object.entries(COUNTY_DATA).map(([state, counties]) => (
               <div key={state}>
                 <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">

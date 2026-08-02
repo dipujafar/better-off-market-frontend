@@ -2,6 +2,7 @@ import type { TextareaHTMLAttributes } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface TextareaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -9,6 +10,7 @@ interface TextareaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement>
   error?: string;
   registration?: UseFormRegisterReturn;
   className?: string;
+  extraClassName?: string;
 }
 
 export function TextareaField({
@@ -17,10 +19,11 @@ export function TextareaField({
   error,
   registration,
   className,
+  extraClassName,
   ...props
 }: TextareaFieldProps) {
   return (
-    <div className="w-full">
+    <div className={cn("w-full", extraClassName)}>
       {label && (
         <Label className="mb-1.5 flex items-center gap-1 text-sm font-bold text-primary-black">
           {label}

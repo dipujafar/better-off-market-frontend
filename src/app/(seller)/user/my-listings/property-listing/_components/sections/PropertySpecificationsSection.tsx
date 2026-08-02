@@ -5,9 +5,12 @@ import { SelectField } from "../form-fields/SelectField";
 import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
 import { HomeIcon } from "@/icons";
 import { PROPERTY_SPECIFICATIONS_CONFIG } from "../config/property-type.config";
+import { TextareaField } from "../form-fields/TextareaField";
+import { FieldTooltip } from "../form-fields/FieldTooltip";
 
 export function PropertySpecificationsSection() {
-  const { register, control, watch } = useFormContext<PropertyListingFormValues>();
+  const { register, control, watch } =
+    useFormContext<PropertyListingFormValues>();
 
   const propertyType = watch("propertyType");
   const rows = PROPERTY_SPECIFICATIONS_CONFIG[propertyType];
@@ -26,7 +29,10 @@ export function PropertySpecificationsSection() {
 
       <div className="space-y-5">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="grid gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          <div
+            key={rowIndex}
+            className="grid gap-5 sm:grid-cols-3 lg:grid-cols-4"
+          >
             {row.fields.map((field) => {
               const fieldPath = `specifications.${field.name}` as const;
 
@@ -40,9 +46,27 @@ export function PropertySpecificationsSection() {
                     options={field.options ?? []}
                     placeholder="Select"
                     className={field.className}
+                    tooltip={
+                      field.tooltip ? (
+                        <FieldTooltip text={field.tooltip} />
+                      ) : undefined
+                    }
                   />
                 );
               }
+
+              // if (field.type === "textarea") {
+              //   return (
+              //     <TextareaField
+              //       key={field.name}
+              //       label={field.label}
+              //       rows={field.rows ?? 3}
+              //       placeholder={field.placeholder}
+              //       registration={register(fieldPath)}
+              //       className={field.className}
+              //     />
+              //   );
+              // }
 
               return (
                 <TextField
@@ -53,6 +77,11 @@ export function PropertySpecificationsSection() {
                   placeholder={field.placeholder}
                   registration={register(fieldPath)}
                   extraClassName={field.className}
+                  tooltip={
+                    field.tooltip ? (
+                      <FieldTooltip text={field.tooltip} />
+                    ) : undefined
+                  }
                 />
               );
             })}

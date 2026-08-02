@@ -17,7 +17,7 @@ export function PropertyPhotosSection() {
       <div className="mb-4 flex items-center justify-between">
         <div className="mb-5 flex items-center gap-2">
           <ImagesIcon className="text-primary-blue size-5" />
-          <h2 className="text-lg font-semibold text-primary-black">
+          <h2 className="text-xl font-semibold text-primary-color">
             Property Photos<span className="text-red-500">*</span>
           </h2>
         </div>

@@ -24,7 +24,7 @@ export function TextField({
   ...props
 }: TextFieldProps) {
   return (
-    <div className={cn("w-full", extraClassName)}>
+    <div className={cn("w-full",  extraClassName)}>
       {label && (
         <Label className="mb-1.5 flex items-center gap-1 text-sm font-semibold text-primary-black">
           {label}

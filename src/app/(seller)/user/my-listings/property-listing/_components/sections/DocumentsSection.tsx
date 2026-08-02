@@ -29,7 +29,7 @@ export function DocumentsSection() {
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <DocIcon className="text-primary-blue" />
-                  <h2 className="text-lg font-semibold text-primary-black">
+                  <h2 className="text-xl font-semibold text-primary-color">
                     Documents
                   </h2>
                 </div>

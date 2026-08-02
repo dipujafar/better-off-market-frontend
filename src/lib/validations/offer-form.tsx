@@ -62,6 +62,7 @@ export const offerFormSchema = z
     financingType: z.enum(financingValues, {
       error: "Select a financing type",
     }),
+    otherFinancingType: z.string().max(120).optional(),
     financingTerms: z.string().max(1000).optional(),
 
     // Seller Concessions
@@ -130,6 +131,14 @@ export const offerFormSchema = z
         path: ["financingTerms"],
         code: z.ZodIssueCode.custom,
         message: "Describe the financing terms",
+      });
+    }
+
+    if (data.financingType === "other" && !data.otherFinancingType?.trim()) {
+      ctx.addIssue({
+        path: ["otherFinancingType"],
+        code: z.ZodIssueCode.custom,
+        message: "Please specify the financing type",
       });
     }
 
@@ -204,6 +213,7 @@ export const offerFormDefaultValues: Partial<OfferFormValues> = {
   offerAmount: 0,
   earnestMoney: 0,
   financingTerms: "",
+  otherFinancingType: "",
   closingCostOption: "none",
   sellerContribution: 0,
   inspectionContingency: "yes",

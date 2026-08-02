@@ -42,8 +42,8 @@ const PreviewPropertyCarousel = ({
         ))}
       </CarouselContent>
 
-      <CarouselPrevious className="md:-left-5 -left-3  size-11 -top-1/3  border-none bg-primary-color hover:bg-primary-color/80 text-white shadow-md  hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
-      <CarouselNext className="md:-right-5 -right-3  size-11 -top-1/3 border-none bg-primary-color hover:bg-primary-color/80 text-white shadow-md  hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
+      <CarouselPrevious className="md:-left-5 -left-3  size-11 -top-1/3  border-none bg-black/40 backdrop-blur-[3px]   hover:bg-primary-color/80 text-white shadow-md  hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
+      <CarouselNext className="md:-right-5 -right-3  size-11 -top-1/3 border-none bg-black/40 backdrop-blur-[3px] hover:bg-primary-color/80 text-white shadow-md  hover:text-white disabled:opacity-0 disabled:pointer-events-none cursor-pointer" />
     </Carousel>
   );
 };

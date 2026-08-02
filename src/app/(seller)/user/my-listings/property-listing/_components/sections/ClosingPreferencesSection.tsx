@@ -16,8 +16,8 @@ export function ClosingPreferencesSection() {
   return (
     <section className="rounded-lg border border-gray-200 bg-white p-6">
       <div className="mb-5 flex items-center gap-2">
-        <CalendarIcon className="text-primary-blue" />
-        <h2 className="text-lg font-semibold text-primary-black">
+        <CalendarIcon  className="text-primary-blue" />
+        <h2 className="text-xl font-semibold text-primary-color">
           Closing Preferences
         </h2>
       </div>

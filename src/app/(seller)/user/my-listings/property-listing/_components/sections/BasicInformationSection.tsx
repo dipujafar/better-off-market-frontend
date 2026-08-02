@@ -6,7 +6,10 @@ import { TextareaField } from "../form-fields/TextareaField";
 import { FieldTooltip } from "../form-fields/FieldTooltip";
 import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
 import { LocationEditIcon } from "lucide-react";
-import { BASIC_INFO_CONFIG, COUNTY_OPTIONS } from "../config/property-type.config";
+import {
+  BASIC_INFO_CONFIG,
+  COUNTY_OPTIONS,
+} from "../config/property-type.config";
 
 export function BasicInformationSection() {
   const {
@@ -138,6 +141,16 @@ export function BasicInformationSection() {
           error={errors.marketingDescription?.message}
           className="h-28"
         />
+
+        {config.showUtilities && (
+          <TextareaField
+            label="Utilities"
+            rows={4}
+            placeholder="Public water, sewer, gas, and electric are located at the street."
+            registration={register("utilities")}
+            error={errors.utilities?.message}
+          />
+        )}
       </div>
     </section>
   );

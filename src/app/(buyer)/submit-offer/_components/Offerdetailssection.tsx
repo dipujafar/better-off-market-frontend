@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSectionCard } from "./FormSectionCard";
 import { CurrencyFormField } from "./CurrencyFormField";
@@ -23,17 +24,16 @@ import { FINANCING_TYPES, type OfferFormValues } from "@/lib/validations/offer-f
 
 function OfferDetailsSectionImpl() {
   const { control } = useFormContext<OfferFormValues>();
-
   // Scoped watch: only this section re-renders when financingType changes,
   // not the whole form.
   const financingType = useWatch({ control, name: "financingType" });
   const isCash = financingType === "cash" || !financingType;
+  const isOther = financingType === "other";
 
   return (
     <FormSectionCard title="Offer Details">
       <CurrencyFormField control={control} name="offerAmount" label="Offer amount ($)" />
       <CurrencyFormField control={control} name="earnestMoney" label="Earnest money ($)" />
-
       <FormField
         control={control}
         name="financingType"
@@ -58,6 +58,28 @@ function OfferDetailsSectionImpl() {
           </FormItem>
         )}
       />
+
+      {isOther && (
+        <FormField
+          control={control}
+          name="otherFinancingType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base text-primary-gray font-medium">
+                Please specify financing type
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="e.g. Seller financing, private lender..."
+                  className="border border-primary-border-color bg-[#F2F4F6] py-5.5 w-full"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
 
       <FormField
         control={control}

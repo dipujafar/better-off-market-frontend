@@ -17,7 +17,7 @@ export default function SectionTitle({ data }: SectionTitleProps) {
     <div className={cn("flex-between gap-1.5", data.className)}>
       <div className="flex-1">
         <h2 className="2xl:text-[32px] xl:text-[28px] text-xl  font-bold">{data.title}</h2>
-        <p className="md:text-lg text-gray-600">{data.description}</p>
+        <p className="md:text-lg text-[#594139]">{data.description}</p>
       </div>
       {data.isBtn && (
         <Link href={data.btnLink || "#"} >

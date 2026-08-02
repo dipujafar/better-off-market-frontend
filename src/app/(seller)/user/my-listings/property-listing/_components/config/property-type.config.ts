@@ -13,13 +13,14 @@ export interface SelectFieldOption {
 }
 
 export interface SpecField {
-  /** key stored under specifications.<name> */
   name: string;
   label: string;
-  type: "number" | "text" | "select";
+  type: "number" | "text" | "select" | "textarea";
   placeholder?: string;
   options?: SelectFieldOption[];
   className?: string;
+  rows?: number;
+  tooltip?: string; // NEW
 }
 
 export interface SpecRow {
@@ -30,13 +31,26 @@ export interface SpecRow {
 export interface BasicInfoConfig {
   showParcelId: boolean;
   showBuyItNowPrice: boolean;
+  showUtilities: boolean; // NEW
 }
 
 export const BASIC_INFO_CONFIG: Record<PropertyType, BasicInfoConfig> = {
-  Residential: { showParcelId: false, showBuyItNowPrice: true },
-  "Multi-Family": { showParcelId: true, showBuyItNowPrice: false },
-  Commercial: { showParcelId: true, showBuyItNowPrice: false },
-  Land: { showParcelId: true, showBuyItNowPrice: false },
+  Residential: {
+    showParcelId: true,
+    showBuyItNowPrice: false,
+    showUtilities: false,
+  },
+  "Multi-Family": {
+    showParcelId: true,
+    showBuyItNowPrice: false,
+    showUtilities: false,
+  },
+  Commercial: {
+    showParcelId: true,
+    showBuyItNowPrice: false,
+    showUtilities: false,
+  },
+  Land: { showParcelId: true, showBuyItNowPrice: false, showUtilities: true },
 };
 
 const selectOpts = (values: string[]): SelectFieldOption[] =>
@@ -46,9 +60,18 @@ const selectOpts = (values: string[]): SelectFieldOption[] =>
  * Property Specifications section — rows of fields per property type.
  * An empty array hides the whole section for that type.
  */
-export const PROPERTY_SPECIFICATIONS_CONFIG: Record<PropertyType, SpecRow[]> = {
-  Residential: [],
 
+export const PARKING_OPTIONS = selectOpts([
+  "Driveway",
+  "On street",
+  "Carport",
+  "Assigned",
+  "None",
+  "Other",
+]);
+
+
+export const PROPERTY_SPECIFICATIONS_CONFIG: Record<PropertyType, SpecRow[]> = {
   "Multi-Family": [
     {
       fields: [
@@ -157,8 +180,163 @@ export const PROPERTY_SPECIFICATIONS_CONFIG: Record<PropertyType, SpecRow[]> = {
   ],
 
   // Fill these in once you share Commercial / Land field lists
-  Commercial: [],
-  Land: [],
+  Commercial: [
+    {
+      fields: [
+        {
+          name: "totalBuildings",
+          label: "Total # of Buildings",
+          type: "number",
+          placeholder: "1",
+        },
+        {
+          name: "totalUnits",
+          label: "Total # of Units",
+          type: "number",
+          placeholder: "8",
+        },
+        {
+          name: "totalSqFootage",
+          label: "Total Sq. Footage",
+          type: "number",
+          placeholder: "18,500",
+        },
+      ],
+    },
+    {
+      fields: [
+        {
+          name: "lotSize",
+          label: "Lot Size (Acres)",
+          type: "number",
+          placeholder: "0.25",
+        },
+        {
+          name: "yearBuilt",
+          label: "Year Built",
+          type: "number",
+          placeholder: "1995",
+        },
+        {
+          name: "parkingSpace",
+          label: "Parking space",
+          type: "number",
+          placeholder: "30",
+        },
+      ],
+    },
+  ],
+  Land: [
+    {
+      fields: [
+        {
+          name: "lotSize",
+          label: "Lot Size",
+          type: "number",
+          placeholder: "e.g. 5.2",
+          className: "sm:col-span-1 lg:col-span-2",
+        },
+        {
+          name: "totalParcels",
+          label: "Total Parcels",
+          type: "number",
+          placeholder: "e.g. 1",
+          className: "sm:col-span-1 lg:col-span-2",
+        },
+      ],
+    },
+    {
+      fields: [
+        {
+          name: "lotSizeUnit",
+          label: "Lot Size (Acres/Sq Ft)",
+          type: "text",
+          placeholder: "e.g. 5.2 Acres",
+          className: "sm:col-span-1 lg:col-span-2",
+        },
+        {
+          name: "zoning",
+          label: "Zoning",
+          type: "text",
+          placeholder: "Residential",
+          className: "sm:col-span-1 lg:col-span-2",
+        },
+      ],
+    },
+    {
+      fields: [
+        {
+          name: "utilities",
+          label: "Utilities",
+          type: "textarea",
+          rows: 3,
+          placeholder:
+            "Public water, sewer, gas, and electric are located at the street.",
+          className: "sm:col-span-3 lg:col-span-4",
+        },
+      ],
+    },
+  ],
+  Residential: [
+    {
+      fields: [
+        {
+          name: "bedrooms",
+          label: "Bedrooms",
+          type: "number",
+          placeholder: "3",
+        },
+        {
+          name: "fullBaths",
+          label: "Full Baths",
+          type: "number",
+          placeholder: "2",
+        },
+        {
+          name: "halfBaths",
+          label: "Half Baths",
+          type: "number",
+          placeholder: "1",
+        },
+        {
+          name: "sqFootage",
+          label: "Sq. Footage",
+          type: "number",
+          placeholder: "1850",
+          tooltip:
+            "If you are unsure of the property's finished square footage, you can find this on the County Auditor's website.",
+        },
+      ],
+    },
+    {
+      fields: [
+        {
+          name: "lotSize",
+          label: "Lot Size (Acres)",
+          type: "number",
+          placeholder: "0.25",
+        },
+        {
+          name: "yearBuilt",
+          label: "Year Built",
+          type: "number",
+          placeholder: "1995",
+        },
+        {
+          name: "garageSpaces",
+          label: "Garage Spaces",
+          type: "number",
+          placeholder: "2",
+        },
+        {
+          name: "parking",
+          label: "Parking",
+          type: "select",
+          options: PARKING_OPTIONS,
+        },
+      ],
+    },
+  ],
 };
 
 export const ROOF_OPTIONS = selectOpts([
@@ -214,4 +392,6 @@ export const HOA_FREQUENCY_OPTIONS = selectOpts([
   "Quarterly",
   "Annually",
 ]);
+
+export const USE_TYPE_OPTIONS = selectOpts(["Medical", "Others"]);
 export const CLOSING_DATE_OPTIONS = selectOpts(["ASAP", "Specific"]);
