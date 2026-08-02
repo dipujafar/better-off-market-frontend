@@ -29,17 +29,19 @@ export function CounterOfferActionBar({
         className,
       )}
     >
-      <button
-        type="button"
-        onClick={onAcceptCounter}
-        disabled={isSubmitting}
-        className={cn(
-          baseButton,
-          "bg-[#0D6F3A] rounded-md text-white hover:bg-emerald-700 flex-1 cursor-pointer",
-        )}
-      >
-        Accept counter
-      </button>
+      <Link href={"/sign-agreement-contact"} className="block flex-1">
+        <button
+          type="button"
+          onClick={onAcceptCounter}
+          disabled={isSubmitting}
+          className={cn(
+            baseButton,
+            "bg-[#0D6F3A] rounded-md text-white hover:bg-emerald-700 w-full cursor-pointer",
+          )}
+        >
+          Accept counter
+        </button>
+      </Link>
 
       <Link href={"/send-counter-offer"} className="block flex-1">
         <button

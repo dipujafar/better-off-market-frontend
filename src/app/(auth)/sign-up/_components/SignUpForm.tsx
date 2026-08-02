@@ -78,9 +78,9 @@ export default function SignupForm() {
 
       {/* Title and Subtitle */}
       <h1 className="mb-2 text-center lg:text-3xl md:text-2xl text-xl font-bold text-gray-900">
-        Welcome To BetterOffMarket
+       You're in the Right Place
       </h1>
-      <p className="mb-6 text-center">Sign up to your account</p>
+      <p className="mb-6 text-center">Create a free account for full access</p>
 
       {/* Error Message */}
       {error && (

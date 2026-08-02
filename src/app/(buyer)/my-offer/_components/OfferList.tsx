@@ -12,8 +12,10 @@ interface Offer {
   submittedDate: string;
   offerAmount: number;
   status: "pending" | "counter-offer" | "accepted" | "rejected";
-  actions: string[];
-  link?: string;
+  actions: {
+    label: string;
+    href?: string;
+  }[];
 }
 
 const offers: Offer[] = [
@@ -25,7 +27,14 @@ const offers: Offer[] = [
     submittedDate: "Jun 9, 2026",
     offerAmount: 168000,
     status: "pending",
-    actions: ["Edit", "Withdraw"],
+    actions: [
+      {
+        label: "Edit",
+        href: "/submit-offer?edit=true",
+      },
+
+      { label: "Withdraw", href: "#" },
+    ],
   },
   {
     id: "2",
@@ -35,8 +44,12 @@ const offers: Offer[] = [
     submittedDate: "Jun 9, 2026",
     offerAmount: 168000,
     status: "counter-offer",
-    actions: ["Review Counter"],
-    link: "/review-counter-offer",
+    actions: [
+      {
+        label: "Review Counter",
+        href: "/review-counter-offer",
+      },
+    ],
   },
   {
     id: "3",
@@ -46,7 +59,12 @@ const offers: Offer[] = [
     submittedDate: "Jun 9, 2026",
     offerAmount: 168000,
     status: "accepted",
-    actions: ["Sign Agreement"],
+    actions: [
+      {
+        label: "Message Seller",
+        href: "/message",
+      },
+    ],
   },
   {
     id: "4",
@@ -56,8 +74,12 @@ const offers: Offer[] = [
     submittedDate: "Jun 5, 2026",
     offerAmount: 19500,
     status: "rejected",
-    actions: ["View Details"],
-    link: "/review-counter-offer",
+    actions: [
+      {
+        label: "View Details",
+        href: "/review-counter-offer",
+      },
+    ],
   },
 ];
 
@@ -148,23 +170,23 @@ export default function OfferList() {
             <div className="flex flex-col items-end gap-3">
               <div className="flex gap-2">
                 {offer.actions.map((action) => (
-                  <Link key={action} href={offer.link || "#"}>
+                  <Link key={action.label} href={action.href || "#"}>
                     <Button
-                      key={action}
+                      key={action.label}
                       variant={
-                        action === "Review Counter" ||
-                        action === "Sign Agreement"
+                        action.label === "Review Counter" ||
+                        action.label === "Sign Agreement"
                           ? "default"
                           : "outline"
                       }
                       className={
-                        action === "Review Counter" ||
-                        action === "Sign Agreement"
-                          ? "bg-primary-color hover:bg-blue-900 text-white"
-                          : ""
+                        action.label === "Review Counter" ||
+                        action.label === "Sign Agreement"
+                          ? "bg-primary-color hover:bg-blue-900 text-white cursor-pointer px-4 rounded-md"
+                          : "cursor-pointer rounded-md"
                       }
                     >
-                      {action}
+                      {action.label}
                     </Button>
                   </Link>
                 ))}

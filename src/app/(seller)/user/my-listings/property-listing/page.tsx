@@ -6,7 +6,7 @@ export default function PropertyListingPage() {
   const sectionTitleData = {
     title: "Create new listing",
     description:
-      "TProvide detailed information to attract high-quality buyers and investors.",
+      "Provide detailed information to attract high-quality buyers and investors.",
   };
   return (
     <div className="space-y-4">

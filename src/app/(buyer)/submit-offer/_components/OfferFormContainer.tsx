@@ -6,9 +6,11 @@ import { MapPin } from "lucide-react";
 import ImagePreviewer from "@/components/shared/utils/images-previewer";
 import { useState } from "react";
 import OfferPropertyCard from "@/components/shared/card/offer-property-card";
+import { useSearchParams } from "next/navigation";
 
 export default function OfferFormContainer() {
   const [previewImgIndex, setPreviewImgIndex] = useState(-1);
+  const isEdit = useSearchParams().get("edit") === "true";
   async function handleSubmit(
     values: OfferFormValues,
     supportingDocuments: File[],
@@ -29,7 +31,7 @@ export default function OfferFormContainer() {
         <span className="text-sm text-primary-color font-medium flex gap-1 items-center">
           <MapPin size={14} /> Memphis, TN
         </span>
-        <h4 className="md:text-3xl text-2xl font-semibold">Submit an Offer</h4>
+        <h4 className="md:text-3xl text-2xl font-semibold">{ isEdit ? "Edit Offer" : "Submit an Offer" }</h4>
       </div>
       <OfferPropertyCard />
       {/* ========================================================================== */}

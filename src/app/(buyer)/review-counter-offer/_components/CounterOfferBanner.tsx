@@ -35,7 +35,7 @@ export function CounterOfferBanner({
         <h2 className="md:text-2xl text-xl font-semibold text-primary-color">
           {title}
         </h2>
-        <p className="mt-1 md:text-base text-sm text-muted-foreground">
+        <p className="mt-1 md:text-base text-sm text-[#594139]">
           {sellerName} has modified{" "}
           <span className=" text-primary-color">
             {changedSectionCount} section{changedSectionCount === 1 ? "" : "s"}

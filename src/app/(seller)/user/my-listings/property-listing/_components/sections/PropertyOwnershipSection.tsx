@@ -2,7 +2,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
 import { PeopleIcon, PropertyOwnershipIcon } from "@/icons";
-import { CheckIcon, PanelsTopLeftIcon, UploadIcon } from "lucide-react";
+import { CheckIcon, Lock, PanelsTopLeftIcon, UploadIcon } from "lucide-react";
 
 export function PropertyOwnershipSection() {
   const {
@@ -107,13 +107,11 @@ function AssignableContractUpload() {
   return (
     <div className="mt-3 rounded-lg border border-[#DBE1FF33] bg-[#DBE1FF33] p-4">
       <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-primary-black">
-        <PanelsTopLeftIcon className="size-4" />
+        <Lock color="#004AC6"  className="size-4" />
         Attention
       </div>
       <p className="mb-4 text-sm text-gray-600">
-        This document is private and will not be visible to the public. It will
-        only be shared with the buyer after both parties have agreed to the
-        transaction terms.
+       This document will not be publicly visible. It will only be shared with a buyer after both parties agree to the transaction. Buyers can review the document before signing. If desired, you may redact your original purchase price before uploading.
       </p>
 
       <Controller

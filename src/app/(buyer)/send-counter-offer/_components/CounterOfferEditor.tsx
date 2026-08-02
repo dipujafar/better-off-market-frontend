@@ -23,6 +23,7 @@ import { useEditableSections } from "@/hooks/useEditableSections";
 import { SectionKey } from "./counter-offer-helpers";
 import { SummaryCard } from "../../review-offer/_components/SummaryCard";
 import { OfferSummaryDocument } from "../../review-offer/_components/OfferSummary";
+import SellerProfileCard from "@/components/shared/card/seller-profile-card";
 
 export interface CounterOfferEditorProps {
   /** The buyer's original offer — the baseline every "Original: ..." hint and change badge compares against. */
@@ -209,6 +210,8 @@ export function CounterOfferEditor({
               </p>
             </SummaryCard>
           ) : null}
+
+          <SellerProfileCard />
 
           <div className="flex flex-wrap items-center gap-3 lg:hidden">
             <button

@@ -26,6 +26,7 @@ import {
   PDFIcon,
   PersonalPropertyIcon,
 } from "@/icons";
+import SellerProfileCard from "@/components/shared/card/seller-profile-card";
 
 function formatCurrency(amount: number) {
   return amount.toLocaleString("en-US", {
@@ -221,15 +222,17 @@ export function CounterOfferSummary({
             </div>
           </SummaryCard>
 
-          {actions ? (
-            <CounterOfferActionBar
-              onAcceptCounter={actions.onAcceptCounter}
-              onCounterOffer={actions.onCounterOffer}
-              onMessageBuyer={actions.onMessageBuyer}
-              onReject={actions.onReject}
-              isSubmitting={actions.isSubmitting}
-            />
-          ) : null}
+          <div className="hidden lg:block">
+            {actions ? (
+              <CounterOfferActionBar
+                onAcceptCounter={actions.onAcceptCounter}
+                onCounterOffer={actions.onCounterOffer}
+                onMessageBuyer={actions.onMessageBuyer}
+                onReject={actions.onReject}
+                isSubmitting={actions.isSubmitting}
+              />
+            ) : null}
+          </div>
         </div>
 
         {/* Sidebar column */}
@@ -245,8 +248,10 @@ export function CounterOfferSummary({
                       className="flex items-center justify-between gap-3 rounded-lg border border-primary-border-color bg-[#F7F9FB] px-3 py-3 text-sm text-foreground hover:border-primary/50"
                     >
                       <div className="flex gap-2">
-                        <PDFIcon  className="size-5"/>
-                        <span className="truncate font-medium text-primary-black">{doc.name}</span>
+                        <PDFIcon className="size-5" />
+                        <span className="truncate font-medium text-primary-black">
+                          {doc.name}
+                        </span>
                       </div>
                       <Download
                         size={16}
@@ -270,6 +275,20 @@ export function CounterOfferSummary({
               </p>
             </SummaryCard>
           ) : null}
+
+          <SellerProfileCard />
+
+           <div className="lg:hidden">
+            {actions ? (
+              <CounterOfferActionBar
+                onAcceptCounter={actions.onAcceptCounter}
+                onCounterOffer={actions.onCounterOffer}
+                onMessageBuyer={actions.onMessageBuyer}
+                onReject={actions.onReject}
+                isSubmitting={actions.isSubmitting}
+              />
+            ) : null}
+          </div>
 
           {sidebarFooter}
         </div>
