@@ -8,6 +8,7 @@ import {
   ChartNoAxesCombined,
   User,
   Lock,
+  BadgeDollarSign,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -44,6 +45,12 @@ export default function DashboardSidebar() {
       label: "My Listings",
       icon: <HousePlus size={22} />,
       href: "/user/my-listings",
+    },
+    {
+      key: "my-offers ",
+      label: "My Offers",
+      icon: <BadgeDollarSign size={22} />,
+      href: "/user/my-offers",
     },
     {
       key: "offers-received",

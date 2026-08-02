@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, ListFilter, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronDown, DollarSign, ListFilter, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { CountySelector } from "@/components/shared/county_selector/CountySelector";
 import {
@@ -21,13 +21,13 @@ import {
 interface FilterState {
   counties: string[];
   propertyTypes: string[];
-  selectedPrice: string;
+  minPrice: string;
+  maxPrice: string;
   status: string[];
 }
 
-type FilterKey = "propertyTypes" | "price" | "status";
+type FilterKey = "propertyTypes" | "status";
 
-const PRICE_RANGES = ["Any Price", "$0-100k", "100k-200k", "200k-300k", "300k+"];
 const PROPERTY_TYPES = ["Any Type", "Residential", "Multi-Family", "Commercial", "Land"];
 const STATUS_OPTIONS = ["Active", "Under Contract"];
 
@@ -39,7 +39,8 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
   const [filters, setFilters] = useState<FilterState>({
     counties: [],
     propertyTypes: ["Any Type"],
-    selectedPrice: "Any Price",
+    minPrice: "",
+    maxPrice: "",
     status: ["Active"],
   });
 
@@ -84,9 +85,12 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
     });
   };
 
-  const selectPrice = (price: string) => {
-    setFilters((prev) => ({ ...prev, selectedPrice: price }));
-    setOpenDropdown(null);
+  const handleMinPriceChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, minPrice: value }));
+  };
+
+  const handleMaxPriceChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, maxPrice: value }));
   };
 
   const handleApplyFilters = () => {
@@ -107,6 +111,11 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
       : filters.status.length === 1
       ? filters.status[0]
       : `${filters.status.length} selected`;
+
+  const priceSummary =
+    filters.minPrice || filters.maxPrice
+      ? `$${filters.minPrice || "0"} - $${filters.maxPrice || "Any"}`
+      : "Any Price";
 
   // Shared field blocks (used inside the vertical card AND inside the mobile sheet)
   const CountyField = () => (
@@ -174,32 +183,31 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
   const PriceField = () => (
     <div className="mb-6">
       <label className="mb-3 block text-sm font-medium text-[#594139]">
-        Price
+        Price range
       </label>
-      <div className="flex flex-wrap gap-2">
-        {PRICE_RANGES.map((range, index) => {
-          const selected = filters.selectedPrice === range;
-          return (
-            <motion.button
-              key={range}
-              type="button"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                backgroundColor: selected ? "#00214C" : "#f3f4f6",
-                color: selected ? "#ffffff" : "#374151",
-              }}
-              transition={{ delay: index * 0.03, duration: 0.15 }}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => selectPrice(range)}
-              className="rounded-full text-primary-black px-4 py-2 text-sm font-medium cursor-pointer"
-            >
-              {range}
-            </motion.button>
-          );
-        })}
+      <div className="space-y-3">
+        <div className="relative">
+          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-gray" />
+          <input
+            type="number"
+            inputMode="numeric"
+            value={filters.minPrice}
+            onChange={(e) => handleMinPriceChange(e.target.value)}
+            placeholder="Min Price"
+            className="w-full rounded-lg bg-[#F2F4F6] py-2.5 pl-9 pr-3 text-sm text-primary-black placeholder:text-primary-gray focus:outline-none focus:ring-2 focus:ring-primary-color/20 border border-[#E2BFB54D] "
+          />
+        </div>
+        <div className="relative">
+          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-gray" />
+          <input
+            type="number"
+            inputMode="numeric"
+            value={filters.maxPrice}
+            onChange={(e) => handleMaxPriceChange(e.target.value)}
+            placeholder="Max Price"
+            className="w-full rounded-lg bg-[#F2F4F6] py-2.5 pl-9 pr-3 text-sm text-primary-black placeholder:text-primary-gray focus:outline-none focus:ring-2 focus:ring-primary-color/20 border border-[#E2BFB54D]"
+          />
+        </div>
       </div>
     </div>
   );
@@ -403,55 +411,32 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
             {/* Price */}
             <div className="relative flex-1 min-w-0">
               <label className="mb-2 block text-xs font-semibold text-text-primary-gray uppercase tracking-wider">
-                Price
+                Price range
               </label>
-              <button
-                type="button"
-                onClick={() =>
-                  setOpenDropdown((prev) => (prev === "price" ? null : "price"))
-                }
-                className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#F3F4F6] px-4 py-2.5 text-left text-sm font-medium text-primary-black"
-              >
-                <span className="truncate">{filters.selectedPrice}</span>
-                <ChevronDown
-                  size={16}
-                  className={`shrink-0 text-text-primary-gray transition-transform duration-200 ${
-                    openDropdown === "price" ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <AnimatePresence>
-                {openDropdown === "price" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E0E3E5] bg-white p-3 shadow-lg"
-                  >
-                    <div className="space-y-1">
-                      {PRICE_RANGES.map((range) => {
-                        const selected = filters.selectedPrice === range;
-                        return (
-                          <button
-                            key={range}
-                            type="button"
-                            onClick={() => selectPrice(range)}
-                            className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-                              selected
-                                ? "bg-primary-color text-white"
-                                : "text-primary-black hover:bg-[#F3F4F6]"
-                            }`}
-                          >
-                            {range}
-                            {selected && <Check className="h-3.5 w-3.5" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1 min-w-0">
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#565E74]" />
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    value={filters.minPrice}
+                    onChange={(e) => handleMinPriceChange(e.target.value)}
+                    placeholder="Min"
+                    className="w-full rounded-lg bg-[#F3F4F6] py-2.5 pl-8 pr-2 text-sm text-primary-black placeholder:text-[#565E74] focus:outline-none focus:ring-2 focus:ring-[#00214C]/20"
+                  />
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#565E74]" />
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    value={filters.maxPrice}
+                    onChange={(e) => handleMaxPriceChange(e.target.value)}
+                    placeholder="Max"
+                    className="w-full rounded-lg bg-[#F3F4F6] py-2.5 pl-8 pr-2 text-sm text-primary-black placeholder:text-[#565E74] focus:outline-none focus:ring-2 focus:ring-[#00214C]/20"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Status */}
