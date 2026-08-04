@@ -61,7 +61,7 @@ export default function NavButton({
             </Link>
           </div>
         ) : (
-          <div>
+          <div className="space-x-3">
             <Link href="/login">
               <Button
                 size={"lg"}
@@ -126,8 +126,8 @@ export default function NavButton({
               </div>
             </div>
           ) : (
-            <div>
-              <Link href="/login" onClick={() => setOpen(false)}>
+            <div className="space-y-3">
+              <Link href="/login" onClick={() => setOpen(false)} className="block">
                 <Button
                   size={"lg"}
                   className="bg-[#F3F4F6] hover:bg-[#F3F4F6]/70 text-black font-semibold cursor-pointer px-4 rounded-full w-full"
@@ -135,7 +135,7 @@ export default function NavButton({
                   Login
                 </Button>
               </Link>
-              <Link href="/sign-up" onClick={() => setOpen(false)}>
+              <Link href="/sign-up" onClick={() => setOpen(false)} className="block">
                 <Button
                   size={"lg"}
                   className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full w-full"
