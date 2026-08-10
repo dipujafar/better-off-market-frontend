@@ -5,6 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff, Check } from "lucide-react";
+import { useResetPasswordMutation } from "@/redux/api/authApi";
+import { LoaderIcon } from "@/icons";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { errorModification } from "@/lib/errors/errorModification";
 
 const resetPasswordSchema = z
   .object({
@@ -23,8 +28,8 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 export default function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [resetPass, { isLoading }] = useResetPasswordMutation();
+  const router = useRouter();
 
   const formResolver = zodResolver(resetPasswordSchema as any);
 
@@ -39,26 +44,24 @@ export default function ResetPasswordForm() {
   });
 
   const onSubmit = async (data: ResetPasswordFormValues) => {
-    setIsLoading(true);
+    const formattedData = {
+      newPassword: data.password,
+      confirmPassword: data.confirmPassword,
+    };
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setSuccessMessage(
-        "Password has been reset successfully! Redirecting to login...",
-      );
+      const res = await resetPass(formattedData).unwrap();
+      sessionStorage.removeItem("resetPasswordToken");
+      toast.success("Successfully reset your password! Please login.");
+      router.replace("/login");
       reset();
-      setTimeout(() => {
-        // Redirect to login page
-        window.location.href = "/login";
-      }, 2000);
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
     }
   };
 
-  
   return (
     <div className="w-full xl:max-w-4xl md:max-w-xl mx-auto rounded-2xl bg-white p-8 shadow-2xl">
-      
       {/* Header */}
       <h1 className="mb-2 text-center lg:text-3xl md:text-2xl text-xl font-bold text-gray-900">
         Reset Password
@@ -72,14 +75,14 @@ export default function ResetPasswordForm() {
         {/* Set Password */}
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-900">
-             Password
+            Password
           </label>
           <div className="relative">
             <input
               {...register("password")}
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
-               className="w-full rounded-lg border border-[#3D3D3D] px-4 py-2.5 text-gray-900 placeholder-gray-400 transition focus:border-[#3D3D3D] focus:outline-none focus:ring-1 focus:ring-gray-400"
+              className="w-full rounded-lg border border-[#3D3D3D] px-4 py-2.5 text-gray-900 placeholder-gray-400 transition focus:border-[#3D3D3D] focus:outline-none focus:ring-1 focus:ring-gray-400"
             />
             <button
               type="button"
@@ -137,7 +140,14 @@ export default function ResetPasswordForm() {
           disabled={isLoading}
           className="w-full rounded-lg bg-gray-900 py-2.5 font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Resetting password..." : "Reset password"}
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <LoaderIcon className="-ml-1 mr-3" />
+              <span className="sr-only">Resetting password...</span>
+            </span>
+          ) : (
+            "Reset password"
+          )}
         </button>
       </form>
     </div>

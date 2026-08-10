@@ -1,13 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { LoaderIcon } from "@/icons";
+import { errorModification } from "@/lib/errors/errorModification";
+import { useVerifyOtpMutation } from "@/redux/api/authApi";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function VerifyOTpForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [codeInputs, setCodeInputs] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const router = useRouter();
+  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
 
   const handleInputChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -47,17 +51,58 @@ export default function VerifyOTpForm() {
       return;
     }
 
-    setIsLoading(true);
-    router.push("/reset-password");
+    const signUpToken = sessionStorage.getItem("signUpToken");
+
+    // router.push("/reset-password");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setCodeInputs(["", "", "", "", "", ""]);
-      setError("");
-    } finally {
-      setIsLoading(false);
+      const res = await verifyOtp({
+        otp: fullCode,
+      }).unwrap();
+      if (signUpToken) {
+        sessionStorage.removeItem("signUpToken");
+        router.replace("/login");
+        setCodeInputs(["", "", "", "", "", ""]);
+        setError("");
+        return;
+      }
+
+      if (res?.data?.token) {
+        sessionStorage.removeItem("forgotPasswordToken");
+        sessionStorage.setItem("resetPasswordToken", res?.data?.token);
+        router.replace("/reset-password");
+        setCodeInputs(["", "", "", "", "", ""]);
+        setError("");
+      }
+    } catch (error) {
+      const err = errorModification(error);
+      toast.error(err);
+      setError(err);
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (!pasted) return;
+
+    const newInputs = [...codeInputs];
+    for (let i = 0; i < 6; i++) {
+      newInputs[i] = pasted[i] || "";
+    }
+    setCodeInputs(newInputs);
+    setError("");
+
+    // focus the next empty box, or the last box if all filled
+    const nextIndex = pasted.length < 6 ? pasted.length : 5;
+    const nextInput = document.getElementById(
+      `code-${nextIndex}`,
+    ) as HTMLInputElement;
+    nextInput?.focus();
+  };
 
   return (
     <div className="w-full xl:max-w-4xl md:max-w-xl mx-auto rounded-2xl bg-white p-8 shadow-xl">
@@ -81,7 +126,7 @@ export default function VerifyOTpForm() {
                 value={value}
                 onChange={(e) => handleInputChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-             
+                onPaste={handlePaste}
                 className="size-14 rounded-full border border-primary-black text-center text-xl font-semibold transition-colors focus:border-primary-black focus:outline-none hover:border-gray-400"
               />
             ))}
@@ -96,26 +141,13 @@ export default function VerifyOTpForm() {
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
-              <svg
-                className="h-5 w-5 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
+              <LoaderIcon className="-ml-1 mr-3" />
               Verifying...
             </span>
           ) : (
             "Verify Code"
           )}
         </button>
-
       </form>
     </div>
   );

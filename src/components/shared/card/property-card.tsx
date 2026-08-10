@@ -1,16 +1,16 @@
 import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
-import { IProperty } from "@/types";
+import { IPropertyResponse } from "@/types";
 import Image from "next/image";
 import FavoriteIcon from "../favorite_icon/FavoriteIcon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export function PropertyCard({
-  id,
-  imageUrl,
+  _id,
+  photos,
   timeEstimate,
   originalPrice,
-  price,
+  listingPrice,
   arv,
   address,
   beds,
@@ -19,7 +19,7 @@ export function PropertyCard({
   className,
   savedProperty,
   propertyType,
-}: IProperty & { className?: string; savedProperty?: boolean }) {
+}: IPropertyResponse & { className?: string; savedProperty?: boolean }) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -28,7 +28,7 @@ export function PropertyCard({
 
   return (
     <Link
-      href={`/properties-list/${id}`}
+      href={`/properties-list/${_id}`}
       className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group"
     >
       {/* Image Container */}
@@ -39,8 +39,8 @@ export function PropertyCard({
         )}
       >
         <Image
-          src={imageUrl}
-          alt={address}
+          src={photos?.[0]}
+          alt={"property_image"}
           width={1200}
           height={1200}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -72,7 +72,7 @@ export function PropertyCard({
         )}
 
         {/* Favorite Button */}
-        <FavoriteIcon savedProperty={savedProperty} />
+        <FavoriteIcon id={_id} savedProperty={savedProperty} />
       </div>
 
       {/* Content Container */}
@@ -80,7 +80,7 @@ export function PropertyCard({
         {/* Price */}
         <div className="space-y-1">
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
-            {priceFormatter.format(price)}
+            {priceFormatter.format(listingPrice)}
 
             {arv && (
               <span className={cn("text-primary-gray  font-medium ml-2")}>

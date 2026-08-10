@@ -11,10 +11,15 @@ import Image from "next/image";
 import { useAppDispatch } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { setUser } from "@/redux/features/authSlice";
+import { jwtDecode } from "jwt-decode";
+import { useLoginMutation } from "@/redux/api/authApi";
+import { toast } from "sonner";
+import { errorModification } from "@/lib/errors/errorModification";
+import { LoaderIcon } from "@/icons";
 
 // Zod validation schema
 const loginSchema = z.object({
-  userType: z.enum(["Buyer", "Seller"] as const, "Please select a user type"),
+  // userType: z.enum(["Buyer", "Seller"] as const, "Please select a user type"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(1, "Password is required"),
   rememberMe: z.boolean().default(false),
@@ -23,11 +28,11 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
   const route = useRouter();
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -36,7 +41,7 @@ export default function LoginForm() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema as any),
     defaultValues: {
-      userType: "Buyer",
+      // userType: "Buyer",
       email: "",
       password: "",
       rememberMe: false,
@@ -44,25 +49,22 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError(null);
     try {
-      // Simulate API call
-      console.log("Form submitted:", data);
+      const res = await login(data).unwrap();
+
       dispatch(
         setUser({
-          // user: jwtDecode(res?.data?.accessToken),
-          // token: res?.data?.accessToken,
-          user: data,
-          token: "token",
+          user: jwtDecode(res?.data?.accessToken),
+          token: res?.data?.accessToken,
         }),
       );
+      toast.success("Login successful!");
       route.push("/user/dashboard");
-      // Add your sign-in logic here
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+      setError(null);
+    } catch (err: any) {
+      const error = errorModification(err);
+      toast.error(error);
+      setError(error);
     }
   };
 
@@ -85,7 +87,7 @@ export default function LoginForm() {
 
       {/* Title and Subtitle */}
       <h1 className="mb-2 text-center lg:text-3xl md:text-2xl text-xl font-bold text-gray-900">
-       Welcome Back
+        Welcome Back
       </h1>
       <p className="mb-6 text-center">Sign in to your account</p>
 
@@ -230,7 +232,14 @@ export default function LoginForm() {
           disabled={isLoading}
           className="w-full rounded-lg bg-[#2A2A2A] cursor-pointer px-4 py-2.5 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Signing in..." : "Sign In"}
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <LoaderIcon className="-ml-1 mr-3" />
+              <span>Signing in...</span>
+            </span>
+          ) : (
+            "Sign In"
+          )}
         </button>
       </form>
     </div>

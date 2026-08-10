@@ -16,15 +16,18 @@ import { HoaInformationSection } from "./sections/HoaInformationSection";
 import { ClosingPreferencesSection } from "./sections/ClosingPreferencesSection";
 import { PropertyPhotosSection } from "./sections/PropertyPhotosSection";
 import { DocumentsSection } from "./sections/DocumentsSection";
+import { LoaderIcon } from "@/icons";
 
 interface PropertyListingFormProps {
   defaultValues?: Partial<PropertyListingFormValues>;
-  onSubmit: (values: PropertyListingFormValues) => Promise<void> | void;
+  onSubmit: (values: PropertyListingFormValues) => Promise<boolean | void>;
+  onError?: (errors: any) => void;
 }
 
 export function PropertyListingForm({
   defaultValues,
   onSubmit,
+  onError,
 }: PropertyListingFormProps) {
   const methods = useForm<PropertyListingFormValues>({
     // @ts-ignore
@@ -47,10 +50,17 @@ export function PropertyListingForm({
     formState: { isSubmitting },
   } = methods;
 
+  const handleFormSubmit = async (values: PropertyListingFormValues) => {
+    const success = await onSubmit(values);
+    if (success) {
+      reset();
+    }
+  };
+
   return (
     <FormProvider {...methods}>
       {/* @ts-ignore */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(handleFormSubmit, onError)} className="space-y-6">
         <PropertyTypeSection />
         <PropertyOwnershipSection />
         <BasicInformationSection />
@@ -74,7 +84,16 @@ export function PropertyListingForm({
             disabled={isSubmitting}
             className="bg-primary-color hover:bg-primary-color/90 cursor-pointer px-8 py-5 text-sm font-semibold"
           >
-            {isSubmitting ? "Publishing..." : "Publish Listing Now"}
+            {isSubmitting ? (
+              <div className="flex">
+                <span className="mr-2 mt-1">
+                  <LoaderIcon />
+                </span>
+                <span>Publishing...</span>
+              </div>
+            ) : (
+              "Publish Listing Now"
+            )}
           </Button>
         </div>
       </form>

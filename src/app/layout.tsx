@@ -5,7 +5,7 @@ import "yet-another-react-lightbox/styles.css";
 import Providers from "@/lib/provider/Provider";
 import "react-pagination-bar/dist/index.css";
 import NextTopLoader from "nextjs-toploader";
-// import CustomCursor from "@/components/shared/Customcursor";
+import { Toaster } from "sonner";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
@@ -54,6 +54,7 @@ export default function RootLayout({
               zIndex={1600}
               showAtBottom={false}
             />
+            <Toaster richColors position="top-center" />
           </Providers>
         </main>
       </body>

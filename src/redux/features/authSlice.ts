@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 const initialState = {
   user: null,
   token: null,
+  refreshToken: null,
 };
 
 const authSlice = createSlice({
@@ -12,7 +13,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { user, token } = action.payload;
+      const { user, token, refreshToken } = action.payload;
 
       state.user = user;
       state.token = token;
@@ -22,6 +23,10 @@ const authSlice = createSlice({
         path: "/",
         expires: 7,
       });
+
+      Cookies.set("refreshToken", refreshToken, {
+        
+      })
     },
 
     logout: (state) => {
@@ -30,6 +35,7 @@ const authSlice = createSlice({
 
       // Remove token from cookie
       Cookies.remove("betteroffmarket-access-token", { path: "/" });
+      Cookies.remove("refreshToken", { path: "/" });
     },
   },
 });

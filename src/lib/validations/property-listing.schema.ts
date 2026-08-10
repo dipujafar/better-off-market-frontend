@@ -43,8 +43,14 @@ export const propertyListingSchema = z
 
     // Property Specifications — dynamic, keyed by SpecField.name
     specifications: z
-      .record(z.string(), z.union([z.string(), z.number()]))
-      .default({}),
+      .record(z.string(), z.union([z.string(), z.number()]).optional())
+      .default({})
+      .transform((obj) => {
+        // drop keys with undefined values so downstream code doesn't have to deal with them
+        return Object.fromEntries(
+          Object.entries(obj).filter(([, v]) => v !== undefined),
+        ) as Record<string, string | number>;
+      }),
 
     // Major Components & Ages
     roofMaterial: z.string().optional(),
@@ -78,7 +84,7 @@ export const propertyListingSchema = z
     closingDate: z.string().min(1, "Closing preference is required"),
 
     // Files
-    photos: z.array(fileSchema).min(5, "Minimum 5 high-res photos required"),
+    photos: z.array(fileSchema).min(5, "At least 5 property photos required"),
     documents: z.array(fileSchema).optional(),
   })
   .superRefine((data, ctx) => {

@@ -12,18 +12,16 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    domains: ["picsum.photos"],
+    domains: [
+      "picsum.photos",
+      "nazmulhasan.s3.us-east-1.amazonaws.com",
+      "your-bucket.s3.amazonaws.com",
+    ],
   },
 
-  // Ignore TypeScript errors during build
   typescript: {
     ignoreBuildErrors: true,
   },
-
-  // Ignore ESLint errors during build
-  // eslint: {
-  //   ignoreDuringBuilds: true,
-  // },
 };
 
 export default nextConfig;

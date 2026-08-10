@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const GlobeIcon = ({ className }: { className?: string }) => {
   return (
     <svg
@@ -636,6 +638,31 @@ export const PropertySpecificationsIcon = ({
         d="M0 18V4H4V0H14V8H18V18H10V14H8V18H0ZM2 16H4V14H2V16ZM2 12H4V10H2V12ZM2 8H4V6H2V8ZM6 12H8V10H6V12ZM6 8H8V6H6V8ZM6 4H8V2H6V4ZM10 12H12V10H10V12ZM10 8H12V6H10V8ZM10 4H12V2H10V4ZM14 16H16V14H14V16ZM14 12H16V10H14V12Z"
         fill="#004AC6"
       />
+    </svg>
+  );
+};
+
+export const LoaderIcon = ({ className }: { className?: string }) => {
+  return (
+    <svg
+      className={cn("animate-spin  h-5 w-5 text-white", className)}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
     </svg>
   );
 };

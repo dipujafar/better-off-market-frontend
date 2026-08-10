@@ -2,7 +2,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
 import { DocIcon } from "@/icons";
-import { CheckCircleIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { CheckCircleIcon, PlusIcon, Trash2Icon, TrashIcon } from "lucide-react";
 
 const formatFileSize = (bytes: number) => `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 
@@ -68,9 +68,9 @@ export function DocumentsSection() {
                     <button
                       type="button"
                       onClick={() => removeFile(index)}
-                      className="text-gray-400 hover:text-red-500"
+                      className="text-red-500 hover:text-red-700 cursor-pointer duration-300   transform-active:scale-95 "
                     >
-                      <TrashIcon className="size-4" />
+                      <Trash2Icon className="size-4" />
                     </button>
                   </div>
                 ))}
