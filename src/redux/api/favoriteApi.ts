@@ -1,3 +1,4 @@
+import { tagTypes } from "../tagTypes";
 import { baseApi } from "./baseApi";
 
 const favoriteApi = baseApi.injectEndpoints({
@@ -8,8 +9,24 @@ const favoriteApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [tagTypes.favorites],
+    }),
+    getFavorites: builder.query({
+      query: (params) => ({
+        url: "/favorites",
+        method: "GET",
+        params,
+      }),
+      providesTags: [tagTypes.favorites],
+    }),
+    deleteFavorite: builder.mutation({
+      query: (id) => ({
+        url: `/favorites/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.favorites],
     }),
   }),
 });
 
-export const { useCreateFavoriteMutation } = favoriteApi;
+export const { useCreateFavoriteMutation, useGetFavoritesQuery, useDeleteFavoriteMutation } = favoriteApi;

@@ -9,11 +9,17 @@ import { LocationMap } from "./LocationMap";
 import { OpenHouse } from "./OpenHouse";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import AuthenticationRequired from "./AuthenticationRequired";
+import { IPropertyResponse } from "@/types";
 
-export default function PropertyContainer() {
+export default function PropertyContainer({
+  property,
+}: {
+  property: IPropertyResponse;
+}) {
   return (
     <Container className="mt-12">
-      <PropertyImages />
+      <PropertyImages propertyImages={property?.photos} propertyType={property?.propertyType} />
       <div className="grid lg:grid-cols-6 gap-6 mt-4">
         <div className="lg:col-span-4 space-y-6">
           <PropertyListing
@@ -39,25 +45,8 @@ export default function PropertyContainer() {
           </Link>
         </div>
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
-          <ActionBtns />
-          <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1 w-full">
-            <p className="text-sm font-medium text-primary-gray">
-              You need a free account to submit offers or message sellers.{" "}
-              <Link
-                href="/sign-up"
-                className="text-[#1F4E8B] hover:underline font-semibold"
-              >
-                Sign up free
-              </Link>{" "}
-              or{" "}
-              <Link
-                href="/login"
-                className="text-[#1F4E8B] hover:underline font-semibold"
-              >
-                log in
-              </Link>
-            </p>
-          </div>
+          <ActionBtns id={property?._id} />
+          <AuthenticationRequired />
           <OpenHouse />
 
           <ProfileCard

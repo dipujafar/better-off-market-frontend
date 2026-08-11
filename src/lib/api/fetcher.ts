@@ -16,15 +16,16 @@ interface ApiGetOptions {
   revalidate?: number | false;
   tags?: string[];
   timeoutMs?: number;
+  withAuth?: boolean;
 }
 
 export async function apiGet<T>(
   endpoint: string,
   options: ApiGetOptions = {},
 ): Promise<T | null> {
-  const { params, revalidate = 60, tags = [], timeoutMs = 15000 } = options;
+  const { params, tags = [], timeoutMs = 15000, withAuth = true } = options;
 
-  const token = await getServerToken();
+  const token = withAuth ? await getServerToken() : undefined;
   const queryString = buildQueryString(params);
   const url = `${envConfig.baseUrl}${endpoint}${queryString}`;
 

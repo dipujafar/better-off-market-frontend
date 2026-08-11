@@ -1,11 +1,14 @@
 import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
 import { IPropertyResponse } from "@/types";
+import Image from "next/image";
 import FavoriteIcon from "../favorite_icon/FavoriteIcon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { skeletonDataURL } from "@/components/skeleton/image-loading";
+import moment from "moment";
 import ImageWithFallback from "../image/ImageWithFallback";
 
-export function PropertyCard({
+export function SavePropertyCard({
   _id,
   photos,
   timeEstimate,
@@ -13,10 +16,13 @@ export function PropertyCard({
   listingPrice,
   arv,
   streetAddress,
+  city,
   beds,
   baths,
   sqft,
   className,
+  createdAt,
+  status,
   propertyType,
 }: IPropertyResponse & { className?: string }) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
@@ -56,16 +62,15 @@ export function PropertyCard({
         </div>
 
         {/* Time Badge */}
-        {originalPrice && (
+        {status && (
           <div
             className={cn(
               "absolute top-3 left-3 bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
               timeEstimate && "left-18",
             )}
           >
-            ↓{" "}
-            <span className="ml-0.5">
-              {priceFormatter.format(originalPrice)}
+            <span className="ml-0.5 capitalize">
+              {status?.charAt(0).toUpperCase() + status?.slice(1)}
             </span>
           </div>
         )}
@@ -76,6 +81,11 @@ export function PropertyCard({
 
       {/* Content Container */}
       <div className="xl:p-6  p-4 space-y-1">
+        {/* Date */}
+        <p className="text-sm font-medium text-primary-color line-clamp-1">
+          Saved on {moment(createdAt).format("MMM DD, YYYY")}
+        </p>
+
         {/* Price */}
         <div className="space-y-1">
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
@@ -97,7 +107,7 @@ export function PropertyCard({
 
         {/* Address */}
         <h3 className="xl:text-xl text-lg font-semibold text-primary-black line-clamp-1">
-          {streetAddress}
+          {city}, {streetAddress}
         </h3>
 
         {/* Property Details */}

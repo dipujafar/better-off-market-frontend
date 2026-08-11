@@ -11,7 +11,15 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.property],
     }),
+    getProperties: build.query({
+      query: (params) => ({
+        url: "/properties",
+        method: "GET",
+        params,
+      }),
+      providesTags: [tagTypes.property],
+    }),
   }),
 });
 
-export const { useCreatePropertyMutation } = propertyApi;
+export const { useCreatePropertyMutation, useGetPropertiesQuery } = propertyApi;

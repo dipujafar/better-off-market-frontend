@@ -1,9 +1,13 @@
 export interface IApiResponse<T> {
     data: T;
-    meta?: {
+    meta: {
        limit: number;
        page: number;
        total: number;
        totalPage: number;
     };
+}
+
+export interface IApiSingleDataResponse<T> {
+    data: T;
 }

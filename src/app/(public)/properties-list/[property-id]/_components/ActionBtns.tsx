@@ -1,10 +1,14 @@
 "use client";
 
+import FavoriteIcon from "@/components/shared/favorite_icon/FavoriteIcon";
 import Share from "@/components/utils/share";
-import { Eye, Heart, Share2 } from "lucide-react";
+import { Eye, Share2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export function ActionBtns() {
+export function ActionBtns({ id }: { id: string }) {
+  const pathName = usePathname();
+  console.log(pathName);
   return (
     <div className="w-full max-w-md mx-auto rounded-lg bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] border border-[#FAEEEA] space-y-4">
       <h2 className="lg:text-2xl text-xl font-bold text-black">
@@ -28,7 +32,7 @@ export function ActionBtns() {
       <div className="flex gap-2.5">
         <div className="flex-1">
           {/* Share This Listing button */}
-          <Share title="property-details" link="/properties-list/1">
+          <Share title="property-details" link={pathName}>
             <button className="w-full border-2 border-primary-gray hover:border-gray-400 hover:bg-gray-50 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 duration-500 cursor-pointer">
               <Share2 size={20} />
               Share
@@ -37,13 +41,8 @@ export function ActionBtns() {
         </div>
 
         {/* Save property button */}
-        <button className="w-full flex-1  border-2 border-primary-gray hover:border-gray-400  text-gray-900 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 duration-500 cursor-pointer hover:bg-red-500 hover:border-none group hover:text-white">
-          <Heart
-            size={20}
-            className="group-hover:text-white group-hover:fill-white duration-500 transition-colors"
-          />
-          Save
-        </button>
+
+        <FavoriteIcon id={id} isBtnType={true} />
       </div>
 
       <div className="flex gap-1.5 justify-center">

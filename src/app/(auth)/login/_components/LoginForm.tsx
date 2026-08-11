@@ -9,7 +9,7 @@ import Link from "next/link";
 import logo from "@/assets/images/logo_blue.png";
 import Image from "next/image";
 import { useAppDispatch } from "@/redux/hooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { setUser } from "@/redux/features/authSlice";
 import { jwtDecode } from "jwt-decode";
 import { useLoginMutation } from "@/redux/api/authApi";
@@ -31,8 +31,10 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
-  const route = useRouter();
+  const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
+
+  const callbackUrl = useSearchParams().get("callbackUrl");
 
   const {
     register,
@@ -59,7 +61,8 @@ export default function LoginForm() {
         }),
       );
       toast.success("Login successful!");
-      route.push("/user/dashboard");
+      if (callbackUrl) router.replace(callbackUrl);
+      else router.push("/user/dashboard");
       setError(null);
     } catch (err: any) {
       const error = errorModification(err);

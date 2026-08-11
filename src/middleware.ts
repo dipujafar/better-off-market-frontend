@@ -11,7 +11,12 @@ export default function middleware(req: any) {
   }
 
   if (!isLoggedIn && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const signInUrl = new URL("/login", req.url);
+    signInUrl.searchParams.set(
+      "callbackUrl",
+      nextUrl.pathname + nextUrl.search,
+    );
+    return NextResponse.redirect(signInUrl);
   }
 }
 

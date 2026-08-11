@@ -127,3 +127,13 @@ export interface IPropertyResponse {
   createdAt?: string;
   updatedAt?: string;
 }
+
+
+
+export interface ISavePropertiesResponse{
+  _id: string;
+  user: string;
+  property: IPropertyResponse;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,8 +1,7 @@
 import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import FilterOptions from "@/components/shared/utils/FilterOptions";
-import React from "react";
-import { PropertiesSortBar } from "./_components/PropertiesSortBar";
+import PropertyCardSkeleton from "@/components/skeleton/PropertyCardSkeleton";
 
 export default function loading() {
   const bannerData = {
@@ -18,15 +17,12 @@ export default function loading() {
         <div>
           <FilterOptions />
         </div>
-        <div className="lg:col-span-2 xl:col-span-3 bg-red-500">
-          {/* <PropertiesSortBar total={properties.length} /> */}
-          {/* <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-4">
-            {result?.data?.map((property, index) => (
-              <PropertyCard key={index} {...property} className="xl:h-56" />
+        <div className="lg:col-span-2 xl:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  xl:gap-6 gap-4">
+            {Array.from({ length: 9 }).map((_, index) => (
+              <PropertyCardSkeleton key={index} />
             ))}
           </div>
-          <PaginationSection total={result.meta?.total!} current={1} /> */}
-          loading .....
         </div>
       </Container>
     </div>
