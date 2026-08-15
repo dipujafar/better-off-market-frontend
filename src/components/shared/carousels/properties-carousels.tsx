@@ -6,14 +6,13 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 import { PropertyCard } from "../card/property-card";
-import { IProperty } from "@/types";
+import { IPropertyResponse } from "@/types";
 
 const PreviewPropertyCarousel = ({
   propertiesData,
 }: {
-  propertiesData: IProperty[];
+  propertiesData: IPropertyResponse[];
 }) => {
   return (
     <Carousel
@@ -22,22 +21,12 @@ const PreviewPropertyCarousel = ({
         duration: 60,
         align: "start",
       }}
-      plugins={[
-        // Autoplay({
-        //   delay: 4000,
-        //   stopOnInteraction: false,
-        //   stopOnMouseEnter: true,
-        // }),
-      ]}
       className="relative "
     >
-      <CarouselContent>
+      <CarouselContent key={Math.random()}>
         {propertiesData?.slice(0, 8)?.map((data) => (
-          <CarouselItem
-            key={data?.id}
-            className=" md:basis-1/2 xl:basis-1/3"
-          >
-            <PropertyCard {...data} />
+          <CarouselItem key={data?._id} className=" md:basis-1/2 xl:basis-1/3">
+            <PropertyCard {...data} propertiesSpecificationsClassName="text-base" />
           </CarouselItem>
         ))}
       </CarouselContent>

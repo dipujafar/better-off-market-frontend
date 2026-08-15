@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { Camera, SquarePen } from "lucide-react";
+import { useGetMyProfileQuery } from "@/redux/api/profileApi";
 
 // Zod validation schema
 const profileSchema = z.object({
@@ -49,6 +50,9 @@ export default function ProfileEditForm({
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { data } = useGetMyProfileQuery(undefined);
+  const profile = data?.data; 
+
   const {
     register,
     handleSubmit,
@@ -56,7 +60,9 @@ export default function ProfileEditForm({
     reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema as any),
-    defaultValues: defaultData as ProfileFormData,
+    defaultValues: {
+      
+    },
   });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +149,9 @@ export default function ProfileEditForm({
           />
         </div>
         <div>
-          <h2 className="text-3xl font-semibold text-primary-black">{fullName}</h2>
+          <h2 className="text-3xl font-semibold text-primary-black">
+            {fullName}
+          </h2>
         </div>
       </div>
 

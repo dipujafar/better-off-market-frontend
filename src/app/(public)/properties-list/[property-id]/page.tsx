@@ -43,7 +43,8 @@ export async function generateMetadata({
     };
   }
 
-  const { city, marketingDescription, streetAddress, listingPrice, photos } = property?.data;
+  const { city, marketingDescription, streetAddress, listingPrice, photos } =
+    property?.data;
 
   const metaTitle = `${city}, ${streetAddress}`;
   const metaDescription =
@@ -70,7 +71,7 @@ export async function generateMetadata({
 
 export default async function PropertyDetailsPage({ params }: PageProps) {
   const { "property-id": propertyId } = await params;
-  const property = await getProperty(propertyId); // deduped — no extra network call
+  const property = await getProperty(propertyId); 
 
   return (
     <div>

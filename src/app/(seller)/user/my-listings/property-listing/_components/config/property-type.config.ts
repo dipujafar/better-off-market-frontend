@@ -249,7 +249,7 @@ export const PROPERTY_SPECIFICATIONS_CONFIG: Record<PropertyType, SpecRow[]> = {
       fields: [
         {
           name: "lotSizeUnit",
-          label: "Lot Size (Acres/Sq Ft)",
+          label: "Lot Size (Acres)",
           type: "text",
           placeholder: "e.g. 5.2 Acres",
           className: "sm:col-span-1 lg:col-span-2",

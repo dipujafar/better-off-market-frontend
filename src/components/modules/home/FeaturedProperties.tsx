@@ -4,11 +4,7 @@ import PropertyCardSkeleton from "@/components/skeleton/PropertyCardSkeleton";
 import Empty from "@/components/ui/empty-data";
 import { useGetPropertiesQuery } from "@/redux/api/propertiesApi";
 
-export default function FeaturedProperties({
-  featuredType,
-}: {
-  featuredType?: string;
-}) {
+export default function FeaturedProperties() {
   const queries: Record<string, string | number> = {};
   const { data: properties, isLoading } = useGetPropertiesQuery(queries);
 

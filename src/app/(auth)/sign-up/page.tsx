@@ -15,7 +15,7 @@ export default function page() {
       <div className="hidden md:block">
         <HeroBanner data={bannerData} />
       </div>
-      <div className="md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full mx-auto">
+      <div className="md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-full mx-auto z-50">
         <SignupForm />
       </div>
     </div>

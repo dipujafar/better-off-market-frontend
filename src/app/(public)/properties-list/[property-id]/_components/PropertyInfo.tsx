@@ -1,5 +1,6 @@
 import { PropertySpecificationsIcon } from "@/icons";
 import { HomeIcon, ClosingPreferencesIcon, MajorComponentsIcon } from "@/icons";
+import { IPropertyResponse } from "@/types";
 
 interface SpecItem {
   label: string;
@@ -8,6 +9,7 @@ interface SpecItem {
 }
 
 interface PropertyInfoProps {
+  property: IPropertyResponse;
   propertySpecsLeft?: SpecItem[];
   propertySpecsRight?: SpecItem[];
   components?: SpecItem[];
@@ -51,6 +53,7 @@ function SpecRow({ label, value, note }: SpecItem) {
 }
 
 export function PropertyInfo({
+  property,
   propertySpecsLeft = [
     { label: "Bedroom", value: "3" },
     { label: "Full Baths", value: "2" },

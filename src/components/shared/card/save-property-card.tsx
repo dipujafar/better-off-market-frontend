@@ -1,10 +1,8 @@
 import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
 import { IPropertyResponse } from "@/types";
-import Image from "next/image";
 import FavoriteIcon from "../favorite_icon/FavoriteIcon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { skeletonDataURL } from "@/components/skeleton/image-loading";
 import moment from "moment";
 import ImageWithFallback from "../image/ImageWithFallback";
 

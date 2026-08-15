@@ -1,7 +1,5 @@
-import PreviewPropertyCarousel from "@/components/shared/carousels/properties-carousels";
 import Container from "@/components/shared/container/Container";
 import SectionTitle from "@/components/shared/titles/SectionTitle";
-import { properties } from "@/data/properties";
 import FeaturedProperties from "./FeaturedProperties";
 
 export default function NewlyAddedSection() {

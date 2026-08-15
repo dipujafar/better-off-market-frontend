@@ -1,4 +1,7 @@
+"use client";
+
 import Container from "@/components/shared/container/Container";
+import { motion } from "motion/react";
 
 export default function HowItWorks() {
   const steps = [
@@ -23,10 +26,16 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="w-full bg-primary-color py-12 px-4 sm:py-16 sm:px-6 lg:py-20 lg:px-8">
+    <section className="w-full bg-primary-color py-12 px-4 sm:py-16 sm:px-6 lg:py-20 lg:px-8 xl:translate-y-24 translate-y-20">
       <Container className="">
         {/* Header */}
-        <div className="mb-10 text-center sm:mb-12 lg:mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-10 text-center sm:mb-12 lg:mb-16"
+        >
           <h2 className="text-[28px] font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
             How it works
           </h2>
@@ -34,7 +43,7 @@ export default function HowItWorks() {
             A streamlined three-step process designed for the modern investor
             and property owner.
           </p>
-        </div>
+        </motion.div>
 
         {/* Steps */}
         <div className="relative">
@@ -43,24 +52,57 @@ export default function HowItWorks() {
             {/* Connecting lines container — only shown at lg+ where the layout is horizontal */}
             <div className="hidden lg:flex absolute top-12 left-0 right-0 items-center justify-between pointer-events-none">
               {/* Left connecting line */}
-              <div className="absolute left-[16.67%] right-[50%] h-px bg-linear-to-r from-slate-700 to-slate-600 top-1/2 transform -translate-y-1/2"></div>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                style={{ originX: 0 }}
+                className="absolute left-[16.67%] right-[50%] h-px bg-linear-to-r from-slate-700 to-slate-600 top-1/2 transform -translate-y-1/2"
+              />
               {/* Right connecting line */}
-              <div className="absolute left-[50%] right-[16.67%] h-px bg-linear-to-r from-slate-600 to-slate-700 top-1/2 transform -translate-y-1/2"></div>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                style={{ originX: 0 }}
+                className="absolute left-[50%] right-[16.67%] h-px bg-linear-to-r from-slate-600 to-slate-700 top-1/2 transform -translate-y-1/2"
+              />
             </div>
 
             {/* Step items */}
             {steps.map((step, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 className="flex-1 flex flex-col items-center w-full max-w-xs lg:max-w-none"
               >
                 {/* Circle with number */}
                 <div className="relative z-10 mb-4 flex items-center justify-center sm:mb-8 lg:mb-12">
-                  <div className="size-16 rounded-full border-2 border-slate-700 bg-[#F7F9FB1A] backdrop-blur-sm flex items-center justify-center shrink-0 sm:size-20 lg:size-24">
+                  <motion.div
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.2 + 0.2,
+                      ease: "backOut",
+                    }}
+                    whileHover={{ scale: 1.08, borderColor: "#22d3ee" }}
+                    className="size-16 rounded-full border-2 border-slate-700 bg-[#F7F9FB1A] backdrop-blur-sm flex items-center justify-center shrink-0 sm:size-20 lg:size-24"
+                  >
                     <span className="text-2xl font-bold text-cyan-400 sm:text-3xl lg:text-4xl">
                       {step.number}
                     </span>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Step content */}
@@ -72,7 +114,7 @@ export default function HowItWorks() {
                     {step.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

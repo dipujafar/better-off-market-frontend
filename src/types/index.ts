@@ -79,9 +79,11 @@ export interface IPropertyResponse {
   parcelIds?: string;
   listingPrice: number;
   buyItNowPrice?: number;
+  oldListingPrice?: number;
   arv?: number;
   marketingDescription: string;
   utilities?: string;
+
 
   // Property Specifications — dynamic, keyed by SpecField.name
   specifications: Record<string, string | number>;

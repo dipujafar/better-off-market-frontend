@@ -11,11 +11,13 @@ export const metadata = {
 
 export default function page() {
   return (
-    <div className="space-y-16">
-      <Navbar variant="colored" className="pt-10" />
-      <Header />
-      <Stats />
-      <MissionSection />
+    <div>
+      <div className="space-y-16">
+        <Navbar variant="colored" className="pt-10" />
+        <Header />
+        <Stats />
+        <MissionSection />
+      </div>
       <HowItWorks />
     </div>
   );

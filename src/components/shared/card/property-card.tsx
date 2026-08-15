@@ -1,9 +1,9 @@
-import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
 import { IPropertyResponse } from "@/types";
 import FavoriteIcon from "../favorite_icon/FavoriteIcon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
+import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 
 export function PropertyCard({
   _id,
@@ -13,17 +13,25 @@ export function PropertyCard({
   listingPrice,
   arv,
   streetAddress,
-  beds,
-  baths,
-  sqft,
+  city,
+  state,
   className,
   propertyType,
-}: IPropertyResponse & { className?: string }) {
+  specifications,
+  propertiesSpecificationsClassName
+}: IPropertyResponse & { className?: string , propertiesSpecificationsClassName?: string}) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
   });
+
+
+
+  // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
+  const propertySpecs = handlePropertiesSpecifications(propertyType, specifications).filter(
+    (spec) => Boolean(spec.value),
+  );
 
   return (
     <Link
@@ -50,12 +58,12 @@ export function PropertyCard({
           {timeEstimate}
         </div>
 
-        {/* Time Badge */}
+        {/* Property Type Badge */}
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
           {propertyType}
         </div>
 
-        {/* Time Badge */}
+        {/* Original Price Badge */}
         {originalPrice && (
           <div
             className={cn(
@@ -96,27 +104,23 @@ export function PropertyCard({
         )}
 
         {/* Address */}
-        <h3 className="xl:text-xl text-lg font-semibold text-primary-black line-clamp-1">
-          {streetAddress}
+        <h3 className="xl:text-lg font-semibold text-primary-black line-clamp-1">
+          {streetAddress}, {city}, {state}
         </h3>
 
         {/* Property Details */}
-        <div className="flex justify-between items-center gap-4 text-gray-700 pt-1">
-          <div className="flex items-center xl:gap-2 gap-1">
-            <BedIcon />
-            <span className=" text-[#594139] font-semibold">{beds} Beds</span>
+        {propertySpecs.length > 0 && (
+          <div className="flex justify-between items-center gap-4 text-gray-700 pt-1">
+            {propertySpecs.map(({ icon: Icon, value, suffix }, index) => (
+              <div key={index} className="flex items-center gap-1 ">
+                {Icon && <Icon size={18} color="#594139" />}
+                <span className={cn("text-[rgb(92,67,58)] text-sm font-semibold line-clamp-1", propertiesSpecificationsClassName)}>
+                  {value} {suffix}
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center xl:gap-2 gap-1">
-            <ShawarIcon />
-            <span className=" text-[#594139] font-semibold">{baths} Bath</span>
-          </div>
-          <div className="flex items-center xl:gap-2 gap-1">
-            <AreaIcon />
-            <span className=" text-[#594139] font-semibold">
-              {(sqft / 1000).toFixed(0)}k sqft
-            </span>
-          </div>
-        </div>
+        )}
       </div>
     </Link>
   );
