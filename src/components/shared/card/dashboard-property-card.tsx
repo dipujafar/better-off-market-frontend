@@ -1,14 +1,19 @@
 "use client";
 import { Eye, Tag, Trash2, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Share from "@/components/utils/share";
 import Link from "next/link";
 import { UpdateListingPriceDialog } from "../dailogs/UpdateListingPriceDialog";
 import { useState } from "react";
 import { ScheduleOpenHouseDialog } from "../dailogs/ScheduleOpenHouseDialog";
+import ImageWithFallback from "../image/ImageWithFallback";
+import { cn } from "@/lib/utils";
+import { useUpdatePropertyMutation } from "@/redux/api/propertiesApi";
+import { errorModification } from "@/lib/errors/errorModification";
+import { toast } from "sonner";
 
 interface PropertyCardProps {
+  id: string;
   image: string;
   type: string;
   location: string;
@@ -17,9 +22,19 @@ interface PropertyCardProps {
   saved: number;
   offers: number;
   rsvp: number;
+  status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
 }
 
+const statusColor = {
+  Active: "bg-[#DCFCE7] text-[#166534]",
+  Pending: "bg-[#FEF3C7] text-[#92400E]",
+  "Under Contact": "bg-[#ECE6F8] text-[#321ABA]",
+  Sold: "bg-[#E5E7EB] text-[#374151]",
+  Rejected: "bg-[#FEEAEA] text-[#BA1A1A]",
+};
+
 export default function DashboardPropertyCard({
+  id,
   image,
   type,
   location,
@@ -28,6 +43,7 @@ export default function DashboardPropertyCard({
   saved,
   offers,
   rsvp,
+  status,
 }: PropertyCardProps) {
   const [open, setOpen] = useState(false);
   const [openHouseOpen, setOpenHouseOpen] = useState(false);
@@ -36,11 +52,21 @@ export default function DashboardPropertyCard({
     <>
       <div className="flex flex-col gap-4 rounded-lg bg-white p-4 shadow-sm sm:flex-row sm:gap-6">
         {/* Image Section */}
-        <Link href="/user/my-listings/1">
+        <Link href={`/user/my-listings/${id}`}>
           <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-lg sm:h-40 sm:w-60">
-            <Image src={image} alt={type} fill className="object-cover" />
-            <div className="absolute left-3 top-3 rounded-full bg-[#DCFCE7] px-3 py-0.5 text-sm font-semibold text-[#166534]">
-              ACTIVE
+            <ImageWithFallback
+              src={image}
+              alt={"property image"}
+              fill
+              className="object-cover"
+            />
+            <div
+              className={cn(
+                "absolute left-3 top-3 rounded-full bg-[#DCFCE7] px-3 py-0.5 text-sm font-semibold text-[#166534]",
+                statusColor[status],
+              )}
+            >
+              {status}
             </div>
           </div>
         </Link>
@@ -60,7 +86,7 @@ export default function DashboardPropertyCard({
                   <span>
                     <MapPin size={16} />
                   </span>
-                  <span>{location}</span>
+                  <span className="line-clamp-1">{location}</span>
                 </div>
               </div>
               <span className="text-base text-primary-color">
@@ -114,7 +140,7 @@ export default function DashboardPropertyCard({
 
             {/* Right Icons */}
             <div className="ml-auto flex items-center gap-2">
-              <Share title="property" link="/properties-list/1" />
+              <Share title="property" link={`/properties-list/${id}`} />
               <button className="rounded p-2 hover:bg-gray-100 cursor-pointer">
                 <Trash2 size={20} className="text-primary-gray" />
               </button>
@@ -127,7 +153,7 @@ export default function DashboardPropertyCard({
         open={open}
         onOpenChange={setOpen}
         currentPrice={price}
-        onUpdate={() => console.log("Price updated")}
+        id={id}
       />
 
       <ScheduleOpenHouseDialog

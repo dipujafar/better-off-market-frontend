@@ -19,15 +19,23 @@ export default function PropertyContainer({
 }) {
   return (
     <Container className="mt-12">
-      <PropertyImages propertyImages={property?.photos} propertyType={property?.propertyType} />
+      <PropertyImages
+        propertyImages={property?.photos}
+        propertyType={property?.propertyType}
+      />
       <div className="grid lg:grid-cols-6 gap-6 mt-4">
         <div className="lg:col-span-4 space-y-6">
-          <PropertyListing
-            property={property}
-          />
+          <PropertyListing property={property} />
           <PropertyInfo property={property} />
-          <Documents />
-          <LocationMap lat={23.811056} lng={90.407608} />
+          {property?.documents?.length ? (
+            <Documents documents={property?.documents} />
+          ) : (
+            ""
+          )}
+          <LocationMap
+            lat={property?.location?.coordinates[1]}
+            lng={property?.location?.coordinates[0]}
+          />
           <Link href={"/properties-list"}>
             <Button className="w-full mt-5 bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-5 px-4 rounded-lg transition-colors cursor-pointer">
               Back listing

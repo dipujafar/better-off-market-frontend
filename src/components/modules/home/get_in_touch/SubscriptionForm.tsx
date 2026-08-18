@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { subscriptionFormSchema, type SubscriptionFormData } from "./schemas";
 
-import { Upload, Loader2, Check, AlertCircle, X } from "lucide-react";
+import { Loader2, Check, AlertCircle } from "lucide-react";
 import { CountySelector } from "@/components/shared/county_selector/CountySelector";
 import { PropertyTypeSelector } from "@/components/shared/property_selector/PropertyTypeSelector";
 

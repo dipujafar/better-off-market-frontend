@@ -1,13 +1,10 @@
+import { IMetaData } from ".";
+
 export interface IApiResponse<T> {
-    data: T;
-    meta: {
-       limit: number;
-       page: number;
-       total: number;
-       totalPage: number;
-    };
+  data: T;
+  meta: IMetaData;
 }
 
 export interface IApiSingleDataResponse<T> {
-    data: T;
+  data: T;
 }

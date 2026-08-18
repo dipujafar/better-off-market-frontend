@@ -17,6 +17,7 @@ import { ClosingPreferencesSection } from "./sections/ClosingPreferencesSection"
 import { PropertyPhotosSection } from "./sections/PropertyPhotosSection";
 import { DocumentsSection } from "./sections/DocumentsSection";
 import { LoaderIcon } from "@/icons";
+import SelectLocationInMap from "./sections/SelectLocationInMap";
 
 interface PropertyListingFormProps {
   defaultValues?: Partial<PropertyListingFormValues>;
@@ -59,11 +60,15 @@ export function PropertyListingForm({
 
   return (
     <FormProvider {...methods}>
-      {/* @ts-ignore */}
-      <form onSubmit={handleSubmit(handleFormSubmit, onError)} className="space-y-6">
+      <form
+        // @ts-ignore
+        onSubmit={handleSubmit(handleFormSubmit, onError)}
+        className="space-y-6"
+      >
         <PropertyTypeSection />
         <PropertyOwnershipSection />
         <BasicInformationSection />
+        <SelectLocationInMap />
         <PropertySpecificationsSection />
         <MajorComponentsSection />
         <HoaInformationSection />

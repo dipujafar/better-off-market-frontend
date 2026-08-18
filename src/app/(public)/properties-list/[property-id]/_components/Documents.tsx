@@ -1,42 +1,18 @@
 "use client";
 import { PDFIcon } from "@/icons";
+import { IDocument } from "@/types";
 import { Download, FileText } from "lucide-react";
 
-interface Document {
-  id: string;
-  name: string;
-  size: string;
-  updated: string;
-  url?: string;
-}
 
-interface DocumentsProps {
-  documents?: Document[];
-}
+export function Documents({ documents }: { documents: IDocument[] }) {
+  const displayDocuments = documents;
 
-export function Documents({ documents = [] }: DocumentsProps) {
-  const defaultDocuments: Document[] = [
-    {
-      id: "1",
-      name: "Property_Disclosures_Willow_Memphis.pdf",
-      size: "2.4 MB",
-      updated: "Oct 12, 2024",
-    },
-    {
-      id: "2",
-      name: "Structural_Inspection_Report.pdf",
-      size: "4.1 MB",
-      updated: "Sep 28, 2024",
-    },
-  ];
-
-  const displayDocuments = documents.length > 0 ? documents : defaultDocuments;
-
-  const handleDownload = (doc: Document) => {
+  const handleDownload = (doc: IDocument) => {
     const link = document.createElement("a");
-    link.href = doc.url || "";
-    link.download = doc.name;
+    link.href = doc?.url || "";
+    link.download = doc?.name;
     document.body.appendChild(link);
+    link.target = "_blank";
     link.click();
     document.body.removeChild(link);
   };
@@ -47,9 +23,9 @@ export function Documents({ documents = [] }: DocumentsProps) {
         <FileText color="#00214C" /> Documents
       </h1>
       <div className="space-y-3">
-        {displayDocuments.map((doc) => (
+        {displayDocuments?.map((doc) => (
           <div
-            key={doc.id}
+            key={doc?._id}
             className="flex items-center gap-4 bg-white border-2 border-primary-border-color p-3 rounded-lg hover:bg-gray-150 transition-colors"
           >
             <PDFIcon className="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
@@ -58,7 +34,8 @@ export function Documents({ documents = [] }: DocumentsProps) {
                 {doc.name}
               </h3>
               {/* <p className="text-xs text-gray-500 mt-1">
-                {doc.size} • Updated {doc.updated}
+                {doc.size} • Updated{" "}
+                {moment(doc.updated).format("MMM DD, YYYY")}
               </p> */}
             </div>
             <button

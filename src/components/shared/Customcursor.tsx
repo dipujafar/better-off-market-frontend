@@ -59,17 +59,17 @@ export default function CustomCursor() {
       {/* Horizontal line — full width, 1px tall, moves on the Y axis */}
       <div
         ref={hLineRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9998] h-px w-screen bg-black/40 will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-9998 h-px w-screen bg-black/40 will-change-transform"
       />
       {/* Vertical line — full height, 1px wide, moves on the X axis */}
       <div
         ref={vLineRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9998] h-screen w-px bg-black/40 will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-9998 h-screen w-px bg-black/40 will-change-transform"
       />
       {/* The 30px dot itself, centered on the crosshair intersection */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-[30px] w-[30px] rounded-full border-2 border-black bg-black/10 will-change-transform"
+        className="pointer-events-none fixed left-0 top-0 z-9999 h-7.5 w-7.5 rounded-full border-2 border-black bg-black/10 will-change-transform"
       />
     </>
   );

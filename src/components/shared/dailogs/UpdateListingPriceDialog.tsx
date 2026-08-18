@@ -25,29 +25,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUpdatePropertyMutation } from "@/redux/api/propertiesApi";
+import { errorModification } from "@/lib/errors/errorModification";
+import { toast } from "sonner";
+import { LoaderIcon } from "@/icons";
+import { revalidateProperties } from "@/lib/actions/revalidate";
 
 const updatePriceSchema = z.object({
   newPrice: z.coerce
-    .number()
+    .number({ message: "Price must be a number" })
     .positive("Price must be greater than 0"),
 });
 
 type UpdatePriceValues = z.infer<typeof updatePriceSchema>;
 
 interface UpdateListingPriceDialogProps {
+  id: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   currentPrice: number;
-  onUpdate: (newPrice: number) => void | Promise<void>;
 }
 
 export function UpdateListingPriceDialog({
   open,
   onOpenChange,
   currentPrice,
-  onUpdate,
+  id,
 }: UpdateListingPriceDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateProperty, { isLoading }] = useUpdatePropertyMutation();
 
   const form = useForm<UpdatePriceValues>({
     // @ts-ignore
@@ -58,19 +63,28 @@ export function UpdateListingPriceDialog({
   });
 
   const handleSubmit = async (values: UpdatePriceValues) => {
-    setIsSubmitting(true);
     try {
-      await onUpdate(values.newPrice);
-      form.reset();
+      await updateProperty({
+        id,
+        oldListingPrice: currentPrice,
+        listingPrice: values.newPrice,
+      }).unwrap();
       onOpenChange(false);
-    } finally {
-      setIsSubmitting(false);
+      await revalidateProperties();
+      toast.success("Listing price updated successfully!");
+    } catch (error) {
+      console.log(error);
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-105 rounded-lg p-6" showCloseButton={false}>
+      <DialogContent
+        className="sm:max-w-105 rounded-lg p-6"
+        showCloseButton={false}
+      >
         <DialogClose className="absolute right-5 top-5 rounded-sm opacity-70 hover:opacity-100 transition-opacity">
           <X className="size-5 text-primary-black" />
         </DialogClose>
@@ -97,10 +111,10 @@ export function UpdateListingPriceDialog({
         </div>
 
         <Form {...form}>
-            {/* @ts-ignore */}
+          {/* @ts-ignore */}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
-            // @ts-ignore
+              // @ts-ignore
               control={form.control}
               name="newPrice"
               render={({ field }) => (
@@ -130,17 +144,24 @@ export function UpdateListingPriceDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
+                disabled={isLoading}
                 className="py-5 rounded-md cursor-pointer"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isLoading}
                 className="bg-[#0F2A4D] hover:bg-[#0F2A4D]/90 text-white py-5 rounded-md  cursor-pointer"
               >
-                {isSubmitting ? "Updating..." : "Update Listing"}
+                {isLoading ? (
+                  <div className="flex gap-1">
+                    <LoaderIcon className="animate-spin mt-1" />
+                    Updating...
+                  </div>
+                ) : (
+                  "Update Price"
+                )}
               </Button>
             </DialogFooter>
           </form>

@@ -4,12 +4,13 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
+import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
 
 export function PropertyCard({
   _id,
   photos,
   timeEstimate,
-  originalPrice,
+  oldListingPrice,
   listingPrice,
   arv,
   streetAddress,
@@ -18,20 +19,23 @@ export function PropertyCard({
   className,
   propertyType,
   specifications,
-  propertiesSpecificationsClassName
-}: IPropertyResponse & { className?: string , propertiesSpecificationsClassName?: string}) {
+  location,
+  propertiesSpecificationsClassName,
+}: IPropertyResponse & {
+  className?: string;
+  propertiesSpecificationsClassName?: string;
+}) {
   const priceFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
   });
 
-
-
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
-  const propertySpecs = handlePropertiesSpecifications(propertyType, specifications).filter(
-    (spec) => Boolean(spec.value),
-  );
+  const propertySpecs = handlePropertiesSpecifications(
+    propertyType,
+    specifications,
+  ).filter((spec) => Boolean(spec.value));
 
   return (
     <Link
@@ -55,7 +59,7 @@ export function PropertyCard({
 
         {/* Time Badge */}
         <div className="absolute top-3 left-3 bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
-          {timeEstimate}
+          <PropertyDistanceBadge location={location} />
         </div>
 
         {/* Property Type Badge */}
@@ -64,7 +68,7 @@ export function PropertyCard({
         </div>
 
         {/* Original Price Badge */}
-        {originalPrice && (
+        {oldListingPrice && (
           <div
             className={cn(
               "absolute top-3 left-3 bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
@@ -73,7 +77,9 @@ export function PropertyCard({
           >
             ↓{" "}
             <span className="ml-0.5">
-              {priceFormatter.format(originalPrice)}
+              {priceFormatter.format(
+                Number(oldListingPrice) - Number(listingPrice),
+              )}
             </span>
           </div>
         )}
@@ -97,9 +103,9 @@ export function PropertyCard({
           </p>
         </div>
 
-        {originalPrice && (
+        {oldListingPrice && (
           <span className="text-base text-primary-gray font-medium">
-            {priceFormatter.format(originalPrice)}
+            {priceFormatter.format(oldListingPrice)}
           </span>
         )}
 
@@ -114,7 +120,12 @@ export function PropertyCard({
             {propertySpecs.map(({ icon: Icon, value, suffix }, index) => (
               <div key={index} className="flex items-center gap-1 ">
                 {Icon && <Icon size={18} color="#594139" />}
-                <span className={cn("text-[rgb(92,67,58)] text-sm font-semibold line-clamp-1", propertiesSpecificationsClassName)}>
+                <span
+                  className={cn(
+                    "text-[rgb(92,67,58)] text-sm font-semibold line-clamp-1",
+                    propertiesSpecificationsClassName,
+                  )}
+                >
                   {value} {suffix}
                 </span>
               </div>

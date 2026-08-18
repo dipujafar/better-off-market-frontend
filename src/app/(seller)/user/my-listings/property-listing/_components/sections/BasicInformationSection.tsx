@@ -1,26 +1,24 @@
-"use client";
+"use client";;
 import { useFormContext } from "react-hook-form";
 import { TextField } from "../form-fields/TextField";
-import { SelectField } from "../form-fields/SelectField";
 import { TextareaField } from "../form-fields/TextareaField";
 import { FieldTooltip } from "../form-fields/FieldTooltip";
 import type { PropertyListingFormValues } from "@/lib/validations/property-listing.schema";
 import { LocationEditIcon } from "lucide-react";
-import {
-  BASIC_INFO_CONFIG,
-  COUNTY_OPTIONS,
-} from "../config/property-type.config";
+import { BASIC_INFO_CONFIG } from "../config/property-type.config";
+import { CountySelectorForListing } from "@/components/shared/county_selector/CountySelectorForListing";
 
 export function BasicInformationSection() {
   const {
     register,
-    control,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext<PropertyListingFormValues>();
 
   const propertyType = watch("propertyType");
   const config = BASIC_INFO_CONFIG[propertyType];
+  const county = watch("county");
 
   return (
     <section className="rounded-lg border border-[#E2E8F0]  shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_2px_4px_-2px_rgba(0,0,0,0.05)] p-6">
@@ -67,7 +65,7 @@ export function BasicInformationSection() {
               <FieldTooltip text="This can be found on the County Auditor's website under Property Search." />
             }
           />
-          <SelectField
+          {/* <SelectField
             label="County"
             required
             name="county"
@@ -78,6 +76,12 @@ export function BasicInformationSection() {
             tooltip={
               <FieldTooltip text="If the County is not on the dropdown list, then this property is unfortunately outside our current scope, and you will not be able to add this listing. Please contact support with any questions." />
             }
+          /> */}
+
+          <CountySelectorForListing
+            error={errors?.county?.message}
+            selectedCounty={county}
+            onCountyChange={(newCounty) => setValue("county", newCounty ?? "")}
           />
         </div>
 

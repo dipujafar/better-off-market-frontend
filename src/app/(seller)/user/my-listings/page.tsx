@@ -14,8 +14,8 @@ export default function MyListingPage() {
             Manage your properties and track their performance.
           </p>
         </div>
-        <Link href={'/user/my-listings/property-listing'}>
-          <Button  className="cursor-pointe px-3 py-4.5 text-base cursor-pointer bg-[#2D3133]">
+        <Link href={"/user/my-listings/property-listing"}>
+          <Button className="cursor-pointe px-3 py-4.5 text-base cursor-pointer bg-[#2D3133]">
             <Plus className="mr-0.5" /> Add Listing
           </Button>
         </Link>

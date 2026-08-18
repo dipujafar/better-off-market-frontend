@@ -1,6 +1,7 @@
 "use client";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Locate } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
@@ -10,53 +11,53 @@ const containerStyle = {
 };
 
 // Muted grayscale style to match the reference screenshot
-const mapStyles: google.maps.MapTypeStyle[] = [
-  { elementType: "geometry", stylers: [{ color: "#e9e9e9" }] },
-  { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
-  {
-    featureType: "administrative.land_parcel",
-    stylers: [{ visibility: "off" }],
-  },
-  { featureType: "poi", stylers: [{ visibility: "off" }] },
-  {
-    featureType: "poi.park",
-    elementType: "geometry",
-    stylers: [{ color: "#e5e5e5" }],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road.arterial",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#757575" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry",
-    stylers: [{ color: "#dadada" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#616161" }],
-  },
-  {
-    featureType: "road.local",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#9e9e9e" }],
-  },
-  { featureType: "transit", stylers: [{ visibility: "off" }] },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [{ color: "#dbe3e5" }],
-  },
-];
+// const mapStyles: google.maps.MapTypeStyle[] = [
+//   { elementType: "geometry", stylers: [{ color: "#e9e9e9" }] },
+//   { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+//   { elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+//   { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
+//   {
+//     featureType: "administrative.land_parcel",
+//     stylers: [{ visibility: "off" }],
+//   },
+//   { featureType: "poi", stylers: [{ visibility: "off" }] },
+//   {
+//     featureType: "poi.park",
+//     elementType: "geometry",
+//     stylers: [{ color: "#e5e5e5" }],
+//   },
+//   {
+//     featureType: "road",
+//     elementType: "geometry",
+//     stylers: [{ color: "#ffffff" }],
+//   },
+//   {
+//     featureType: "road.arterial",
+//     elementType: "labels.text.fill",
+//     stylers: [{ color: "#757575" }],
+//   },
+//   {
+//     featureType: "road.highway",
+//     elementType: "geometry",
+//     stylers: [{ color: "#dadada" }],
+//   },
+//   {
+//     featureType: "road.highway",
+//     elementType: "labels.text.fill",
+//     stylers: [{ color: "#616161" }],
+//   },
+//   {
+//     featureType: "road.local",
+//     elementType: "labels.text.fill",
+//     stylers: [{ color: "#9e9e9e" }],
+//   },
+//   { featureType: "transit", stylers: [{ visibility: "off" }] },
+//   {
+//     featureType: "water",
+//     elementType: "geometry",
+//     stylers: [{ color: "#dbe3e5" }],
+//   },
+// ];
 
 type Coordinates = [number, number][];
 
@@ -102,6 +103,7 @@ export function LocationMap({
 }: LocationMapProps) {
   const { isLoaded } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [locating, setLocating] = useState(false);
 
   const center =
     lat !== undefined && lng !== undefined
@@ -118,30 +120,64 @@ export function LocationMap({
     setMap(null);
   }, []);
 
+  // Google Maps has no built-in "recenter on my location" control —
+  // this button pans/zooms the existing map instance to the browser's
+  // current position. It does NOT change the marker/pin, which still
+  // represents the property's actual location.
+  const goToMyLocation = useCallback(() => {
+    if (!map || typeof window === "undefined" || !navigator.geolocation)
+      return;
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        map.panTo({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        map.setZoom(16);
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 }
+    );
+  }, [map]);
+
   return (
     <div className="w-full border-none shadow-none">
       <CardHeader className="px-0 pb-3">
         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
       </CardHeader>
       <CardContent className="px-0">
-        <div className="rounded-2xl overflow-hidden">
+        <div className="relative rounded-2xl overflow-hidden">
           {isLoaded ? (
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center}
-              zoom={zoom}
-              onLoad={onLoad}
-              onUnmount={onUnmount}
-              options={{
-                disableDefaultUI: true,
-                zoomControl: false,
-                scrollwheel: false,
-                gestureHandling: "cooperative",
-                styles: mapStyles,
-              }}
-            >
-              <Marker position={center} icon={getPinIcon()} />
-            </GoogleMap>
+            <>
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={zoom}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+                options={{
+                  disableDefaultUI: false,
+                  zoomControl: true,
+                  scrollwheel: true,
+                  gestureHandling: "cooperative",
+                  // styles: mapStyles,
+                }}
+              >
+                <Marker position={center} icon={getPinIcon()} />
+              </GoogleMap>
+
+              <button
+                type="button"
+                onClick={goToMyLocation}
+                disabled={locating}
+                aria-label="Go to my location"
+                className="absolute bottom-1 right-3 bg-white rounded-full shadow-md p-2 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <Locate
+                  className={`h-4 w-4 text-[#1e5a8e] ${locating ? "animate-pulse" : ""}`}
+                />
+              </button>
+            </>
           ) : (
             <div className="h-75 flex items-center justify-center text-muted-foreground text-sm bg-gray-100">
               Loading Map...

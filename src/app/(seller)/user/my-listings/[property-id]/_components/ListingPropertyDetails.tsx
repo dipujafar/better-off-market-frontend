@@ -22,8 +22,15 @@ export default function ListingPropertyDetails({
 
       <PropertyListing property={property} />
       <PropertyInfo property={property} />
-      <Documents />
-      <LocationMap lat={23.811056} lng={90.407608} />
+      {property?.documents?.length ? (
+        <Documents documents={property?.documents} />
+      ) : (
+        ""
+      )}
+      <LocationMap
+        lat={property?.location?.coordinates[1]}
+        lng={property?.location?.coordinates[0]}
+      />
       <div className="mt-5 flex items-center gap-4">
         <Link href={"/user/my-listings/property-listing"}>
           <Button className="bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-5.5 px-7 rounded-lg transition-colors cursor-pointer">

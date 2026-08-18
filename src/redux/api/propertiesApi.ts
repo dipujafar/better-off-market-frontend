@@ -19,7 +19,37 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.property],
     }),
+    getMyListings: build.query({
+      query: (params) => ({
+        url: "/properties/my-listing",
+        method: "GET",
+        params,
+      }),
+      providesTags: [tagTypes.property],
+    }),
+    getPriceDroppedProperties: build.query({
+      query: (params) => ({
+        url: "/properties/price-dropped",
+        method: "GET",
+        params,
+      }),
+      providesTags: [tagTypes.property],
+    }),
+    updateProperty: build.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/properties/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.property],
+    }),
   }),
 });
 
-export const { useCreatePropertyMutation, useGetPropertiesQuery } = propertyApi;
+export const {
+  useCreatePropertyMutation,
+  useGetPropertiesQuery,
+  useGetPriceDroppedPropertiesQuery,
+  useGetMyListingsQuery,
+  useUpdatePropertyMutation,
+} = propertyApi;

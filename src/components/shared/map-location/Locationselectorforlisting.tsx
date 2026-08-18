@@ -1,0 +1,271 @@
+"use client";
+
+import { GoogleMap, Marker, Autocomplete } from "@react-google-maps/api";
+import { useCallback, useEffect, useState } from "react";
+import { Locate, Search } from "lucide-react";
+import { useGoogleMaps } from "@/hooks/useGoogleMaps";
+
+const containerStyle = {
+  width: "100%",
+  height: "300px",
+};
+
+// ---- data type (matches your ILocation) ----
+export interface ILocation {
+  type: "Point";
+  coordinates: [number, number]; // GeoJSON order: [lng, lat]
+}
+
+interface LocationSelectorForListingProps {
+  /** undefined until the user has picked a location (required at submit time) */
+  value?: ILocation;
+  onChange: (location: ILocation) => void;
+  error?: string;
+  label?: string;
+  zoom?: number;
+  /**
+   * { lat, lng } fallback center used only if the browser's current
+   * location can't be read (denied, unsupported, etc). Falls back to
+   * this before falling back further to a hardcoded default.
+   */
+  defaultCenter?: { lat: number; lng: number };
+}
+
+// Custom pin icon matching the blue circular marker style
+function getPinIcon(): google.maps.Symbol {
+  return {
+    path: "M12 0C7.6 0 4 3.6 4 8c0 5.4 6.7 13.2 7.1 13.6.2.3.6.4.9.4s.7-.1.9-.4C13.3 21.2 20 13.4 20 8c0-4.4-3.6-8-8-8zm0 11.5c-1.9 0-3.5-1.6-3.5-3.5S10.1 4.5 12 4.5s3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z",
+    fillColor: "#1e5a8e",
+    fillOpacity: 1,
+    strokeColor: "#ffffff",
+    strokeWeight: 1.5,
+    scale: 1.6,
+    anchor: new google.maps.Point(12, 22),
+  };
+}
+
+// Last-resort fallback if geolocation is denied/unsupported and no
+// defaultCenter prop was passed — adjust to your market.
+const FALLBACK_CENTER = { lat: 23.8103, lng: 90.4125 };
+
+export function LocationSelectorForListing({
+  value,
+  onChange,
+  error,
+  zoom = 15,
+  defaultCenter,
+}: LocationSelectorForListingProps) {
+  // Requires "places" in your useGoogleMaps hook's LIBRARIES array.
+  const { isLoaded } = useGoogleMaps();
+
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [locating, setLocating] = useState(false);
+
+  // Browser's current position, used as the map center before the user
+  // has picked anything. null while we're still asking / haven't asked yet.
+  const [browserLocation, setBrowserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  // Ask for the browser's current location once, on mount, only if the
+  // field doesn't already have a value (e.g. editing an existing listing).
+  useEffect(() => {
+    if (value) return; // already has a location, no need to geolocate
+    if (typeof window === "undefined" || !navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setBrowserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      () => {
+        // Permission denied / unavailable — silently fall back below.
+      },
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 },
+    );
+    // Intentionally only runs once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const position = value
+    ? { lat: value.coordinates[1], lng: value.coordinates[0] }
+    : null;
+
+  const center =
+    position ?? browserLocation ?? defaultCenter ?? FALLBACK_CENTER;
+
+  const onMapLoad = useCallback((mapInstance: google.maps.Map) => {
+    setMap(mapInstance);
+  }, []);
+
+  const onMapUnmount = useCallback(() => {
+    setMap(null);
+  }, []);
+
+  const applyLocation = useCallback(
+    (lat: number, lng: number, address?: string) => {
+      onChange({ type: "Point", coordinates: [lng, lat] });
+      if (address !== undefined) setSearchValue(address);
+    },
+    [onChange],
+  );
+
+  const reverseGeocode = useCallback((lat: number, lng: number) => {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results?.[0]) {
+        setSearchValue(results[0].formatted_address);
+      }
+    });
+  }, []);
+
+  const onAutocompleteLoad = useCallback(
+    (ac: google.maps.places.Autocomplete) => {
+      setAutocomplete(ac);
+    },
+    [],
+  );
+
+  const onPlaceChanged = useCallback(() => {
+    if (!autocomplete) return;
+    const place = autocomplete.getPlace();
+    const loc = place.geometry?.location;
+    if (!loc) return;
+
+    const lat = loc.lat();
+    const lng = loc.lng();
+
+    applyLocation(lat, lng, place.formatted_address ?? place.name ?? "");
+    map?.panTo({ lat, lng });
+    map?.setZoom(16);
+  }, [autocomplete, map, applyLocation]);
+
+  const onMapClick = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      if (!e.latLng) return;
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      applyLocation(lat, lng);
+      reverseGeocode(lat, lng);
+    },
+    [applyLocation, reverseGeocode],
+  );
+
+  const onMarkerDragEnd = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      if (!e.latLng) return;
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      applyLocation(lat, lng);
+      reverseGeocode(lat, lng);
+    },
+    [applyLocation, reverseGeocode],
+  );
+
+  // Recenter the map (and set the marker) to the browser's current
+  // position — a manual re-trigger for whenever the auto-run on mount
+  // was denied, or the user just wants to jump back to "near me".
+  const goToMyLocation = useCallback(() => {
+    if (typeof window === "undefined" || !navigator.geolocation) return;
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        applyLocation(lat, lng);
+        reverseGeocode(lat, lng);
+        map?.panTo({ lat, lng });
+        map?.setZoom(16);
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 },
+    );
+  }, [map, applyLocation, reverseGeocode]);
+
+  return (
+    <div className="w-full">
+      {/* <label className="text-sm font-medium mb-2 block">{label}</label> */}
+
+      {isLoaded ? (
+        <>
+          <Autocomplete
+            onLoad={onAutocompleteLoad}
+            onPlaceChanged={onPlaceChanged}
+          >
+            <div className="relative mb-3">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search for an address, city, or landmark"
+                className={`w-full rounded-lg border bg-[#F2F4F6] pl-9 pr-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-200 ${
+                  error ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </div>
+          </Autocomplete>
+
+          <div className="relative rounded-2xl overflow-hidden border border-gray-200">
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={center}
+              zoom={position ? zoom : browserLocation ? 13 : 10}
+              onLoad={onMapLoad}
+              onUnmount={onMapUnmount}
+              onClick={onMapClick}
+              options={{
+                disableDefaultUI: false,
+                zoomControl: true,
+                scrollwheel: true,
+                gestureHandling: "greedy",
+                // styles: mapStyles,
+              }}
+            >
+              {position && (
+                <Marker
+                  position={position}
+                  icon={getPinIcon()}
+                  draggable
+                  onDragEnd={onMarkerDragEnd}
+                />
+              )}
+            </GoogleMap>
+
+            <button
+              type="button"
+              onClick={goToMyLocation}
+              disabled={locating}
+              aria-label="Use my current location"
+              className="absolute bottom-3 right-3 bg-white rounded-full shadow-md p-2 hover:bg-gray-50 disabled:opacity-50"
+            >
+              <Locate
+                className={`h-4 w-4 text-[#1e5a8e] ${locating ? "animate-pulse" : ""}`}
+              />
+            </button>
+          </div>
+
+          {position && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {position.lat.toFixed(6)}, {position.lng.toFixed(6)}
+            </p>
+          )}
+        </>
+      ) : (
+        <div className="h-75 flex items-center justify-center text-muted-foreground text-sm bg-gray-100 rounded-2xl">
+          Loading Map...
+        </div>
+      )}
+
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+    </div>
+  );
+}

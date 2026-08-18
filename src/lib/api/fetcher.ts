@@ -40,7 +40,7 @@ export async function apiGet<T>(
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      next: {  tags },
+      next: { tags },
       signal: controller.signal,
     });
 

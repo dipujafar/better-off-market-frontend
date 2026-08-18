@@ -18,6 +18,7 @@ export default function Home() {
     description:
       "Where property owners, wholesalers, investors, and buyers connect to discover opportunities, negotiate directly",
     children: <LocationSearch />,
+    // className: "min-h-[90vh]",
   };
   return (
     <div className="space-y-16">

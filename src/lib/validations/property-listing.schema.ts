@@ -8,6 +8,16 @@ const fileSchema = z
   .instanceof(File)
   .refine((f) => f.size <= 20 * 1024 * 1024, "File must be under 20MB");
 
+const locationSchema = z.object(
+  {
+    type: z.literal("Point"),
+    coordinates: z.tuple([z.number(), z.number()]),
+  },
+  {
+    error: "Location is required",
+  },
+);
+
 export const propertyListingSchema = z
   .object({
     propertyType: z.enum(PROPERTY_TYPES, {
@@ -23,12 +33,18 @@ export const propertyListingSchema = z
     }),
     assignableContractFile: fileSchema.optional().nullable(),
 
+    // map location
+    location: locationSchema,
+
     // Basic Information
     streetAddress: z.string().min(1, "Street address is required"),
     state: z.string().min(1, "State is required"),
+    county: z
+      .string({ message: "County is required" })
+      .min(1, "County is required"),
     city: z.string().min(1, "City is required"),
     zipCode: z.string().min(5, "Enter a valid ZIP code"),
-    county: z.string().min(1, "County is required"),
+    // county: z.string().min(1, "County is required"),
     parcelIds: z.string().optional(),
     listingPrice: z.coerce
       .number({ error: "Enter a valid amount" })

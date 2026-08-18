@@ -84,7 +84,7 @@ export default function DashboardSidebar() {
   return (
     <>
       {/* ---------- Large devices: fixed vertical sidebar ---------- */}
-      <div className="hidden xl:block border-r-2 border-[#ECEEF0] pr-4 h-full">
+      <div className="hidden xl:block sticky top-0 self-start max-h-screen overflow-y-auto border-r-2 border-[#ECEEF0] pr-4 h-full">
         <div className="dashboard-card w-64 bg-white py-5">
           <div className="space-y-2">
             {SIDEBAR_LINKS.map((link) => (
@@ -116,7 +116,7 @@ export default function DashboardSidebar() {
       </div>
 
       {/* ---------- Medium/small devices: horizontal carousel nav ---------- */}
-      <div className="xl:hidden border-b-2 border-[#ECEEF0] bg-white py-3 mb-2">
+      <div className="xl:hidden sticky top-0 z-10 border-b-2 border-[#ECEEF0] bg-white py-3 mb-2">
         <Carousel
           opts={{
             loop: false,

@@ -30,7 +30,9 @@ export default function PropertyListingContainer() {
       }
       await crateProperty(formData).unwrap();
       await revalidateProperties();
-      toast.success("Property created successfully!");
+      toast.success(
+        "Property Listing request submitted successfully!. Please wait for admin approval.",
+      );
       return true;
     } catch (err) {
       const errMessage = errorModification(err);

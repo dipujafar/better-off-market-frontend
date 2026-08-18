@@ -1,10 +1,9 @@
-export interface ICategory  {
+export interface ICategory {
   id: number;
   title: string;
   listingCount: number;
   image: string;
-};
-
+}
 
 export interface IProperty {
   id: number;
@@ -19,7 +18,6 @@ export interface IProperty {
   sqft: number;
   propertyType?: string;
 }
-
 
 export interface Conversation {
   id: string;
@@ -54,21 +52,35 @@ export interface ChatThread {
   messages: ChatMessage[];
 }
 
+export interface IDocument {
+  _id: string;
+  name: string;
+  size: string;
+  updated: string;
+  url: string;
+}
+
+export interface ILocation {
+  type: "Point";
+  coordinates: [number, number];
+}
 
 // ================================================= backend response =================================================
 
 export interface IPropertyResponse {
   _id: string;
   seller: string;
-  status: string;
+  status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
 
   propertyType: string;
   useType?: string;
   useTypeOther?: string;
 
   // Ownership
-  ownership: 'own' | 'assignable';
-  assignableContractFile?: string;
+  ownership: "own" | "assignable";
+  assignableContractFile?: IDocument;
+
+  location: ILocation;
 
   // Basic Information
   streetAddress: string;
@@ -83,7 +95,6 @@ export interface IPropertyResponse {
   arv?: number;
   marketingDescription: string;
   utilities?: string;
-
 
   // Property Specifications — dynamic, keyed by SpecField.name
   specifications: Record<string, string | number>;
@@ -110,9 +121,9 @@ export interface IPropertyResponse {
   otherUpdates?: string;
 
   // HOA
-  hasHoa: 'yes' | 'no';
+  hasHoa: "yes" | "no";
   hoaAmount?: number;
-  hoaFrequency?: 'Monthly' | 'Quarterly' | 'Annually';
+  hoaFrequency?: "Monthly" | "Quarterly" | "Annually";
   hoaIncludes?: string;
 
   // Closing
@@ -121,21 +132,32 @@ export interface IPropertyResponse {
 
   // Files (S3 URLs after upload middleware)
   photos: string[];
-  documents?: string[];
+  documents?: IDocument[];
 
   isDeleted: boolean;
+
+  // utils properties
+  totalViews: number;
+  totalSaved: number;
+  totalOffers: number;
+  totalRsvp: number;
 
   // Usually present from Mongoose timestamps, add if your schema has `timestamps: true`
   createdAt?: string;
   updatedAt?: string;
 }
 
-
-
-export interface ISavePropertiesResponse{
+export interface ISavePropertiesResponse {
   _id: string;
   user: string;
   property: IPropertyResponse;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IMetaData {
+  limit: number;
+  page: number;
+  total: number;
+  totalPage: number;
 }
