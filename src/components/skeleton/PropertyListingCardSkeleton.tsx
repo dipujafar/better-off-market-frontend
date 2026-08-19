@@ -4,7 +4,7 @@ export function PropertyListingCardSkeleton() {
   return (
     <div className="flex items-center gap-6 rounded-2xl border border-border bg-white p-4 shadow-sm">
       {/* Thumbnail */}
-      <Skeleton className="h-34 w-40 shrink-0 rounded-xl" />
+      <Skeleton className="h-40 w-52 shrink-0 rounded-xl" />
 
       {/* Middle: type, location, stats */}
       <div className="flex flex-1 flex-col gap-5">

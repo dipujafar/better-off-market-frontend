@@ -1,11 +1,7 @@
 "use client";
 
+import { ILocation } from "@/types";
 import { useEffect, useState } from "react";
-
-export interface ILocation {
-  type: "Point";
-  coordinates: [number, number]; // GeoJSON order: [lng, lat]
-}
 
 export type TravelMode = "DRIVING" | "WALKING" | "BICYCLING" | "TRANSIT";
 
@@ -24,7 +20,7 @@ function haversineMeters(
   lat1: number,
   lng1: number,
   lat2: number,
-  lng2: number
+  lng2: number,
 ): number {
   const R = 6371000; // Earth radius in meters
   const toRad = (deg: number) => (deg * Math.PI) / 180;
@@ -56,7 +52,7 @@ function formatMeters(meters: number): string {
  */
 export function useTravelTimeFromMe(
   target: ILocation | undefined,
-  travelMode: TravelMode = "DRIVING"
+  travelMode: TravelMode = "DRIVING",
 ): TravelTimeResult {
   const [result, setResult] = useState<TravelTimeResult>({
     distanceText: null,
@@ -103,7 +99,7 @@ export function useTravelTimeFromMe(
           origin.lat,
           origin.lng,
           destination.lat,
-          destination.lng
+          destination.lng,
         );
         const fallbackResult: TravelTimeResult = {
           distanceText: formatMeters(fallbackMeters),
@@ -150,7 +146,7 @@ export function useTravelTimeFromMe(
               loading: false,
               error: null,
             });
-          }
+          },
         );
       },
       () => {
@@ -161,7 +157,7 @@ export function useTravelTimeFromMe(
           error: "Location permission denied",
         }));
       },
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 }
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 },
     );
 
     return () => {

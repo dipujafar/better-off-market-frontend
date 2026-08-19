@@ -65,6 +65,12 @@ export interface ILocation {
   coordinates: [number, number];
 }
 
+export interface IOpenHouse {
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+}
+
 // ================================================= backend response =================================================
 
 export interface IPropertyResponse {
@@ -142,9 +148,11 @@ export interface IPropertyResponse {
   totalOffers: number;
   totalRsvp: number;
 
+  openHouse: IOpenHouse;
+
   // Usually present from Mongoose timestamps, add if your schema has `timestamps: true`
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ISavePropertiesResponse {

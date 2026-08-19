@@ -32,6 +32,7 @@ export default function ListingList({
           saved={property?.totalSaved}
           offers={property?.totalOffers}
           rsvp={property?.totalRsvp}
+          openHouse={property?.openHouse}
         />
       ))}
       <PaginationSection

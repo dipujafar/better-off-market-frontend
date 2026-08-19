@@ -4,12 +4,13 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
-import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
+import { priceFormatter } from "../utils/priceFormatter";
+import PropertyCardBadges from "./property-card-badges";
 
 export function PropertyCard({
   _id,
   photos,
-  timeEstimate,
+
   oldListingPrice,
   listingPrice,
   arv,
@@ -25,12 +26,6 @@ export function PropertyCard({
   className?: string;
   propertiesSpecificationsClassName?: string;
 }) {
-  const priceFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  });
-
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
   const propertySpecs = handlePropertiesSpecifications(
     propertyType,
@@ -57,10 +52,12 @@ export function PropertyCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Time Badge */}
-        <div className="absolute top-3 left-3 bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
-          <PropertyDistanceBadge location={location} />
-        </div>
+      
+          <PropertyCardBadges
+            location={location}
+            oldListingPrice={oldListingPrice}
+            listingPrice={listingPrice}
+          />
 
         {/* Property Type Badge */}
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
@@ -68,21 +65,7 @@ export function PropertyCard({
         </div>
 
         {/* Original Price Badge */}
-        {oldListingPrice && (
-          <div
-            className={cn(
-              "absolute top-3 left-3 bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
-              timeEstimate && "left-18",
-            )}
-          >
-            ↓{" "}
-            <span className="ml-0.5">
-              {priceFormatter.format(
-                Number(oldListingPrice) - Number(listingPrice),
-              )}
-            </span>
-          </div>
-        )}
+       
 
         {/* Favorite Button */}
         <FavoriteIcon id={_id} />

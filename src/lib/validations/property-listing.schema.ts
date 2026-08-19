@@ -16,7 +16,7 @@ const locationSchema = z.object(
   {
     error: "Location is required",
   },
-);
+)
 
 export const propertyListingSchema = z
   .object({

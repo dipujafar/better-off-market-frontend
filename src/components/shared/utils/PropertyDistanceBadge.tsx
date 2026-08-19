@@ -1,17 +1,22 @@
 "use client";
 
-import { useTravelTimeFromMe, ILocation } from "@/hooks/useTravelTimeFromMe";
+import { CarFront } from "lucide-react";
 
 interface PropertyDistanceBadgeProps {
-  location: ILocation;
+  durationText?: string | null;
+  distanceText?: string | null;
+  isEstimate?: boolean | null;
+  loading?: boolean | null;
+  error: string | null;
 }
 
-export function PropertyDistanceBadge({ location }: PropertyDistanceBadgeProps) {
-  const { durationText, distanceText, isEstimate, loading, error } =
-    useTravelTimeFromMe(location, "DRIVING");
-
-    console.log(durationText, distanceText, isEstimate, loading, error)
-
+export function PropertyDistanceBadge({
+  durationText,
+  distanceText,
+  isEstimate,
+  loading,
+  error,
+}: PropertyDistanceBadgeProps) {
   if (loading) {
     return <span>…</span>;
   }
@@ -21,16 +26,13 @@ export function PropertyDistanceBadge({ location }: PropertyDistanceBadgeProps) 
   // Real travel time available (Distance Matrix succeeded)
   if (durationText && !isEstimate) {
     return (
-      <span >
-        {durationText} drive ({distanceText}) from your location
+      <span className="flex gap-0.5 items-center">
+        <CarFront size={15} />
+        {durationText}
       </span>
     );
   }
 
   // Fallback: straight-line distance only, no route/duration available
-  return (
-    <span>
-      {distanceText} away (straight-line) from your location
-    </span>
-  );
+  return <span>{distanceText}</span>;
 }

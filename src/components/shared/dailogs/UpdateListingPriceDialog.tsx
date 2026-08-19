@@ -62,6 +62,7 @@ export function UpdateListingPriceDialog({
     },
   });
 
+
   const handleSubmit = async (values: UpdatePriceValues) => {
     try {
       await updateProperty({

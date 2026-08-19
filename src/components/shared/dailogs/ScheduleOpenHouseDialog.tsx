@@ -1,17 +1,14 @@
 "use client";
-
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CalendarIcon, Clock, Info, X } from "lucide-react";
+import { Info, X } from "lucide-react";
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -25,6 +22,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useUpdatePropertyMutation } from "@/redux/api/propertiesApi";
+import { errorModification } from "@/lib/errors/errorModification";
+import { toast } from "sonner";
+import { IOpenHouse } from "@/types";
+import { revalidateProperties } from "@/lib/actions/revalidate";
 
 const scheduleOpenHouseSchema = z
   .object({
@@ -40,35 +42,41 @@ const scheduleOpenHouseSchema = z
 type ScheduleOpenHouseValues = z.infer<typeof scheduleOpenHouseSchema>;
 
 interface ScheduleOpenHouseDialogProps {
+  id: string;
+  openHouse: IOpenHouse;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSchedule: (values: ScheduleOpenHouseValues) => void | Promise<void>;
 }
 
 export function ScheduleOpenHouseDialog({
   open,
   onOpenChange,
-  onSchedule,
+  id,
+  openHouse,
 }: ScheduleOpenHouseDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateProperty, { isLoading }] = useUpdatePropertyMutation();
 
   const form = useForm<ScheduleOpenHouseValues>({
     resolver: zodResolver(scheduleOpenHouseSchema),
     defaultValues: {
-      date: "",
-      startTime: "",
-      endTime: "",
+      date: openHouse?.date,
+      startTime: openHouse?.startTime,
+      endTime: openHouse?.endTime,
     },
   });
 
   const handleSubmit = async (values: ScheduleOpenHouseValues) => {
-    setIsSubmitting(true);
     try {
-      await onSchedule(values);
-      form.reset();
+      await updateProperty({
+        id,
+        openHouse: values,
+      }).unwrap();
       onOpenChange(false);
-    } finally {
-      setIsSubmitting(false);
+      await revalidateProperties();
+      toast.success("Open house scheduled successfully!");
+    } catch (error) {
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
     }
   };
 
@@ -175,12 +183,19 @@ export function ScheduleOpenHouseDialog({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="p-5"
+                className="p-5 cursor-pointer"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} className={cn(" bg-primary-color p-5",isSubmitting &&"cursor-progress")}>
-               Schedule Event
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={cn(
+                  " bg-primary-color p-5 cursor-pointer",
+                  isLoading && "cursor-progress",
+                )}
+              >
+                Schedule Event
               </Button>
             </div>
           </form>

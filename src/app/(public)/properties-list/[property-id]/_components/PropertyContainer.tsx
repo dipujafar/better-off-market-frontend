@@ -43,9 +43,11 @@ export default function PropertyContainer({
           </Link>
         </div>
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
-          <ActionBtns id={property?._id} />
+          <ActionBtns id={property?._id} totalViews={property?.totalViews} createdAt={property?.createdAt} />
           <AuthenticationRequired />
-          <OpenHouse />
+          {property?.openHouse && (
+            <OpenHouse openHouse={property?.openHouse} id={property?._id} />
+          )}
 
           <ProfileCard
             image="/user_profile.jpg"

@@ -5,8 +5,17 @@ import Share from "@/components/utils/share";
 import { Eye, Share2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import moment from "moment";
 
-export function ActionBtns({ id }: { id: string }) {
+export function ActionBtns({
+  id,
+  totalViews,
+  createdAt,
+}: {
+  id: string;
+  totalViews: number;
+  createdAt: string;
+}) {
   const pathName = usePathname();
   console.log(pathName);
   return (
@@ -47,10 +56,10 @@ export function ActionBtns({ id }: { id: string }) {
 
       <div className="flex gap-1.5 justify-center">
         <span className="text-[#594139] flex items-center gap-1 ">
-          <Eye /> 1,245 Views,
+          <Eye size={22} /> {totalViews} Views,
         </span>
         <span className="text-[#594139] flex items-center gap-1 ">
-          Listed 42 days ago
+          Listed {moment(createdAt).fromNow()}
         </span>
       </div>
     </div>

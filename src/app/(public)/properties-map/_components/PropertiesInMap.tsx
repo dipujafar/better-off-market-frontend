@@ -160,7 +160,7 @@ export function PropertiesInMap({
                 zoomControl: true,
                 scrollwheel: false,
                 gestureHandling: "cooperative",
-                styles: mapStyles,
+                // styles: mapStyles,
               }}
             >
               {properties.map((property) => (

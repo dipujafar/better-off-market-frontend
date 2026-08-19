@@ -8,9 +8,7 @@ import { useState } from "react";
 import { ScheduleOpenHouseDialog } from "../dailogs/ScheduleOpenHouseDialog";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { cn } from "@/lib/utils";
-import { useUpdatePropertyMutation } from "@/redux/api/propertiesApi";
-import { errorModification } from "@/lib/errors/errorModification";
-import { toast } from "sonner";
+import { IOpenHouse } from "@/types";
 
 interface PropertyCardProps {
   id: string;
@@ -23,6 +21,7 @@ interface PropertyCardProps {
   offers: number;
   rsvp: number;
   status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
+  openHouse: IOpenHouse;
 }
 
 const statusColor = {
@@ -44,6 +43,7 @@ export default function DashboardPropertyCard({
   offers,
   rsvp,
   status,
+  openHouse,
 }: PropertyCardProps) {
   const [open, setOpen] = useState(false);
   const [openHouseOpen, setOpenHouseOpen] = useState(false);
@@ -159,7 +159,8 @@ export default function DashboardPropertyCard({
       <ScheduleOpenHouseDialog
         open={openHouseOpen}
         onOpenChange={setOpenHouseOpen}
-        onSchedule={() => console.log("Open house scheduled")}
+        id={id}
+        openHouse={openHouse}
       />
     </>
   );

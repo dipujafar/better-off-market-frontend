@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Stats from "./_components/Stats";
 import RecentProperties from "./_components/RecentProperties";

@@ -1,38 +1,34 @@
-import { AreaIcon, BedIcon, ShawarIcon } from "@/icons";
 import { IPropertyResponse } from "@/types";
 import FavoriteIcon from "../favorite_icon/FavoriteIcon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import moment from "moment";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
+import { priceFormatter } from "../utils/priceFormatter";
+import PropertyCardBadges from "./property-card-badges";
+import moment from "moment";
 
 export function SavePropertyCard({
   _id,
   photos,
-  timeEstimate,
-  originalPrice,
+  oldListingPrice,
   listingPrice,
   arv,
   streetAddress,
   city,
-
+  state,
   className,
-  createdAt,
-  status,
   propertyType,
   specifications,
+  location,
   propertiesSpecificationsClassName,
+  saveDate
+  
 }: IPropertyResponse & {
   className?: string;
   propertiesSpecificationsClassName?: string;
+  saveDate?: string
 }) {
-  const priceFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  });
-
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
   const propertySpecs = handlePropertiesSpecifications(
     propertyType,
@@ -59,29 +55,18 @@ export function SavePropertyCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Time Badge */}
-        <div className="absolute top-3 left-3 bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
-          {timeEstimate}
-        </div>
+        <PropertyCardBadges
+          location={location}
+          oldListingPrice={oldListingPrice}
+          listingPrice={listingPrice}
+        />
 
-        {/* Time Badge */}
+        {/* Property Type Badge */}
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
           {propertyType}
         </div>
 
-        {/* Time Badge */}
-        {status && (
-          <div
-            className={cn(
-              "absolute top-3 left-3 bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
-              timeEstimate && "left-18",
-            )}
-          >
-            <span className="ml-0.5 capitalize">
-              {status?.charAt(0).toUpperCase() + status?.slice(1)}
-            </span>
-          </div>
-        )}
+        {/* Original Price Badge */}
 
         {/* Favorite Button */}
         <FavoriteIcon id={_id} />
@@ -91,7 +76,7 @@ export function SavePropertyCard({
       <div className="xl:p-6  p-4 space-y-1">
         {/* Date */}
         <p className="text-sm font-medium text-primary-color line-clamp-1">
-          Saved on {moment(createdAt).format("MMM DD, YYYY")}
+          Saved on {moment(saveDate).format("MMM DD, YYYY")}
         </p>
 
         {/* Price */}
@@ -107,15 +92,15 @@ export function SavePropertyCard({
           </p>
         </div>
 
-        {originalPrice && (
+        {oldListingPrice && (
           <span className="text-base text-primary-gray font-medium">
-            {priceFormatter.format(originalPrice)}
+            {priceFormatter.format(oldListingPrice)}
           </span>
         )}
 
         {/* Address */}
-        <h3 className="xl:text-xl text-lg font-semibold text-primary-black line-clamp-1">
-          {city}, {streetAddress}
+        <h3 className="xl:text-lg font-semibold text-primary-black line-clamp-1">
+          {streetAddress}, {city}, {state}
         </h3>
 
         {/* Property Details */}

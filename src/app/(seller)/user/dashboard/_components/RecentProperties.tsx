@@ -1,58 +1,46 @@
+"use client";
 import DashboardPropertyCard from "@/components/shared/card/dashboard-property-card";
-
-const properties = [
-  {
-    id: 1,
-    type: "Residential",
-    location: "Hamilton County",
-    price: 48500,
-    views: 48,
-    saved: 48,
-    offers: 2,
-    image:
-      "/properties/property_image_1.png",
-    rsvp: 234
-  },
-  {
-    id: 2,
-    type: "Land",
-    location: "Hamilton County",
-    price: 48500,
-    views: 48,
-    saved: 48,
-    offers: 2,
-    image:
-      "/properties/property_image_2.png",
-    rsvp: 34
-  },
-  {
-    id: 3,
-    type: "Commercial",
-    location: "Hamilton County",
-    price: 48500,
-    views: 48,
-    saved: 48,
-    offers: 2,
-    image:
-      "/properties/property_image_3.png",
-    rsvp: 24
-  },
-];
+import { PropertyListingCardSkeleton } from "@/components/skeleton/PropertyListingCardSkeleton";
+import Empty from "@/components/ui/empty-data";
+import { useGetMyListingsQuery } from "@/redux/api/propertiesApi";
+import { IMetaData, IPropertyResponse } from "@/types";
 
 export default function RecentProperties() {
+  const { data, isLoading } = useGetMyListingsQuery({ limit: 5 });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-5  lg:p-6 p-4">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <PropertyListingCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  const properties: IPropertyResponse[] = data?.data?.properties;
+  const metaData: IMetaData = data?.meta;
+
+  if (!metaData?.total) {
+    return <Empty message="No properties found" className="mt-5" />;
+  }
+
   return (
     <div className="space-y-4 lg:p-6 p-4">
       {properties?.map((property) => (
         <DashboardPropertyCard
-          key={property.id}
-          image={property.image}
-          type={property.type}
-          location={property.location}
-          price={property.price}
-          views={property.views}
-          saved={property.saved}
-          offers={property.offers}
-          rsvp={property.rsvp}
+          key={property?._id}
+          id={property?._id}
+          status={property?.status}
+          image={property?.photos?.[0]}
+          type={property?.propertyType}
+          location={`${property?.streetAddress}, ${property?.city}, ${property?.state} `}
+          price={property?.listingPrice}
+          views={property?.totalViews}
+          saved={property?.totalSaved}
+          offers={property?.totalOffers}
+          rsvp={property?.totalRsvp}
+          openHouse={property?.openHouse}
         />
       ))}
     </div>
