@@ -1,8 +1,17 @@
+"use client";
+import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
 
 export default function AuthenticationRequired() {
+  const user: any = useAppSelector((state) => state.auth.user);
   return (
-    <div className="border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1 w-full">
+    <div
+      className={cn(
+        "border-l-4 border-primary-color bg-[#F2F4F6] rounded-md p-4 space-y-1 w-full",
+        user?.userId && "hidden",
+      )}
+    >
       <p className="text-sm font-medium text-primary-gray">
         You need a free account to submit offers or message sellers.{" "}
         <Link

@@ -24,7 +24,7 @@ export default function ReadMoreText({
 
   return (
     <>
-      <p>{displayText}</p>
+      <p className={className}>{displayText}</p>
 
       {isLong && (
         <button

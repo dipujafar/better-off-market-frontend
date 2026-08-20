@@ -1,12 +1,19 @@
 import ReadMoreText from "@/components/shared/utils/ReadMoreText";
+import { statusColor } from "@/components/utils/status-color";
+import { cn } from "@/lib/utils";
 import { IPropertyResponse } from "@/types";
+import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 import { MapPin, TrendingDown } from "lucide-react";
 
 interface PropertyListingProps {
   property: IPropertyResponse;
 }
 
-export function PropertyListing({ property }: PropertyListingProps) {
+export function BasicPropertyDetails({ property }: PropertyListingProps) {
+  const propertySpecs = handlePropertiesSpecifications(
+    property?.propertyType,
+    property?.specifications,
+  ).filter((spec) => Boolean(spec.value));
   return (
     <div className="w-full shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]">
       <div className="bg-white rounded-lg border border-[#EFEAE8] p-5 md:p-8">
@@ -27,8 +34,13 @@ export function PropertyListing({ property }: PropertyListingProps) {
 
           {
             <div className="inline-flex">
-              <span className="bg-[#DCFCE7] text-[#15803D] px-3 py-1 rounded-md font-bold text-xs whitespace-nowrap">
-                ACTIVE LISTING
+              <span
+                className={cn(
+                  "bg-[#DCFCE7] text-[#15803D] px-3 py-1 rounded-md font-bold text-xs whitespace-nowrap",
+                  statusColor[property?.status],
+                )}
+              >
+                {property?.status}
               </span>
             </div>
           }
@@ -62,58 +74,28 @@ export function PropertyListing({ property }: PropertyListingProps) {
         {/* <div className="h-px bg-gray-200 mb-6 mt-2" /> */}
 
         {/* Property Details Grid */}
-        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 lg:mt-5 mt-4 rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
-          <div className="flex items-center gap-2">
-            <BedIcon className="size-5" />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-primary-black">
-                  {bedrooms} <span>Beds</span>
-                </span>
-              </div>
+        {propertySpecs?.length && (
+          <div className="flex justify-between items-center flex-wrap gap-6 mb-8 lg:mt-5 mt-4 rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
+            {propertySpecs?.map(
+              ({ icon: Icon, value, suffix, label }, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  {Icon && <Icon color="#594139" />}
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold text-primary-black">
+                        {value} <span>{suffix}</span>
+                      </span>
+                    </div>
 
-              <p className="text-primary-gray text-sm">Bedrooms</p>
-            </div>
+                    <p className="text-primary-gray text-sm">{label}</p>
+                  </div>
+                </div>
+              ),
+            )}
+
+          
           </div>
-
-          <div className="flex items-center gap-2">
-            <BathPoolIcon className="size-5" />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-primary-black">
-                  {bathrooms} <span>Baths</span>
-                </span>
-              </div>
-
-              <p className="text-primary-gray text-sm">Bathrooms</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <SQFTIcon className="size-5" />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-primary-black">
-                  {sqft} <span>Sqft</span>{" "}
-                </span>
-              </div>
-
-              <p className="text-primary-gray text-sm">Living Space</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="size-5" />
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-primary-black">
-                  {yearBuilt}
-                </span>
-              </div>
-              <p className="text-primary-gray text-sm">Year Built</p>
-            </div>
-          </div>
-        </div> */}
+        )}
 
         {/* Divider */}
         {/* <div className="h-px bg-gray-200 mb-6" /> */}
@@ -129,6 +111,21 @@ export function PropertyListing({ property }: PropertyListingProps) {
                 text={property?.marketingDescription}
                 wordLimit={100}
               />
+            </p>
+            <p className="text-base md:text-lg flex items-center gap-2">
+              {property?.utilities && (
+                <>
+                  {" "}
+                  <span className="text-[#594139]  text-sm">
+                    Utilities :{" "}
+                  </span>{" "}
+                  <ReadMoreText
+                    text={property?.utilities}
+                    wordLimit={100}
+                    className="text-sm"
+                  />{" "}
+                </>
+              )}
             </p>
           </div>
         </div>

@@ -1,124 +1,157 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { Camera, SquarePen } from "lucide-react";
-import { useGetMyProfileQuery } from "@/redux/api/profileApi";
+import {
+  useGetMyProfileQuery,
+  useUpdateProfileMutation,
+} from "@/redux/api/profileApi";
 
-// Zod validation schema
+// Zod validation schema — aligned to IUser (name, phoneNumber, etc.)
 const profileSchema = z.object({
-  firstName: z
+  name: z
     .string()
-    .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters"),
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters"),
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
-  location: z.string().min(1, "Location is required"),
+  phoneNumber: z.string().optional().default(""),
+  location: z.string().optional().default(""),
   company: z.string().optional().default(""),
   bio: z.string().optional().default(""),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
+type ProfileFormInput = z.input<typeof profileSchema>;
 
-interface ProfileEditFormProps {
-  defaultData?: Partial<ProfileFormData>;
-  defaultImage?: string;
-  onSubmit?: (data: ProfileFormData, image: File | null) => Promise<void>;
-}
+const DEFAULT_IMAGE = "/default_user_profile.png";
 
-export default function ProfileEditForm({
-  defaultData = {
-    firstName: "James",
-    lastName: "Butler",
-    email: "james.b@example.com",
-    phone: "+1 (555) 000-0000",
-    location: "City, State",
-    company: "",
-    bio: "",
-  },
-  defaultImage = "/user_profile.jpg",
-  onSubmit,
-}: ProfileEditFormProps) {
-  const [imagePreview, setImagePreview] = useState<string>(defaultImage);
+export default function ProfileEditForm() {
+  const { data, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+
+  const profile = data?.data;
+
+  const [imagePreview, setImagePreview] = useState<string>(DEFAULT_IMAGE);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { data } = useGetMyProfileQuery(undefined);
-  const profile = data?.data; 
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
-  } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema as any),
+    formState: { errors, isDirty },
+  } = useForm<ProfileFormInput, any, ProfileFormData>({
+    resolver: zodResolver(profileSchema),
     defaultValues: {
-      
+      name: "",
+      email: "",
+      phoneNumber: "",
+      location: "",
+      company: "",
+      bio: "",
     },
   });
 
+  // Populate form + image preview once profile data arrives
+  useEffect(() => {
+    if (!profile) return;
+
+    reset({
+      name: profile.name ?? "",
+      email: profile.email ?? "",
+      phoneNumber: profile.phoneNumber ?? "",
+      location: profile.location ?? "",
+      company: profile.company ?? "",
+      bio: profile.bio ?? "",
+    });
+
+    setImagePreview(profile.profile || DEFAULT_IMAGE);
+  }, [profile, reset]);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
-        return;
-      }
+    if (!file) return;
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image must be less than 5MB");
-        return;
-      }
-
-      setSelectedImage(file);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
+      return;
     }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be less than 5MB");
+      return;
+    }
+
+    setSelectedImage(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const onSubmitForm = async (data: ProfileFormData) => {
-    setIsLoading(true);
+  const onSubmitForm = async (formValues: ProfileFormData) => {
     try {
-      if (onSubmit) {
-        await onSubmit(data, selectedImage);
-      } else {
-        // Default behavior: log the data
-        console.log("Form data:", data);
-        console.log("Image file:", selectedImage);
+      const formData = new FormData();
+
+      // Backend expects a "data" field with the JSON payload, common
+      // pattern for multer + express when mixing file + fields.
+      // Adjust key name here if your backend expects raw fields instead.
+      formData.append("data", JSON.stringify(formValues));
+
+      if (selectedImage) {
+        formData.append("profile", selectedImage);
       }
+
+      await updateProfile(formData).unwrap();
+
+      // Clear dirty state now that these values are saved
+      reset(formValues);
+      setSelectedImage(null);
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to save changes");
-    } finally {
-      setIsLoading(false);
     }
   };
 
+
+
   const handleCancel = () => {
-    reset();
-    setImagePreview(defaultImage);
+    if (profile) {
+      reset({
+        name: profile.name ?? "",
+        email: profile.email ?? "",
+        phoneNumber: profile.phoneNumber ?? "",
+        location: profile.location ?? "",
+        company: profile.company ?? "",
+        bio: profile.bio ?? "",
+      });
+      setImagePreview(profile.profile || DEFAULT_IMAGE);
+    }
     setSelectedImage(null);
   };
 
-  const fullName = `${defaultData.firstName} ${defaultData.lastName}`;
+  const isSaving = isUpdating;
+  const hasChanges = isDirty || selectedImage !== null;
+  const fullName = profile?.name || "Your Name";
+
+    console.log(profile);
+
+  if (isProfileLoading) {
+    return (
+      <div className="w-full bg-white rounded-lg space-y-8 animate-pulse">
+        <div className="h-24 rounded-xl bg-gray-100" />
+        <div className="h-96 rounded-xl bg-gray-100" />
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full  bg-white rounded-lg space-y-8">
+    <div className="w-full bg-white rounded-lg space-y-8">
       {/* Profile Header */}
       <div className="flex items-center gap-4 p-6 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] border border-[#ECEEF0] rounded-xl">
         <div className="relative">
@@ -167,53 +200,26 @@ export default function ProfileEditForm({
         </div>
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-5">
-          {/* First Name and Last Name */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                First name
-              </label>
-              <input
-                id="firstName"
-                type="text"
-                {...register("firstName")}
-                className={`w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors ${
-                  errors.firstName ? "border-red-500" : "border-gray-100"
-                }`}
-                placeholder="Enter your first name"
-              />
-              {errors.firstName && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.firstName.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Last name
-              </label>
-              <input
-                id="lastName"
-                type="text"
-                {...register("lastName")}
-                className={`w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors ${
-                  errors.lastName ? "border-red-500" : "border-gray-100"
-                }`}
-                placeholder="Enter your last name"
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.lastName.message}
-                </p>
-              )}
-            </div>
+          {/* Name */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Full name
+            </label>
+            <input
+              id="name"
+              type="text"
+              {...register("name")}
+              className={`w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors ${
+                errors.name ? "border-red-500" : "border-gray-100"
+              }`}
+              placeholder="Enter your full name"
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+            )}
           </div>
 
           {/* Email */}
@@ -224,42 +230,35 @@ export default function ProfileEditForm({
             >
               Email
             </label>
-            <input
-              id="email"
-              type="email"
+            <button
+              disabled
               {...register("email")}
-              className={`w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors ${
-                errors.email ? "border-red-500" : "border-gray-100"
-              }`}
-              placeholder="your.email@example.com"
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.email.message}
-              </p>
-            )}
+              className={`w-full px-4 py-2 text-start bg-gray-100  border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors cursor-not-allowed`}
+            >
+              {profile?.email}{" "}
+            </button>
           </div>
 
           {/* Phone */}
           <div>
             <label
-              htmlFor="phone"
+              htmlFor="phoneNumber"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               Phone
             </label>
             <input
-              id="phone"
+              id="phoneNumber"
               type="tel"
-              {...register("phone")}
+              {...register("phoneNumber")}
               className={`w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors ${
-                errors.phone ? "border-red-500" : "border-gray-100"
+                errors.phoneNumber ? "border-red-500" : "border-gray-100"
               }`}
               placeholder="+1 (555) 000-0000"
             />
-            {errors.phone && (
+            {errors.phoneNumber && (
               <p className="mt-1 text-sm text-red-500">
-                {errors.phone.message}
+                {errors.phoneNumber.message}
               </p>
             )}
           </div>
@@ -326,16 +325,16 @@ export default function ProfileEditForm({
           <div className="flex justify-center gap-4 pt-2">
             <button
               type="submit"
-              disabled={isLoading}
-              className="px-8 py-2 bg-primary-color hover:bg-slate-800 disabled:bg-slate-600 text-white font-medium rounded-md transition-colors cursor-pointer"
+              disabled={isSaving || !hasChanges}
+              className="px-8 py-2 bg-primary-color hover:bg-slate-800 disabled:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium rounded-md transition-colors cursor-pointer"
             >
-              {isLoading ? "Saving..." : "Save changes"}
+              {isSaving ? "Saving..." : "Save changes"}
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              disabled={isLoading}
-              className="px-8 py-2 bg-white hover:bg-gray-50 disabled:bg-gray-100 text-primary-black font-medium border border-primary-border-color rounded-md transition-colors cursor-pointer"
+              disabled={isSaving || !hasChanges}
+              className="px-8 py-2 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60 text-primary-black font-medium border border-primary-border-color rounded-md transition-colors cursor-pointer"
             >
               Cancel
             </button>

@@ -1,4 +1,4 @@
-import { PropertyListing } from "@/app/(public)/properties-list/[property-id]/_components/BasicPropertyDetails";
+import { BasicPropertyDetails } from "@/app/(public)/properties-list/[property-id]/_components/BasicPropertyDetails";
 import { Documents } from "@/app/(public)/properties-list/[property-id]/_components/Documents";
 import { LocationMap } from "@/app/(public)/properties-list/[property-id]/_components/LocationMap";
 import PropertyImages from "@/app/(public)/properties-list/[property-id]/_components/PropertyImages";
@@ -18,9 +18,10 @@ export default function ListingPropertyDetails({
       <PropertyImages
         propertyImages={property?.photos}
         propertyType={property?.propertyType}
+        location={property?.location}
       />
 
-      <PropertyListing property={property} />
+      <BasicPropertyDetails property={property} />
       <PropertyInfo property={property} />
       {property?.documents?.length ? (
         <Documents documents={property?.documents} />

@@ -1,8 +1,10 @@
-"use client";;
+"use client";
 import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 import Preview from "@/components/shared/utils/image_preview_option";
 import ImagePreviewer from "@/components/shared/utils/images-previewer";
+import { PropertyDistanceBadge } from "@/components/shared/utils/PropertyDistanceBadge";
 import Share from "@/components/utils/share";
+import { ILocation } from "@/types";
 import { LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -10,9 +12,11 @@ import { useState } from "react";
 export default function PropertyImages({
   propertyImages,
   propertyType,
+  location,
 }: {
   propertyImages: string[];
   propertyType: string;
+  location: ILocation;
 }) {
   const [previewImgIndex, setPreviewImgIndex] = useState(-1);
   const pathName = usePathname();
@@ -39,6 +43,11 @@ export default function PropertyImages({
             </Preview>
             <span className="absolute top-3 left-3 sm:top-4.5 sm:left-5 text-xs font-bold text-primary-color bg-white py-1.5 px-3 sm:py-2 rounded-full uppercase z-10">
               {propertyType}
+            </span>
+            <span className="absolute bottom-3 left-3 sm:bottom-4.5 sm:left-5">
+              <div className="bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-sm font-semibold">
+                <PropertyDistanceBadge location={location} />
+              </div>
             </span>
 
             {/* Mobile-only Share (desktop share sits on image 3) */}
@@ -106,7 +115,7 @@ export default function PropertyImages({
               onClick={() => setPreviewImgIndex(3)}
               className="h-full w-full"
             >
-             <ImageWithFallback
+              <ImageWithFallback
                 src={propertyImages[3]}
                 alt="property_image_4"
                 width={1200}
@@ -130,12 +139,14 @@ export default function PropertyImages({
                 className="absolute inset-0 w-full h-full object-cover lg:rounded-br-xl"
               />
             </Preview>
-           { propertyImages[5] && <div
-              onClick={() => setPreviewImgIndex(5)}
-              className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-999 cursor-pointer"
-            >
-              <LayoutGrid size={16} /> Show all photos
-            </div>}
+            {propertyImages[5] && (
+              <div
+                onClick={() => setPreviewImgIndex(5)}
+                className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-999 cursor-pointer"
+              >
+                <LayoutGrid size={16} /> Show all photos
+              </div>
+            )}
           </div>
         </div>
       </div>

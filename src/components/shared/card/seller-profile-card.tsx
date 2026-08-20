@@ -12,7 +12,7 @@ interface ProfileCardProps {
 }
 
 export default function SellerProfileCard({
-  image = "/user_profile.jpg",
+  image = "/default_user_profile.png",
   name = "Sarah Jenkins",
   title = "Seller",
   rating = 4.5,

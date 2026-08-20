@@ -1,6 +1,5 @@
 import Container from "@/components/shared/container/Container";
 import PropertyImages from "./PropertyImages";
-import { PropertyListing } from "./BasicPropertyDetails";
 import { ActionBtns } from "./ActionBtns";
 import { PropertyInfo } from "./PropertyInfo";
 import ProfileCard from "./ProfileCard";
@@ -11,6 +10,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AuthenticationRequired from "./AuthenticationRequired";
 import { IPropertyResponse } from "@/types";
+import { BasicPropertyDetails } from "./BasicPropertyDetails";
 
 export default function PropertyContainer({
   property,
@@ -22,10 +22,11 @@ export default function PropertyContainer({
       <PropertyImages
         propertyImages={property?.photos}
         propertyType={property?.propertyType}
+        location={property?.location}
       />
       <div className="grid lg:grid-cols-6 gap-6 mt-4">
         <div className="lg:col-span-4 space-y-6">
-          <PropertyListing property={property} />
+          <BasicPropertyDetails property={property} />
           <PropertyInfo property={property} />
           {property?.documents?.length ? (
             <Documents documents={property?.documents} />
@@ -43,20 +44,17 @@ export default function PropertyContainer({
           </Link>
         </div>
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
-          <ActionBtns id={property?._id} totalViews={property?.totalViews} createdAt={property?.createdAt} />
+          <ActionBtns
+            id={property?._id}
+            totalViews={property?.totalViews}
+            createdAt={property?.createdAt}
+          />
           <AuthenticationRequired />
           {property?.openHouse && (
             <OpenHouse openHouse={property?.openHouse} id={property?._id} />
           )}
 
-          <ProfileCard
-            image="/user_profile.jpg"
-            name="Sarah Jenkins"
-            title="Global Assets LLC Specialist"
-            rating={4.8}
-            memberSince="Jan 2024"
-            listings={12}
-          />
+          <ProfileCard seller={property?.seller} />
         </div>
       </div>
     </Container>

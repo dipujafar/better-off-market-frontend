@@ -1,22 +1,18 @@
 "use client";
 
+import { useTravelTimeFromMe } from "@/hooks/useTravelTimeFromMe";
+import { ILocation } from "@/types";
 import { CarFront } from "lucide-react";
 
 interface PropertyDistanceBadgeProps {
-  durationText?: string | null;
-  distanceText?: string | null;
-  isEstimate?: boolean | null;
-  loading?: boolean | null;
-  error: string | null;
+  location: ILocation;
 }
 
 export function PropertyDistanceBadge({
-  durationText,
-  distanceText,
-  isEstimate,
-  loading,
-  error,
+  location,
 }: PropertyDistanceBadgeProps) {
+  const { durationText, distanceText, isEstimate, loading, error } =
+    useTravelTimeFromMe(location, "DRIVING");
   if (loading) {
     return <span>…</span>;
   }

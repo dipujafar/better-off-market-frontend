@@ -16,7 +16,7 @@ export default function SelectLocationInMap() {
       <div className="mb-5 flex items-center gap-2">
         <LocationEditIcon className="text-primary-blue" />
         <h2 className="text-xl font-semibold text-primary-black">
-          Location on the map
+          Place Location on the Map
         </h2>
       </div>
       <LocationSelectorForListing
@@ -30,7 +30,6 @@ export default function SelectLocationInMap() {
           }
         }}
       />
-
     </section>
   );
 }

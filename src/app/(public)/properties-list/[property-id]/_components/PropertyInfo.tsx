@@ -4,8 +4,8 @@ import { IPropertyResponse } from "@/types";
 
 interface SpecItem {
   label: string;
-  value: string;
-  note?: string; // e.g. "8 years old", "Updated 2018"
+  value: string | undefined;
+  note?: string | undefined;
 }
 
 interface PropertyInfoProps {
@@ -52,46 +52,72 @@ function SpecRow({ label, value, note }: SpecItem) {
   );
 }
 
-export function PropertyInfo({
-  property,
-  propertySpecsLeft = [
-    { label: "Bedroom", value: "3" },
-    { label: "Full Baths", value: "2" },
-    { label: "Half Baths", value: "1" },
-  ],
-  propertySpecsRight = [
-    { label: "Sq. Footage", value: "1850" },
-    { label: "Lot Size (Acres)", value: "0.25" },
-    { label: "Year Built", value: "1886" },
-  ],
-  components = [
-    { label: "Roof", value: "Good Condition", note: "8 years old" },
-    { label: "HVAC", value: "Functional", note: "4 years old" },
-    { label: "Plumbing", value: "Copper/PEX", note: "Updated 2018" },
-  ],
-  hoaFee = "$150/mo",
-  hoaAmenities = ["Pool", "Clubhouse", "Gym", "Common area maintenance"],
-  closingPreferences = [
-    { label: "Title Company", value: "Preferred title co" },
-    { label: "Closing Date", value: "24 June 2026" },
-    { label: "Occupancy", value: "At Closing" },
-  ],
-}: PropertyInfoProps) {
+export function PropertyInfo({ property }: PropertyInfoProps) {
+  const formatCamelCaseToLabel = (key: string) =>
+    key
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2") // camelCase -> camel Case
+      .replace(/^./, (str) => str.toUpperCase()); // capitalize first letter
+
+  const propertySpecsLeft = Object.entries(property?.specifications ?? {})
+    .filter(([, value]) => Boolean(value))
+    .map(([key, value]) => ({
+      label: formatCamelCaseToLabel(key),
+      value: String(value),
+      note: key === "lotSize" ? "Acres" : undefined,
+    }));
+
+  const components = [
+    {
+      label: "Roof Material",
+      value: property?.roofMaterial,
+      note: `${property?.roofAge} years`,
+    },
+    {
+      label: "Heating System",
+      value: property?.heatingSystem,
+      note: `${property?.heatingAge} years`,
+    },
+    {
+      label: "Cooling",
+      value: property?.cooling,
+      note: `${property?.coolingAge} years`,
+    },
+    {
+      label: "Water Heating",
+      value: property?.waterHeating,
+      note: `${property?.waterHeatingAge} years`,
+    },
+    {
+      label: "Water",
+      value: property?.water,
+    },
+    {
+      label: "Sewer",
+      value: property?.sewer,
+    },
+    {
+      label: "Foundation",
+      value: property?.foundation,
+    },
+  ].filter((c) => Boolean(c.value));
+
+  const closingPreferences = [
+    { label: "Title Company", value: property?.titleCompany },
+    { label: "Closing Date", value: property?.closingDate },
+  ].filter((c) => Boolean(c.value));
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <InfoCard
-          icon={<PropertySpecificationsIcon className="size-5 text-[#1F4E8B]" />}
+          icon={
+            <PropertySpecificationsIcon className="size-5 text-[#1F4E8B]" />
+          }
           title="Property Specifications"
         >
-          <div className="grid grid-cols-2 gap-x-8">
+          <div>
             <div>
               {propertySpecsLeft.map((item, i) => (
-                <SpecRow key={i} {...item} />
-              ))}
-            </div>
-            <div>
-              {propertySpecsRight.map((item, i) => (
                 <SpecRow key={i} {...item} />
               ))}
             </div>
@@ -110,6 +136,18 @@ export function PropertyInfo({
               )}
             </div>
           ))}
+          {property?.otherUpdates && (
+            <div>
+              <div className="h-px bg-[#DEDEDE]"></div>
+              <div className="mt-1">
+                <span className="text-sm text-[#594139]">
+                  {" "}
+                  Other Ages/Updates{" "}
+                </span>
+                <span className="text-xs ml-1">{property?.otherUpdates} </span>
+              </div>
+            </div>
+          )}
         </InfoCard>
       </div>
 
@@ -118,28 +156,44 @@ export function PropertyInfo({
           icon={<HomeIcon className="size-5 text-[#1F4E8B]" />}
           title="HOA Details"
         >
-          <SpecRow label="Monthly Fee" value={hoaFee} />
-          <div className="h-px bg-[#DEDEDE]"></div>
-          <div className="pt-2">
-            <span className="text-sm text-[#594139]">Amenities</span>
-            <p className="mt-1 text-sm text-[#594139]">
-              Includes: {hoaAmenities.join(", ")}
-            </p>
-          </div>
+          {property?.hasHoa === "no" ? (
+            <h5 className="mt-5 text-center mar">No HOA in this property </h5>
+          ) : (
+            <>
+              <SpecRow
+                label={`${property?.hoaFrequency} Fee`}
+                value={property?.hoaAmount ? `$${property?.hoaAmount}` : "N/A"}
+              />
+              <div className="h-px bg-[#DEDEDE]"></div>
+              <div className="pt-2">
+                {/* <span className="text-sm text-[#594139]">Amenities</span> */}
+                <p className="mt-1 text-sm ">
+                  <span className="text-[#594139]">Includes: </span>{" "}
+                  <span className="text-xs"> {property?.hoaIncludes}</span>
+                </p>
+              </div>
+            </>
+          )}
         </InfoCard>
 
         <InfoCard
           icon={<ClosingPreferencesIcon className="size-5 text-[#1F4E8B]" />}
           title="Closing Preferences"
         >
-          {closingPreferences.map((item, i) => (
-            <div key={i}>
-              <SpecRow {...item} />
-              {i !== closingPreferences.length - 1 && (
-                <div className="h-px bg-[#DEDEDE]"></div>
-              )}
-            </div>
-          ))}
+          {closingPreferences?.length ? (
+            closingPreferences?.map((item, i) => (
+              <div key={i}>
+                <SpecRow {...item} />
+                {i !== closingPreferences.length - 1 && (
+                  <div className="h-px bg-[#DEDEDE]"></div>
+                )}
+              </div>
+            ))
+          ) : (
+            <h5 className="mt-5 text-center mar">
+              No closing preferences data included in this property{" "}
+            </h5>
+          )}
         </InfoCard>
       </div>
     </div>

@@ -5,8 +5,8 @@ import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 import { priceFormatter } from "../utils/priceFormatter";
-import PropertyCardBadges from "./property-card-badges";
 import moment from "moment";
+import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
 
 export function SavePropertyCard({
   _id,
@@ -22,12 +22,11 @@ export function SavePropertyCard({
   specifications,
   location,
   propertiesSpecificationsClassName,
-  saveDate
-  
+  saveDate,
 }: IPropertyResponse & {
   className?: string;
   propertiesSpecificationsClassName?: string;
-  saveDate?: string
+  saveDate?: string;
 }) {
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
   const propertySpecs = handlePropertiesSpecifications(
@@ -55,11 +54,25 @@ export function SavePropertyCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        <PropertyCardBadges
-          location={location}
-          oldListingPrice={oldListingPrice}
-          listingPrice={listingPrice}
-        />
+        <div className="absolute top-3 left-3 flex gap-1">
+          <div className="bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+            <PropertyDistanceBadge location={location} />
+          </div>
+          {oldListingPrice && (
+            <div
+              className={cn(
+                " bg-[#147430] text-white px-2.5 py-1 rounded-full text-xs font-semibold",
+              )}
+            >
+              ↓{" "}
+              <span className="ml-0.5">
+                {priceFormatter.format(
+                  Number(oldListingPrice) - Number(listingPrice),
+                )}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Property Type Badge */}
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
@@ -106,19 +119,21 @@ export function SavePropertyCard({
         {/* Property Details */}
         {propertySpecs.length > 0 && (
           <div className="flex justify-between items-center gap-4 text-gray-700 pt-1">
-            {propertySpecs.map(({ icon: Icon, value, suffix }, index) => (
-              <div key={index} className="flex items-center gap-1 ">
-                {Icon && <Icon size={18} color="#594139" />}
-                <span
-                  className={cn(
-                    "text-[rgb(92,67,58)] text-sm font-semibold line-clamp-1",
-                    propertiesSpecificationsClassName,
-                  )}
-                >
-                  {value} {suffix}
-                </span>
-              </div>
-            ))}
+            {propertySpecs
+              .slice(0, 3)
+              ?.map(({ icon: Icon, value, suffix }, index) => (
+                <div key={index} className="flex items-center gap-1 ">
+                  {Icon && <Icon size={18} color="#594139" />}
+                  <span
+                    className={cn(
+                      "text-[rgb(92,67,58)] text-sm font-semibold line-clamp-1",
+                      propertiesSpecificationsClassName,
+                    )}
+                  >
+                    {value} {suffix}
+                  </span>
+                </div>
+              ))}
           </div>
         )}
       </div>

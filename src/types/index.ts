@@ -5,20 +5,6 @@ export interface ICategory {
   image: string;
 }
 
-export interface IProperty {
-  id: number;
-  imageUrl: string;
-  timeEstimate: string;
-  price: number;
-  originalPrice?: number;
-  arv?: number;
-  address: string;
-  beds: number;
-  baths: number;
-  sqft: number;
-  propertyType?: string;
-}
-
 export interface Conversation {
   id: string;
   name: string;
@@ -52,6 +38,20 @@ export interface ChatThread {
   messages: ChatMessage[];
 }
 
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber?: string;
+  location?: string;
+  company?: string;
+  bio?: string;
+  totalListing?: number;
+  avgRating?: number;
+  profile: string;
+  createdAt: string;
+}
+
 export interface IDocument {
   _id: string;
   name: string;
@@ -75,7 +75,6 @@ export interface IOpenHouse {
 
 export interface IPropertyResponse {
   _id: string;
-  seller: string;
   status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
 
   propertyType: string;
@@ -149,6 +148,8 @@ export interface IPropertyResponse {
   totalRsvp: number;
 
   openHouse: IOpenHouse;
+
+  seller: IUser;
 
   // Usually present from Mongoose timestamps, add if your schema has `timestamps: true`
   createdAt: string;
