@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const fileSchema = z
   .instanceof(File)
-  .refine((f) => f.size <= 20 * 1024 * 1024, "File must be under 20MB");
+  .refine((f) => f.size <= 100 * 1024 * 1024, "File must be under 100MB");
 
 const locationSchema = z.object(
   {

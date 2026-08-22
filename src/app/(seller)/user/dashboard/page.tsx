@@ -1,8 +1,8 @@
-
 import Link from "next/link";
 import Stats from "./_components/Stats";
 import RecentProperties from "./_components/RecentProperties";
 import RecentOffers from "./_components/RecentOffers";
+import GreetingMessage from "./_components/GreetingMessage";
 
 export default function DashboardPage() {
   return (
@@ -10,9 +10,7 @@ export default function DashboardPage() {
       <div>
         {/* ===========================  page title ============================= */}
         <div>
-          <h4 className="md:text-[32px] text-2xl font-semibold text-primary-black">
-            Good morning, James
-          </h4>
+          <GreetingMessage />
           <p className="text-primary-gray mt-1">
             Here's what's happening with your properties today.
           </p>

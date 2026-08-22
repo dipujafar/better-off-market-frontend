@@ -6,6 +6,7 @@ import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 import { priceFormatter } from "../utils/priceFormatter";
 import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
+import moment from "moment";
 
 export function PropertyCard({
   _id,
@@ -20,6 +21,7 @@ export function PropertyCard({
   propertyType,
   specifications,
   location,
+  createdAt,
   propertiesSpecificationsClassName,
 }: IPropertyResponse & {
   className?: string;
@@ -53,7 +55,7 @@ export function PropertyCard({
 
         <div className="absolute top-3 left-3 flex gap-1">
           <div className="bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
-            <PropertyDistanceBadge location={location} />
+            {moment(createdAt).fromNow()}
           </div>
           {oldListingPrice && (
             <div
@@ -89,6 +91,12 @@ export function PropertyCard({
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
             {priceFormatter.format(listingPrice)}
 
+            {oldListingPrice && (
+              <span className="text-lg text-primary-gray font-medium ml-2  line-through ">
+                {priceFormatter.format(oldListingPrice)}
+              </span>
+            )}
+
             {arv && (
               <span className={cn("text-primary-gray  font-medium ml-2")}>
                 (ARV: {priceFormatter.format(arv)})
@@ -96,12 +104,6 @@ export function PropertyCard({
             )}
           </p>
         </div>
-
-        {oldListingPrice && (
-          <span className="text-base text-primary-gray font-medium">
-            {priceFormatter.format(oldListingPrice)}
-          </span>
-        )}
 
         {/* Address */}
         <h3 className="xl:text-lg font-semibold text-primary-black line-clamp-1">

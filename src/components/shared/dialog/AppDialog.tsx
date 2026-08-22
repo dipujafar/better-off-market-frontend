@@ -24,6 +24,7 @@ export interface DialogAction {
     | "ghost"
     | "link";
   disabled?: boolean;
+  className?: string;
 }
 
 interface AppDialogProps {
@@ -48,13 +49,22 @@ export function AppDialog({
   className,
 }: AppDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
-      <DialogContent className={cn("sm:max-w-md rounded-md py-5", className)} showCloseButton={false} >
+      <DialogContent
+        className={cn("sm:max-w-lg rounded-md pb-5 pt-10 text-primary-color", className)}
+        showCloseButton={false}
+      >
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-primary-color">{title}</DialogTitle>
-          {description && <DialogDescription className="text-gray-700 text-sm">{description}</DialogDescription>}
+          <DialogTitle className="text-2xl font-semibold  text-center">
+            {title}
+          </DialogTitle>
+          {description && (
+            <DialogDescription className="text-gray-700  text-center">
+              {description}
+            </DialogDescription>
+          )}
         </DialogHeader>
 
         {children && <div className="py-2">{children}</div>}
@@ -68,12 +78,15 @@ export function AppDialog({
                   variant={action.variant ?? "default"}
                   disabled={action.disabled}
                   onClick={action.onClick}
-                  className={cn("cursor-pointer rounded-md",
+                  size="lg"
+                  className={cn(
+                    "cursor-pointer rounded-md px-5",
                     action?.variant !== "destructive"
                       ? action?.variant !== "outline"
                         ? "bg-primary-color text-white"
                         : "border-primary-color/40"
                       : "",
+                      action?.className
                   )}
                 >
                   {action.label}

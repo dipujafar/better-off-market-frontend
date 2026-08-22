@@ -10,6 +10,7 @@ import {
   useGetMyProfileQuery,
   useUpdateProfileMutation,
 } from "@/redux/api/profileApi";
+import { toast } from "sonner";
 
 // Zod validation schema — aligned to IUser (name, phoneNumber, etc.)
 const profileSchema = z.object({
@@ -98,9 +99,6 @@ export default function ProfileEditForm() {
     try {
       const formData = new FormData();
 
-      // Backend expects a "data" field with the JSON payload, common
-      // pattern for multer + express when mixing file + fields.
-      // Adjust key name here if your backend expects raw fields instead.
       formData.append("data", JSON.stringify(formValues));
 
       if (selectedImage) {
@@ -109,16 +107,14 @@ export default function ProfileEditForm() {
 
       await updateProfile(formData).unwrap();
 
-      // Clear dirty state now that these values are saved
       reset(formValues);
       setSelectedImage(null);
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to save changes");
     }
   };
-
-
 
   const handleCancel = () => {
     if (profile) {
@@ -138,8 +134,6 @@ export default function ProfileEditForm() {
   const isSaving = isUpdating;
   const hasChanges = isDirty || selectedImage !== null;
   const fullName = profile?.name || "Your Name";
-
-    console.log(profile);
 
   if (isProfileLoading) {
     return (

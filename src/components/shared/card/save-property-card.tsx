@@ -21,6 +21,7 @@ export function SavePropertyCard({
   propertyType,
   specifications,
   location,
+  createdAt,
   propertiesSpecificationsClassName,
   saveDate,
 }: IPropertyResponse & {
@@ -56,7 +57,7 @@ export function SavePropertyCard({
 
         <div className="absolute top-3 left-3 flex gap-1">
           <div className="bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-xs font-semibold">
-            <PropertyDistanceBadge location={location} />
+            {moment(createdAt).fromNow()}
           </div>
           {oldListingPrice && (
             <div

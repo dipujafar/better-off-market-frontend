@@ -18,7 +18,18 @@ const profileApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.profile],
     }),
+    getSellerProfile: builder.query({
+      query: (id) => ({
+        url: `/users/seller-profile/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.profile],
+    }),
   }),
 });
 
-export const { useGetMyProfileQuery, useUpdateProfileMutation } = profileApi;
+export const {
+  useGetMyProfileQuery,
+  useUpdateProfileMutation,
+  useGetSellerProfileQuery,
+} = profileApi;

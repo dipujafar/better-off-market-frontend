@@ -44,11 +44,7 @@ export default function PropertyImages({
             <span className="absolute top-3 left-3 sm:top-4.5 sm:left-5 text-xs font-bold text-primary-color bg-white py-1.5 px-3 sm:py-2 rounded-full uppercase z-10">
               {propertyType}
             </span>
-            <span className="absolute bottom-3 left-3 sm:bottom-4.5 sm:left-5">
-              <div className="bg-[#1F4E8B] text-white px-2.5 py-1 rounded-full text-sm font-semibold">
-                <PropertyDistanceBadge location={location} />
-              </div>
-            </span>
+           
 
             {/* Mobile-only Share (desktop share sits on image 3) */}
             <div className="lg:hidden">

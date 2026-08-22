@@ -117,8 +117,8 @@ export default function FavoriteIcon({
         <AppDialog
           open={open}
           onOpenChange={setOpen}
-          title="Authentication Required"
-          description="Please log in to save this property to your favorites."
+          title="Sign in to continue"
+          description="Login your account to Save this property."
           actions={[
             {
               label: "Cancel",

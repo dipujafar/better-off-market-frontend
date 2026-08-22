@@ -23,7 +23,7 @@ export default async function ListedProperties() {
 
   const properties = result?.data || [];
   const metaData = result?.meta;
-  console.log(metaData?.total);
+
   return (
     <div>
       {!metaData?.total && (

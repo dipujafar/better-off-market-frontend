@@ -14,7 +14,7 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
       <div className="flex gap-4">
         {/* Profile Image */}
         <div className="shrink-0">
-          <Link href="/seller-profile">
+          <Link href={`/seller-profile?seller=${seller?._id}`}>
             <Image
               src={seller?.profile}
               alt={"seller avatar"}
@@ -29,7 +29,7 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
         <div className="flex-1">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <Link href={`/seller-profile?seller?=${seller?._id}`}>
+              <Link href={`/seller-profile?seller=${seller?._id}`}>
                 <h3 className="text-lg font-semibold text-gray-900">
                   {seller?.name}
                 </h3>
@@ -61,7 +61,7 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
       </div>
 
       {/* View Profile Link */}
-      <Link href="/seller-profile">
+      <Link href={`/seller-profile?seller=${seller?._id}`}>
         <button className="mt-4 w-full text-center text-[#1F4E8B] font-semibold hover:text-blue-900 transition-colors cursor-pointer">
           View profile
         </button>

@@ -17,7 +17,6 @@ export function ActionBtns({
   createdAt: string;
 }) {
   const pathName = usePathname();
-  console.log(pathName);
   return (
     <div className="w-full max-w-md mx-auto rounded-lg bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] border border-[#FAEEEA] space-y-4">
       <h2 className="lg:text-2xl text-xl font-bold text-black">

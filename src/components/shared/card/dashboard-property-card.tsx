@@ -7,8 +7,14 @@ import { UpdateListingPriceDialog } from "../dailogs/UpdateListingPriceDialog";
 import { useState } from "react";
 import { ScheduleOpenHouseDialog } from "../dailogs/ScheduleOpenHouseDialog";
 import ImageWithFallback from "../image/ImageWithFallback";
-import { cn } from "@/lib/utils";
+import { cn, PROPERTY_STATUS } from "@/lib/utils";
 import { IOpenHouse } from "@/types";
+import { statusColor } from "@/components/utils/status-color";
+import { AppDialog } from "../dialog/AppDialog";
+import { useDeletePropertyMutation } from "@/redux/api/propertiesApi";
+import { toast } from "sonner";
+import { errorModification } from "@/lib/errors/errorModification";
+import { revalidateProperties } from "@/lib/actions/revalidate";
 
 interface PropertyCardProps {
   id: string;
@@ -23,14 +29,6 @@ interface PropertyCardProps {
   status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
   openHouse: IOpenHouse;
 }
-
-const statusColor = {
-  Active: "bg-[#DCFCE7] text-[#166534]",
-  Pending: "bg-[#FEF3C7] text-[#92400E]",
-  "Under Contact": "bg-[#ECE6F8] text-[#321ABA]",
-  Sold: "bg-[#E5E7EB] text-[#374151]",
-  Rejected: "bg-[#FEEAEA] text-[#BA1A1A]",
-};
 
 export default function DashboardPropertyCard({
   id,
@@ -47,6 +45,20 @@ export default function DashboardPropertyCard({
 }: PropertyCardProps) {
   const [open, setOpen] = useState(false);
   const [openHouseOpen, setOpenHouseOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteProperty, { isLoading }] = useDeletePropertyMutation();
+
+  const handleDelete = async () => {
+    try {
+      toast.loading("Deleting property...", { id: "delete" });
+      await deleteProperty(id);
+      revalidateProperties();
+      toast.success("Property deleted successfully!", { id: "delete" });
+    } catch (error) {
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <>
@@ -141,9 +153,17 @@ export default function DashboardPropertyCard({
             {/* Right Icons */}
             <div className="ml-auto flex items-center gap-2">
               <Share title="property" link={`/properties-list/${id}`} />
-              <button className="rounded p-2 hover:bg-gray-100 cursor-pointer">
-                <Trash2 size={20} className="text-primary-gray" />
-              </button>
+              {(status === PROPERTY_STATUS.active ||
+                status === PROPERTY_STATUS.pending ||
+                status === PROPERTY_STATUS.rejected) && (
+                <button
+                  disabled={isLoading}
+                  onClick={() => setOpenDelete(true)}
+                  className={"rounded p-2 hover:bg-gray-100 cursor-pointer"}
+                >
+                  <Trash2 size={20} className="text-primary-gray" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -161,6 +181,26 @@ export default function DashboardPropertyCard({
         onOpenChange={setOpenHouseOpen}
         id={id}
         openHouse={openHouse}
+      />
+
+      <AppDialog
+        open={openDelete}
+        onOpenChange={setOpenDelete}
+        title="Remove Listing?"
+        description="Are you sure you want to remove this listing from the marketplace?"
+        className="text-primary-black"
+        actions={[
+          {
+            label: "Cancel",
+            variant: "outline",
+            onClick: () => setOpenDelete(false),
+          },
+          {
+            label: "Delete",
+            onClick: () => handleDelete(),
+            className: "bg-[#881515] text-white",
+          },
+        ]}
       />
     </>
   );

@@ -30,7 +30,7 @@ export default function ReadMoreText({
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
-          className="text-[#1F4E8B] font-semibold text-sm hover:underline"
+          className="text-[#1F4E8B] font-semibold text-sm hover:underline cursor-pointer"
         >
           {expanded ? "See less" : "See more"}
         </button>
