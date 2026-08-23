@@ -1,11 +1,9 @@
 "use client";
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Flag, Loader2, OctagonAlert } from "lucide-react";
-
+import { Loader2, OctagonAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,8 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { errorModification } from "@/lib/errors/errorModification";
+import { toast } from "sonner";
+import { useCreateReportMutation } from "@/redux/api/reportApi";
 
-// Both fields are required — subject is a short label, description holds the detail
 const reportSchema = z.object({
   subject: z
     .string()
@@ -39,19 +39,14 @@ type ReportFormData = z.infer<typeof reportSchema>;
 interface ReportSellerDialogProps {
   sellerId: string;
   sellerName?: string;
-  trigger?: React.ReactNode;
-  onSubmitReport?: (
-    data: ReportFormData & { sellerId: string },
-  ) => Promise<void>;
 }
 
 export default function ReportSellerDialog({
   sellerId,
   sellerName,
-  trigger,
-  onSubmitReport,
 }: ReportSellerDialogProps) {
   const [open, setOpen] = useState(false);
+  const [createReport] = useCreateReportMutation();
 
   const {
     register,
@@ -67,17 +62,15 @@ export default function ReportSellerDialog({
   });
 
   const onSubmit = async (data: ReportFormData) => {
+    const formattedData = { ...data, seller: sellerId };
     try {
-      if (onSubmitReport) {
-        await onSubmitReport({ ...data, sellerId });
-      } else {
-        console.log("Report submitted:", { ...data, sellerId });
-      }
+      await createReport(formattedData).unwrap();
+      toast.success("Report submitted successfully, our team will review it!");
       reset();
       setOpen(false);
     } catch (error) {
-      console.error("Failed to submit report:", error);
-      alert("Failed to submit report. Please try again.");
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
     }
   };
 
@@ -91,11 +84,9 @@ export default function ReportSellerDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        {trigger ?? (
-          <div className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer">
-            <OctagonAlert size="20" /> Report this seller
-          </div>
-        )}
+        <div className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer">
+          <OctagonAlert size="20" /> Report this seller
+        </div>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">

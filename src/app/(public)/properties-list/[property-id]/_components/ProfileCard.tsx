@@ -1,14 +1,18 @@
+"use client";
 import { IUser } from "@/types";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import moment from "moment";
+import { useGetSellerProfileQuery } from "@/redux/api/profileApi";
+import { cn } from "@/lib/utils";
 
 interface ProfileCardProps {
   seller: IUser;
 }
 
 export default function ProfileCard({ seller }: ProfileCardProps) {
+  const { data, isLoading } = useGetSellerProfileQuery(seller?._id);
   return (
     <div className="w-full  bg-white rounded-lg  lg:p-6 p-4 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] border border-[#FAEEEA]">
       <div className="flex gap-4">
@@ -44,7 +48,12 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
           <div className="flex items-center gap-1 mt-2">
             <Star className="w-5 h-5 fill-[#1F4E8B] text-[#1F4E8B]" />
             <span className="text-base font-semibold text-[#1F4E8B]">
-              {seller?.avgRating?.toFixed(1)} rating
+              {isLoading ? (
+                <span className="animate-pulse">... </span>
+              ) : (
+                data?.data?.avgRating?.toFixed(1)
+              )}{" "}
+              rating
             </span>
           </div>
         </div>
@@ -55,8 +64,13 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
         <span className="text-gray-600">
           Member since {moment(seller?.createdAt).format("MMM YYYY")}
         </span>
-        <span className="font-semibold text-gray-900">
-          {seller?.totalListing} listings
+        <span className={cn("font-semibold text-gray-900")}>
+          {isLoading ? (
+            <span className="animate-pulse">... </span>
+          ) : (
+            data?.data?.totalListing
+          )}{" "}
+          listings
         </span>
       </div>
 

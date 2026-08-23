@@ -75,7 +75,7 @@ export function PropertyTypeSelector({
             selectedTypes.map((type) => (
               <span
                 key={type}
-                className="inline-flex items-center gap-1 bg-[#E0EEFF] border border-[#00214C29] px-3 py-1 rounded-full text-sm"
+                className="inline-flex  items-center gap-1 bg-[#E0EEFF] border border-[#00214C29] px-3 py-1 rounded-full text-sm "
               >
                 {type}
                 <button

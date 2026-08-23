@@ -170,3 +170,31 @@ export interface IMetaData {
   total: number;
   totalPage: number;
 }
+
+
+export interface IReview {
+  _id: string;
+  user: IUser;
+  seller: string;
+  property: string;
+  rating: number;
+  review: string;
+  createdAt: string;
+}
+
+export interface IRatingBreakdown {
+  star: number;
+  count: number;
+}
+
+export interface IReviewSummary {
+  avgRating: number;
+  totalReviews: number;
+  ratingBreakdown: IRatingBreakdown[];
+}
+
+export interface ISellerReviewData {
+  data: IReview[];
+  meta: IMetaData;
+  summary: IReviewSummary;
+}

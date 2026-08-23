@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+// proxy.ts
+import { NextRequest, NextResponse } from "next/server";
 import { authRoutes } from "./lib/authRoutes";
 
-export default function middleware(req: any) {
+const ACCESS_TOKEN_KEY = "betteroffmarket-access-token";
+
+export function proxy(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = req.cookies.get("betteroffmarket-access-token")?.value;
+  const isLoggedIn = req.cookies.get(ACCESS_TOKEN_KEY)?.value;
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isAuthRoute && isLoggedIn) {
@@ -18,6 +21,8 @@ export default function middleware(req: any) {
     );
     return NextResponse.redirect(signInUrl);
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

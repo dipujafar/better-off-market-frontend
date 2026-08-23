@@ -2,21 +2,17 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { subscriptionFormSchema, type SubscriptionFormData } from "./schemas";
+import { SubscriptionFormData, subscriptionFormSchema } from "./schemas";
 
 import { Loader2, Check, AlertCircle } from "lucide-react";
 import { CountySelector } from "@/components/shared/county_selector/CountySelector";
 import { PropertyTypeSelector } from "@/components/shared/property_selector/PropertyTypeSelector";
-
-type SubscriptionFormValues = SubscriptionFormData & {
-  propertyType: string[];
-};
+import { useCreateGetInTouchMutation } from "@/redux/api/getInTouchApi";
+import { toast } from "sonner";
+import { errorModification } from "@/lib/errors/errorModification";
 
 export default function SubscriptionForm() {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [createGetInTouch, { isLoading }] = useCreateGetInTouchMutation();
 
   const {
     register,
@@ -25,45 +21,26 @@ export default function SubscriptionForm() {
     watch,
     setValue,
     reset,
-  } = useForm<SubscriptionFormValues>({
+  } = useForm<SubscriptionFormData>({
     resolver: zodResolver(subscriptionFormSchema as any),
     defaultValues: {
       email: "",
       counties: [],
-      propertyType: [],
-      image: undefined,
+      propertyTypes: [],
     },
   });
 
   const counties = watch("counties");
-  const propertyType = watch("propertyType") as string[] | undefined;
+  const propertyType = watch("propertyTypes") as string[] | undefined;
 
-  const onSubmit = async (data: SubscriptionFormValues) => {
-    setStatus("loading");
-    setErrorMessage("");
-
+  const onSubmit = async (data: SubscriptionFormData) => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Form submitted:", {
-        email: data.email,
-        counties: data.counties,
-        propertyType: data.propertyType,
-        hasImage: !!data.image,
-        imageSize: data.image?.size,
-      });
-
-      setStatus("success");
+      await createGetInTouch(data).unwrap();
+      toast.success("Successfully subscribed!");
       reset();
-
-      // Reset status after 3 seconds
-      setTimeout(() => {
-        setStatus("idle");
-      }, 3000);
     } catch (error) {
-      setStatus("error");
-      setErrorMessage("Something went wrong. Please try again.");
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
     }
   };
 
@@ -95,11 +72,11 @@ export default function SubscriptionForm() {
           </label>
           <PropertyTypeSelector
             selectedTypes={propertyType ? [...propertyType] : []}
-            onTypesChange={(types) => setValue("propertyType", types)}
+            onTypesChange={(types) => setValue("propertyTypes", types)}
           />
-          {errors.propertyType && (
+          {errors.propertyTypes && (
             <p className="text-red-300 text-sm mt-1">
-              {errors.propertyType.message}
+              {errors.propertyTypes.message}
             </p>
           )}
         </div>
@@ -123,44 +100,17 @@ export default function SubscriptionForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={status === "loading" || status === "success"}
+          disabled={isLoading}
           className="w-40 mt-6 px-8 py-2.5 rounded-full font-semibold text-black bg-white hover:bg-gray-50 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         >
-          {status === "loading" && (
-            <>
-              <Loader2 size={18} className="animate-spin" />
-              Subscribing...
-            </>
+          {isLoading ? (
+            <span className="flex items-center gap-1">
+              <Loader2 size={20} className="animate-spin" /> Subscribing
+            </span>
+          ) : (
+            "Subscribe"
           )}
-          {status === "success" && (
-            <>
-              <Check size={18} />
-              Subscribed!
-            </>
-          )}
-          {status === "error" && (
-            <>
-              <AlertCircle size={18} />
-              Try Again
-            </>
-          )}
-          {status === "idle" && "Subscribe"}
         </button>
-
-        {/* Success Message */}
-        {status === "success" && (
-          <div className="bg-green-500/20 border border-green-300 rounded-lg p-3 text-sm text-green-100">
-            ✓ Successfully subscribed! You&apos;ll receive notifications for{" "}
-            {counties.join(", ")}.
-          </div>
-        )}
-
-        {/* Error Message */}
-        {status === "error" && (
-          <div className="bg-red-500/20 border border-red-300 rounded-lg p-3 text-sm text-red-100">
-            {errorMessage || "Something went wrong. Please try again."}
-          </div>
-        )}
       </form>
     </div>
   );

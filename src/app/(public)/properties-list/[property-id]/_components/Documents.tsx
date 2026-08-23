@@ -3,8 +3,13 @@ import { PDFIcon } from "@/icons";
 import { IDocument } from "@/types";
 import { Download, FileText } from "lucide-react";
 
-
-export function Documents({ documents }: { documents: IDocument[] }) {
+export function Documents({
+  documents,
+  assignableContractFile,
+}: {
+  documents: IDocument[] | undefined;
+  assignableContractFile: IDocument | undefined;
+}) {
   const displayDocuments = documents;
 
   const handleDownload = (doc: IDocument) => {
@@ -47,6 +52,31 @@ export function Documents({ documents }: { documents: IDocument[] }) {
             </button>
           </div>
         ))}
+
+        {assignableContractFile && (
+          <div
+            key={assignableContractFile?._id}
+            className="flex items-center gap-4 bg-white border-2 border-primary-border-color p-3 rounded-lg hover:bg-gray-150 transition-colors"
+          >
+            <PDFIcon className="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-medium text-primary-black truncate w-50 md:w-full">
+                {assignableContractFile?.name}
+              </h3>
+              {/* <p className="text-xs text-gray-500 mt-1">
+                {doc.size} • Updated{" "}
+                {moment(doc.updated).format("MMM DD, YYYY")}
+              </p> */}
+            </div>
+            <button
+              onClick={() => handleDownload(assignableContractFile)}
+              className="shrink-0 p-2 text-gray-600 hover:text-primary-black transition-colors cursor-pointer hover:bg-gray-200 duration-100  rounded-full"
+              aria-label={`Download ${assignableContractFile?.name}`}
+            >
+              <Download className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

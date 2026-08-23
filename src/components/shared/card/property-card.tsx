@@ -7,6 +7,7 @@ import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecific
 import { priceFormatter } from "../utils/priceFormatter";
 import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
 import moment from "moment";
+import { statusColor } from "@/components/utils/status-color";
 
 export function PropertyCard({
   _id,
@@ -20,12 +21,14 @@ export function PropertyCard({
   className,
   propertyType,
   specifications,
-  location,
+  status,
   createdAt,
   propertiesSpecificationsClassName,
+  isPropertyStatusVisible = false,
 }: IPropertyResponse & {
   className?: string;
   propertiesSpecificationsClassName?: string;
+  isPropertyStatusVisible?: boolean;
 }) {
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
   const propertySpecs = handlePropertiesSpecifications(
@@ -77,6 +80,16 @@ export function PropertyCard({
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
           {propertyType}
         </div>
+        {isPropertyStatusVisible && (
+          <div
+            className={cn(
+              "absolute bottom-3 right-3 px-2.5  py-0.5 rounded-full ",
+              statusColor[status],
+            )}
+          >
+            {status}
+          </div>
+        )}
 
         {/* Original Price Badge */}
 

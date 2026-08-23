@@ -1,67 +1,92 @@
-interface Review {
-  id: string | number;
-  name: string;
-  date: string;
-  rating: number;
-  comment: string;
-}
+import { IReview } from "@/types";
+import Empty from "@/components/ui/empty-data";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
+import moment from "moment";
+import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 
 interface ReviewListProps {
-  reviews?: Review[];
+  reviews: IReview[];
+  hasMore: boolean;
+  isFetchingMore: boolean;
+  onSeeMore: () => void;
 }
 
 export function SellerReviewList({
-  reviews = [
-    {
-      id: 1,
-      name: "Michael B.",
-      date: "Jun 10, 2026",
-      rating: 5,
-      comment:
-        "James is a true professional. The closing on the Memphis property was seamless and he kept me updated every step of the way. Highly recommended for anyone looking for off-market deals.",
-    },
-    {
-      id: 2,
-      name: "Sarah L.",
-      date: "May 28, 2026",
-      rating: 5,
-      comment:
-        "Great experience purchasing land in Tulsa. James provided all the necessary documentation upfront and the title was indeed clear as promised. Will definitely work with him again.",
-    },
-  ],
+  reviews,
+  hasMore,
+  isFetchingMore,
+  onSeeMore,
 }: ReviewListProps) {
+  if (reviews.length === 0) {
+    return <Empty message="No reviews yet." className="mt-16" />;
+  }
+
   return (
     <div className="space-y-6">
       {reviews.map((review) => (
         <div
-          key={review.id}
+          key={review._id}
           className="rounded-md bg-white p-6 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]"
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              {/* Avatar Initials */}
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 text-base font-semibold text-primary-gray">
-                {getInitials(review.name)}
-              </div>
+              {review.user?.profile ? (
+                <ImageWithFallback
+                  src={review.user.profile}
+                  alt={review.user.name}
+                  width={44}
+                  height={44}
+                  className="size-11 shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 text-base font-semibold text-primary-gray">
+                  {getInitials(review.user?.name ?? "U")}
+                </div>
+              )}
               <div>
                 <p className="font-semibold text-primary-black">
-                  {review.name}
+                  {review.user?.name ?? "Anonymous"}
                 </p>
-                <p className="text-sm text-[#594139] font-semibold">{review.date}</p>
+                <p className="text-sm text-[#594139] font-semibold">
+                  {moment(review.createdAt).format("MMM DD, YYYY")}
+                </p>
               </div>
             </div>
 
-            {/* Stars */}
             <div className="flex shrink-0 gap-0.5">
               {[1, 2, 3, 4, 5].map((i) => (
-                <StarIcon  key={i} filled={i <= review.rating} />
+                <StarIcon key={i} filled={i <= review.rating} />
               ))}
             </div>
           </div>
-
-          <p className="mt-4 text-[#594139] text-lg">{review.comment}</p>
+          <p className="mt-4 text-[#594139] text-lg">
+            <ReadMoreText text={review.review} wordLimit={50} />
+          </p>
         </div>
       ))}
+
+      {hasMore && (
+        <div className="flex justify-center pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onSeeMore}
+            disabled={isFetchingMore}
+            className="min-w-32 cursor-pointer"
+          >
+            {isFetchingMore ? (
+              <>
+                <Loader2 className="mr-2 size-4 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              "See more"
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

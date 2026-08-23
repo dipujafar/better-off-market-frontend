@@ -76,6 +76,15 @@ export default function HeroBanner({ data }: TProps) {
         {/* Base darkening gradient */}
         <div className="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0)_-59.22%,rgba(0,0,0,0.7)_69.98%)]" />
 
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-20"
+        >
+          <Container className="mb-5 w-full">{data?.children}</Container>
+        </motion.div>
+
         <Container
           className={cn(
             "relative grid md:grid-cols-3 2xl:gap-x-12 lg:gap-x-8 gap-x-4 z-20 text-white items-end",
@@ -109,48 +118,6 @@ export default function HeroBanner({ data }: TProps) {
             {data?.description}
           </motion.p>
         </Container>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-20"
-        >
-          <Container className="mt-5 w-full">{data?.children}</Container>
-        </motion.div>
-
-        {/* Scroll cue */}
-        {/* {!data?.authPage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.6 }}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-2"
-          >
-            <span className="text-[10px] tracking-[0.2em] uppercase text-white/60">
-              Scroll
-            </span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{
-                duration: 1.6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="w-5 h-8 rounded-full border border-white/40 flex justify-center pt-1.5"
-            >
-              <motion.div
-                animate={{ y: [0, 10, 0], opacity: [1, 0.3, 1] }}
-                transition={{
-                  duration: 1.6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="w-1 h-1.5 rounded-full bg-white/80"
-              />
-            </motion.div>
-          </motion.div>
-        )} */}
       </div>
     </div>
   );

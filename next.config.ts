@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  
+  allowedDevOrigins: ["10.10.28.21"],
 
   images: {
     domains: [

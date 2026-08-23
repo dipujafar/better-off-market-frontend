@@ -1,34 +1,34 @@
 "use client";
+import { AppDialog } from "@/components/shared/dialog/AppDialog";
 import ReportSellerDialog from "@/components/shared/dialog/ReportSellerDialog";
 import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 import SellerProfileSkeleton from "@/components/skeleton/seller-profile-skeleton";
 import { Button } from "@/components/ui/button";
+import Empty from "@/components/ui/empty-data";
 import { useGetSellerProfileQuery } from "@/redux/api/profileApi";
-import Image from "next/image";
+import { useAppSelector } from "@/redux/hooks";
+import { OctagonAlert } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
-interface SellerProfileProps {
-  name?: string;
-  avatarUrl?: string;
-  title?: string;
-  location?: string;
-  bio?: string;
-  activeListings?: number;
-  totalListed?: number;
-  avgRating?: number;
-}
-
-export function SellerProfileCard({
-  name = "James R.",
-  avatarUrl = "/seller_profile.png",
-}: SellerProfileProps) {
+export function SellerProfileCard() {
   const sellerId = useSearchParams().get("seller");
-  const { data, isLoading } = useGetSellerProfileQuery(sellerId);
+  const { data, isLoading } = useGetSellerProfileQuery(sellerId, {
+    skip: !sellerId,
+  });
+  const loggedInUser: any = useAppSelector((state) => state.auth.user);
   const user = data?.data;
+  const [openAuthModel, setOpenAuthModel] = useState(false);
+  const router = useRouter();
+  const pathName = usePathname();
 
   if (isLoading) return <SellerProfileSkeleton />;
+
+  if (!user) {
+    return <Empty message="Seller profile not found" className="mt-16" />;
+  }
 
   return (
     <>
@@ -37,7 +37,7 @@ export function SellerProfileCard({
           {/* Avatar */}
           <ImageWithFallback
             src={user?.profile || "/default_user_profile.png"}
-            alt={name}
+            alt={"seller profile avatar"}
             width={1200}
             height={1200}
             className="size-20 shrink-0 rounded-lg object-cover sm:size-28 lg:size-40"
@@ -95,21 +95,51 @@ export function SellerProfileCard({
                   </p>
                 </div>
                 <div>
-                  <Link href="/message">
+                  <Link href={`/message?user${user?._id}`}>
                     <Button className="lg:px-10 px-5 py-5 cursor-pointer">
                       Message Seller
                     </Button>
                   </Link>
                 </div>
-                {/* <div className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer">
-                <OctagonAlert size="20" /> Report this seller
-              </div> */}
-                <ReportSellerDialog sellerName={name} sellerId="123" />
+                {!loggedInUser?.userId ? (
+                  <div
+                    onClick={() => setOpenAuthModel(true)}
+                    className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer"
+                  >
+                    <OctagonAlert size="20" /> Report this seller
+                  </div>
+                ) : (
+                  <ReportSellerDialog
+                    sellerName={user?.name}
+                    sellerId={user?._id}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <AppDialog
+        open={openAuthModel}
+        onOpenChange={setOpenAuthModel}
+        title="Sign in to continue"
+        description="Login your account to report seller"
+        actions={[
+          {
+            label: "Cancel",
+            variant: "outline",
+            onClick: () => setOpenAuthModel(false),
+          },
+          {
+            label: "Login",
+            onClick: () =>
+              router.push(
+                `/login?callbackUrl=${`${pathName}?seller=${user?._id}`}`,
+              ),
+          },
+        ]}
+      />
     </>
   );
 }
