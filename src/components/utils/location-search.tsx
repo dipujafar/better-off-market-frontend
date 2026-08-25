@@ -1,68 +1,59 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, MapPin } from "lucide-react";
-import { envConfig } from "@/config";
-
-// Add to .env.local:
-// NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key_here
-
-const GOOGLE_MAPS_API_KEY = envConfig.mapKey!;
-
-type Prediction = {
-  place_id: string;
-  description: string;
-};
+import { useRouter } from "next/navigation";
+import { useGetPropertiesForWebQuery } from "@/redux/api/propertiesApi";
+import { IPropertyResponse } from "@/types";
 
 type LocationSearchProps = {
   placeholder?: string;
-  onApply?: (locations: Prediction[]) => void;
 };
 
-let scriptLoadingPromise: Promise<void> | null = null;
+const SEARCH_DEBOUNCE_MS = 300;
 
-function loadGoogleMapsScript(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  if ((window as any).google?.maps?.places) return Promise.resolve();
-  if (scriptLoadingPromise) return scriptLoadingPromise;
+// Escapes regex special characters in the search term so a query like
+// "3.5" or "(Dhaka)" doesn't break the RegExp constructor below.
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-  scriptLoadingPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () =>
-      reject(new Error("Failed to load Google Maps script"));
-    document.head.appendChild(script);
-  });
+// Splits `text` around every case-insensitive occurrence of `term` and
+// bolds the matching parts. Returns plain text unchanged if term is empty.
+function highlightMatch(text: string, term: string) {
+  if (!term.trim()) return text;
 
-  return scriptLoadingPromise;
+  const pattern = new RegExp(`(${escapeRegExp(term.trim())})`, "gi");
+  const parts = text.split(pattern);
+
+  return parts.map((part, i) =>
+    pattern.test(part) ? (
+      <strong key={i} className="font-semibold text-base text-primary-black">
+        {part}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
 }
 
 export default function LocationSearch({
   placeholder = "Search by city, ZIP, or address",
-  onApply,
 }: LocationSearchProps) {
-  const [query, setQuery] = useState("");
+  const router = useRouter();
+  const [inputValue, setInputValue] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [predictions, setPredictions] = useState<Prediction[]>([]);
-  const [selected, setSelected] = useState<Prediction[]>([]);
-  const [scriptReady, setScriptReady] = useState(false);
 
-  const autocompleteService =
-    useRef<google.maps.places.AutocompleteService | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    loadGoogleMapsScript()
-      .then(() => {
-        autocompleteService.current =
-          new google.maps.places.AutocompleteService();
-        setScriptReady(true);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  const { data, isLoading } = useGetPropertiesForWebQuery(
+    { searchTerm: debouncedTerm },
+    { skip: !debouncedTerm.trim() },
+  );
+
+  const properties: IPropertyResponse[] = data?.data ?? [];
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -77,89 +68,41 @@ export default function LocationSearch({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const fetchPredictions = useCallback((input: string) => {
-    if (!autocompleteService.current || !input.trim()) {
-      setPredictions([]);
-      return;
-    }
-
-    autocompleteService.current.getPlacePredictions(
-      {
-        input,
-        // Covers city, state, county, ZIP, and full address searches
-        types: ["geocode"],
-      },
-      (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          setPredictions(
-            results.map((r) => ({
-              place_id: r.place_id,
-              description: r.description,
-            })),
-          );
-        } else {
-          setPredictions([]);
-        }
-      },
-    );
-  }, []);
-
   function handleInputChange(value: string) {
-    setQuery(value);
+    setInputValue(value);
     setIsOpen(true);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchPredictions(value), 300);
-  }
-
-  function addLocation(prediction: Prediction) {
-    setSelected((prev) => {
-      if (prev.some((p) => p.place_id === prediction.place_id)) return prev;
-      return [...prev, prediction];
-    });
-    setQuery("");
-    setPredictions([]);
-  }
-
-  function removeLocation(placeId: string) {
-    setSelected((prev) => prev.filter((p) => p.place_id !== placeId));
-  }
-
-  function clearAll() {
-    setSelected([]);
-    setQuery("");
-    setPredictions([]);
-  }
-
-  function handleApply() {
-    onApply?.(selected);
-    setIsOpen(false);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedTerm(value);
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   function handleSearchClick() {
-    // If there's text typed but not added yet, fetch fresh predictions and open dropdown
-    if (query.trim()) {
-      fetchPredictions(query);
-    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setDebouncedTerm(inputValue);
     setIsOpen(true);
   }
 
-  const listItems = query.trim() ? predictions : selected;
-  const showList = isOpen && listItems.length > 0;
+  function handleSelectProperty(propertyId: string) {
+    setIsOpen(false);
+    router.push(`/properties-list/${propertyId}`);
+  }
+
+  const showList = isOpen && debouncedTerm.trim().length > 0;
 
   return (
-    <div ref={containerRef} className="relative  w-full">
+    <div ref={containerRef} className="relative w-full">
       {/* Search bar */}
-      <div className="flex items-center gap-2 rounded-xl bg-white p-4 shadow-lg">
-        <div className="flex flex-1  items-center gap-2 rounded-md px-4 py-2">
+      <div className="flex items-center gap-2 rounded-full bg-white p-3 shadow-lg">
+        <div className="flex flex-1 items-center gap-2 rounded-md px-4 py-2">
           <Search className="h-5 w-5 shrink-0 text-[#8D7168]" />
           <input
             type="text"
-            value={query}
+            value={inputValue}
             onChange={(e) => handleInputChange(e.target.value)}
-            onFocus={() => setIsOpen(true)}
+            onFocus={() => inputValue.trim() && setIsOpen(true)}
             placeholder={placeholder}
-            disabled={!scriptReady}
             className="w-full bg-transparent text-base text-gray-700 placeholder:text-gray-400 focus:outline-none"
           />
         </div>
@@ -175,47 +118,37 @@ export default function LocationSearch({
 
       {/* Dropdown */}
       {showList && (
-        <div className="absolute left-2 top-[calc(100%+8px)] z-20 w-80 overflow-hidden rounded-xl bg-white shadow-xl">
-          <ul className="max-h-72 overflow-y-auto py-2">
-            {listItems.map((item) => {
-              const isSelected = selected.some(
-                (s) => s.place_id === item.place_id,
-              );
-              return (
-                <li key={item.place_id}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      query.trim()
-                        ? addLocation(item)
-                        : removeLocation(item.place_id)
-                    }
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-primary-black hover:bg-gray-50 cursor-pointer"
-                  >
-                    <MapPin className="h-4 w-4 shrink-0 text-[#A9ACB3]" />
-                    <span className="truncate">{item.description}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+        <div className="absolute left-2 top-[calc(100%+8px)] z-9999 md:max-w-150 max-w-88 overflow-hidden rounded-xl bg-white shadow-xl">
+          {isLoading ? (
+            <div className="px-4 py-6 text-center text-sm text-gray-500">
+              Searching...
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="px-4 py-6 text-center text-sm text-gray-500">
+              No properties found.
+            </div>
+          ) : (
+            <ul className="max-h-80 overflow-y-auto py-2">
+              {properties.map((property) => {
+                const addressText = `${property?.streetAddress}, ${property?.city}, ${property?.state}, ${property?.zipCode}, ${property?.county}`;
 
-          <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-            <button
-              type="button"
-              onClick={clearAll}
-              className="text-sm font-medium text-primary-color hover:text-gray-700"
-            >
-              Clear All
-            </button>
-            <button
-              type="button"
-              onClick={handleApply}
-              className="rounded-sm bg-primary-color px-5 py-2 text-sm font-medium text-white hover:bg-slate-800 cursor-pointer"
-            >
-              Apply
-            </button>
-          </div>
+                return (
+                  <li key={property._id}>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectProperty(property._id)}
+                      className="flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm text-primary-gray hover:bg-gray-50 cursor-pointer"
+                    >
+                      <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-[#A9ACB3]" />
+                      <span className="truncate">
+                        {highlightMatch(addressText, debouncedTerm)}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       )}
     </div>

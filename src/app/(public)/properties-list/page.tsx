@@ -2,19 +2,28 @@ import Container from "@/components/shared/container/Container";
 import HeroBanner from "@/components/shared/hero_banner/HeroBanner";
 import FilterOptions from "@/components/shared/utils/FilterOptions";
 import ListedProperties from "./_components/ListedProperties";
+export type SearchParams = Promise<{
+  [key: string]: string | string[] | number | undefined;
+}>;
 
 export const metadata = {
   title: "Properties",
   description: "Find your all offed properties on Better Off Market.",
 };
 
-export default async function PropertiesPage() {
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const bannerData = {
     title: "Browse properties",
     description:
       "Browse verified listings — no agents, no middlemen. Professional real estate investment, simplified for the modern investor.",
     className: "min-h-[50vh]",
   };
+
+  const resolvedParams = await searchParams;
 
   return (
     <div className="space-y-16">
@@ -24,7 +33,7 @@ export default async function PropertiesPage() {
           <FilterOptions />
         </div>
         <div className="lg:col-span-2 xl:col-span-3">
-          <ListedProperties />
+          <ListedProperties searchParams={resolvedParams} />
         </div>
       </Container>
     </div>

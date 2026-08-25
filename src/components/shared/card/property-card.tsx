@@ -25,10 +25,12 @@ export function PropertyCard({
   createdAt,
   propertiesSpecificationsClassName,
   isPropertyStatusVisible = false,
+  active,
 }: IPropertyResponse & {
   className?: string;
   propertiesSpecificationsClassName?: string;
   isPropertyStatusVisible?: boolean;
+  active?: boolean;
 }) {
   // Only keep entries whose value is truthy (drops undefined, null, 0, "", NaN)
   const propertySpecs = handlePropertiesSpecifications(
@@ -39,12 +41,13 @@ export function PropertyCard({
   return (
     <Link
       href={`/properties-list/${_id}`}
-      className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group"
+      className="w-full  rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow bg-white group "
     >
       {/* Image Container */}
       <div
         className={cn(
-          "relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100",
+          "relative xl:h-64 h-56 w-full overflow-hidden bg-gray-100 ",
+          active && " border-t-2 border-x-2 border-primary-color rounded-t-lg",
           className,
         )}
       >
@@ -98,7 +101,12 @@ export function PropertyCard({
       </div>
 
       {/* Content Container */}
-      <div className="xl:p-6  p-4 space-y-1">
+      <div
+        className={cn(
+          "xl:p-6  p-4 space-y-1 ",
+          active && " border-b-2 border-x-2 border-primary-color rounded-b-lg",
+        )}
+      >
         {/* Price */}
         <div className="space-y-1">
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">

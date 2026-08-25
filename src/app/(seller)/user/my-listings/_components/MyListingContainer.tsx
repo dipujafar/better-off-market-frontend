@@ -13,7 +13,7 @@ type ListingTab =
   | "pending"
   | "rejected"
   | "sold"
-  | "under-contact";
+  | "under-contract";
 
 const handleStatusValue = (status: ListingTab) => {
   switch (status) {
@@ -25,8 +25,8 @@ const handleStatusValue = (status: ListingTab) => {
       return "Rejected";
     case "sold":
       return "Sold";
-    case "under-contact":
-      return "Under Contact";
+    case "under-contract":
+      return "Under Contract";
     default:
       return "";
   }
@@ -104,7 +104,7 @@ export default function MyListingContainer() {
             value="under-contact"
             className="data-active:bg-transparent data-active:text-primary-color border-l-0 border-r-0 border-t-0 data-active:border-b-2  data-active:border-primary-color rounded-none cursor-pointer px-4 py-2.5 mr-1"
           >
-            Under Contact ({statusCounts?.under_contact || 0})
+            Under Contract ({statusCounts?.under_contact || 0})
           </TabsTrigger>
 
           <TabsTrigger

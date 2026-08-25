@@ -26,7 +26,7 @@ interface PropertyCardProps {
   saved: number;
   offers: number;
   rsvp: number;
-  status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
+  status: "Pending" | "Active" | "Under Contract" | "Sold" | "Rejected";
   openHouse: IOpenHouse;
 }
 

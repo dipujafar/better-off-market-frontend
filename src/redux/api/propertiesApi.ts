@@ -19,6 +19,13 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.property],
     }),
+    getPropertiesForWeb: build.query({
+      query: (params) => ({
+        url: "/properties/web-content",
+        method: "GET",
+        params,
+      }),
+    }),
     getMyListings: build.query({
       query: (params) => ({
         url: "/properties/my-listing",
@@ -36,7 +43,7 @@ const propertyApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.property],
     }),
     getSellerProperties: build.query({
-      query: ({id, ...params}) => ({
+      query: ({ id, ...params }) => ({
         url: `/properties/seller/${id}`,
         method: "GET",
         params,
@@ -64,6 +71,7 @@ const propertyApi = baseApi.injectEndpoints({
 export const {
   useCreatePropertyMutation,
   useGetPropertiesQuery,
+  useGetPropertiesForWebQuery,
   useGetPriceDroppedPropertiesQuery,
   useGetMyListingsQuery,
   useGetSellerPropertiesQuery,

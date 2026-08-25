@@ -5,6 +5,7 @@ import { CardContent } from "@/components/ui/card";
 import { useCallback, useMemo, useState } from "react";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 import { useRouter } from "next/navigation";
+import { IPropertyResponse } from "@/types";
 
 const containerStyle = {
   width: "100%",
@@ -14,70 +15,15 @@ const containerStyle = {
 // Default fallback center — Dhaka, Bangladesh
 const DHAKA_CENTER = { lat: 23.8103, lng: 90.4125 };
 
-// Muted grayscale style to match the reference screenshot
-const mapStyles: google.maps.MapTypeStyle[] = [
-  { elementType: "geometry", stylers: [{ color: "#e9e9e9" }] },
-  { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
-  {
-    featureType: "administrative.land_parcel",
-    stylers: [{ visibility: "off" }],
-  },
-  { featureType: "poi", stylers: [{ visibility: "off" }] },
-  {
-    featureType: "poi.park",
-    elementType: "geometry",
-    stylers: [{ color: "#e5e5e5" }],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#ffffff" }],
-  },
-  {
-    featureType: "road.arterial",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#757575" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry",
-    stylers: [{ color: "#dadada" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#616161" }],
-  },
-  {
-    featureType: "road.local",
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#9e9e9e" }],
-  },
-  { featureType: "transit", stylers: [{ visibility: "off" }] },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [{ color: "#dbe3e5" }],
-  },
-];
 
-export interface PropertyData {
-  id: string | number;
-  price: number;
-  lat: number;
-  lng: number;
-}
 
 interface LocationMapProps {
-  properties: PropertyData[];
+  properties: IPropertyResponse[];
   title?: string;
   zoom?: number;
-  /** Tailwind height classes for the map container — defaults to a responsive stack */
   heightClassName?: string;
-  activeId?: PropertyData["id"] | null;
-  onMarkerClick?: (property: PropertyData) => void;
+  activeId?: IPropertyResponse["_id"] | null;
+  onMarkerClick?: (property: IPropertyResponse) => void;
 }
 
 /** Formats a raw price number into a compact label, e.g. 310000 -> "$310K" */
@@ -92,10 +38,10 @@ function formatPrice(price: number): string {
   return `$${price}`;
 }
 
-function getCenter(properties: PropertyData[]) {
+function getCenter(properties: IPropertyResponse[]) {
   if (!properties.length) return DHAKA_CENTER;
-  const lats = properties.map((p) => p.lat);
-  const lngs = properties.map((p) => p.lng);
+  const lats = properties.map((p) => p.location.coordinates[1]);
+  const lngs = properties.map((p) => p.location.coordinates[0]);
   return {
     lat: (Math.min(...lats) + Math.max(...lats)) / 2,
     lng: (Math.min(...lngs) + Math.max(...lngs)) / 2,
@@ -112,7 +58,7 @@ export function PropertiesInMap({
   const { isLoaded } = useGoogleMaps();
   const [, setMap] = useState<google.maps.Map | null>(null);
   const [internalActiveId, setInternalActiveId] = useState<
-    PropertyData["id"] | null
+    IPropertyResponse["_id"] | null
   >(null);
 
   const router = useRouter();
@@ -125,7 +71,7 @@ export function PropertiesInMap({
       setMap(mapInstance);
       if (properties.length > 1) {
         const bounds = new google.maps.LatLngBounds();
-        properties.forEach((p) => bounds.extend({ lat: p.lat, lng: p.lng }));
+        properties.forEach((p) => bounds.extend({ lat: p.location.coordinates[1], lng: p.location.coordinates[0] }));
         mapInstance.fitBounds(bounds, 60);
       }
     },
@@ -135,8 +81,8 @@ export function PropertiesInMap({
   const onUnmount = useCallback(() => setMap(null), []);
 
   const handleMarkerClick = useCallback(
-    (property: PropertyData) => {
-      setInternalActiveId(property.id);
+    (property: IPropertyResponse) => {
+      setInternalActiveId(property._id);
       onMarkerClick?.(property);
     },
     [onMarkerClick],
@@ -160,19 +106,21 @@ export function PropertiesInMap({
                 zoomControl: true,
                 scrollwheel: false,
                 gestureHandling: "cooperative",
-                // styles: mapStyles,
               }}
             >
               {properties.map((property) => (
                 <OverlayView
-                  key={property.id}
-                  position={{ lat: property.lat, lng: property.lng }}
+                  key={property._id}
+                  position={{ lat: property.location.coordinates[1], lng: property.location.coordinates[0] }}
                   mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                   <PriceMarker
-                    price={property.price}
-                    active={activeId === property.id}
-                    onClick={() => {handleMarkerClick(property); router.push(`#property-${property.id}`)}}
+                    price={property.listingPrice}
+                    active={activeId === property._id}
+                    onClick={() => {
+                      handleMarkerClick(property);
+                      router.push(`#property-${property._id}`);
+                    }}
                   />
                 </OverlayView>
               ))}

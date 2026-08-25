@@ -75,7 +75,7 @@ export interface IOpenHouse {
 
 export interface IPropertyResponse {
   _id: string;
-  status: "Pending" | "Active" | "Under Contact" | "Sold" | "Rejected";
+  status: "Pending" | "Active" | "Under Contract" | "Sold" | "Rejected";
 
   propertyType: string;
   useType?: string;

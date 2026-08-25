@@ -4,11 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme{
-  --color-primary-color: #00214C;
-  --color-primary-black: #191C1E;
-  --color-primary-gray: #565E74;
-  --color-primary-border-color: #E2BFB5
+@theme {
+  --color-primary-color: #00214c;
+  --color-primary-black: #191c1e;
+  --color-primary-gray: #565e74;
+  --color-primary-border-color: #e2bfb5;
 }
 
 @theme inline {
@@ -145,7 +145,6 @@
   }
 }
 
-
 /* =========== react pagination styles =================== */
 .rpb-item {
   border: 1px solid lightgray !important;
@@ -153,19 +152,26 @@
 }
 
 .rpb-item:hover {
-  border: 2px solid #00214C !important;
+  border: 2px solid #00214c !important;
   border-radius: 16px !important;
   transition: all 0.2s ease-in-out;
 }
 
 .rpb-item--active {
-  background-color: #00214C !important;
+  background-color: #00214c !important;
 }
 
 .scroll-hide::-webkit-scrollbar {
   scrollbar-width: none;
 }
 
+.scroll-width-sm::-webkit-scrollbar {
+  width: 1px; /* smaller than 5px */
+}
+
+.scroll-width-sm {
+  scrollbar-width: thin; /* Firefox */
+}
 
 /* @media (pointer: fine) {
   * {

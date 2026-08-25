@@ -7,16 +7,19 @@ import { PropertiesSortBar } from "./PropertiesSortBar";
 import { PropertyCard } from "@/components/shared/card/property-card";
 import PaginationSection from "@/components/shared/pagination/PaginationSection";
 
-export default async function ListedProperties() {
+export type SearchParams = {
+  [key: string]: string | string[] | number | undefined;
+};
+
+export default async function ListedProperties({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const result = await apiGet<IApiResponse<IPropertyResponse[]>>(
-    "/properties",
+    "/properties/web-content",
     {
-      // params: {
-      //   status: status || "active",
-      //   sort: sort || "-createdAt",
-      //   page: page ? Number(page) : 1,
-      //   limit: 10,
-      // },
+      params: { ...searchParams, limit: 9 },
       tags: [tagTypes.property],
     },
   );
@@ -29,9 +32,9 @@ export default async function ListedProperties() {
       {!metaData?.total && (
         <Empty message="No properties found" className="mt-16" />
       )}
-      {metaData?.total && (
+      {metaData?.total ? (
         <>
-          <PropertiesSortBar total={properties?.length} />
+          <PropertiesSortBar total={metaData?.total} />
           <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3  gap-4">
             {properties?.map((property, index) => (
               <PropertyCard key={index} {...property} className="xl:h-56" />
@@ -39,10 +42,11 @@ export default async function ListedProperties() {
           </div>
           <PaginationSection
             total={result?.meta?.total as number}
-            current={1}
+            current={searchParams?.page ? Number(searchParams?.page) : 1}
+            pageSize={9}
           />
         </>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, DollarSign, ListFilter, SlidersHorizontal } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import {
+  Check,
+  ChevronDown,
+  ListFilter,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useUpdateSearchParams } from "@/hooks/useUpdateSearchParams";
 import { CountySelector } from "@/components/shared/county_selector/CountySelector";
 import {
   Sheet,
@@ -17,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { PriceRangeField } from "./PriceRangeField.tsx";
 
 interface FilterState {
   counties: string[];
@@ -28,21 +36,85 @@ interface FilterState {
 
 type FilterKey = "propertyTypes" | "status";
 
-const PROPERTY_TYPES = ["Any Type", "Residential", "Multi-Family", "Commercial", "Land"];
+const PROPERTY_TYPES = [
+  "Any Type",
+  "Residential",
+  "Multi-Family",
+  "Commercial",
+  "Land",
+];
 const STATUS_OPTIONS = ["Active", "Under Contract"];
+
+const EMPTY_FILTERS: FilterState = {
+  counties: [],
+  propertyTypes: [],
+  minPrice: "",
+  maxPrice: "",
+  status: [],
+};
 
 interface FilterOptionsProps {
   layout?: "vertical" | "horizontal";
 }
 
-export default function FilterOptions({ layout = "vertical" }: FilterOptionsProps) {
-  const [filters, setFilters] = useState<FilterState>({
-    counties: [],
-    propertyTypes: ["Any Type"],
-    minPrice: "",
-    maxPrice: "",
-    status: ["Active"],
-  });
+// Reads current filter state straight out of the URL — used for initial
+// state so a refresh / shared link keeps whatever was selected.
+function readFiltersFromParams(
+  searchParams: ReturnType<typeof useSearchParams>,
+): FilterState {
+  const parseArray = (key: string) => {
+    const val = searchParams.get(key);
+    return val ? val.split(",").filter(Boolean) : [];
+  };
+
+  return {
+    counties: parseArray("county"),
+    propertyTypes: parseArray("propertyType"),
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    status: parseArray("status"),
+  };
+}
+
+function hasActiveFilters(f: FilterState) {
+  return (
+    f.counties.length > 0 ||
+    f.propertyTypes.length > 0 ||
+    f.status.length > 0 ||
+    Boolean(f.minPrice) ||
+    Boolean(f.maxPrice)
+  );
+}
+
+// Maps filter state -> exact param names, joining arrays with "," and
+// leaving a key OUT (undefined) whenever its value is empty, so
+// useUpdateSearchParams removes that param instead of writing "".
+function buildParamsPayload(f: FilterState): Record<string, string | null> {
+  return {
+    county: f.counties.length ? f.counties.join(",") : null,
+    propertyType: f.propertyTypes.length ? f.propertyTypes.join(",") : null,
+    minPrice: f.minPrice.trim() ? f.minPrice.trim() : null,
+    maxPrice: f.maxPrice.trim() ? f.maxPrice.trim() : null,
+    status: f.status.length ? f.status.join(",") : null,
+    page: "1",
+  };
+}
+
+export default function FilterOptions({
+  layout = "vertical",
+}: FilterOptionsProps) {
+  const searchParams = useSearchParams();
+  const updateParams = useUpdateSearchParams();
+
+  // "filters" = applied state, always in sync with the URL — edited
+  // directly by the DESKTOP panel (auto-apply, no button needed).
+  const [filters, setFilters] = useState<FilterState>(() =>
+    readFiltersFromParams(searchParams),
+  );
+
+  // "draftFilters" = local-only state used ONLY inside the mobile Sheet.
+  // Edits here don't touch the URL until "Apply Filters" is clicked.
+  const [draftFilters, setDraftFilters] = useState<FilterState>(filters);
 
   const [openDropdown, setOpenDropdown] = useState<FilterKey | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -51,7 +123,10 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
   useEffect(() => {
     if (layout !== "horizontal") return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpenDropdown(null);
       }
     };
@@ -59,22 +134,89 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [layout]);
 
-  const togglePropertyType = (type: string) => {
+  // ---- DESKTOP handlers: every change commits immediately to the URL ----
+
+  const applyToUrl = (updated: FilterState) => {
+    updateParams(buildParamsPayload(updated));
+  };
+
+  const desktopTogglePropertyType = (type: string) => {
     setFilters((prev) => {
-      if (type === "Any Type") {
-        return { ...prev, propertyTypes: ["Any Type"] };
-      }
-      const withoutAny = prev.propertyTypes.filter((t) => t !== "Any Type");
-      const exists = withoutAny.includes(type);
-      const updated = exists
-        ? withoutAny.filter((t) => t !== type)
-        : [...withoutAny, type];
-      return { ...prev, propertyTypes: updated.length ? updated : ["Any Type"] };
+      const updated =
+        type === "Any Type"
+          ? { ...prev, propertyTypes: [] }
+          : (() => {
+              const exists = prev.propertyTypes.includes(type);
+              const next = exists
+                ? prev.propertyTypes.filter((t) => t !== type)
+                : [...prev.propertyTypes, type];
+              return { ...prev, propertyTypes: next };
+            })();
+      applyToUrl(updated);
+      return updated;
     });
   };
 
-  const toggleStatus = (status: string) => {
+  const desktopToggleStatus = (status: string) => {
     setFilters((prev) => {
+      const exists = prev.status.includes(status);
+      const updated = {
+        ...prev,
+        status: exists
+          ? prev.status.filter((s) => s !== status)
+          : [...prev.status, status],
+      };
+      applyToUrl(updated);
+      return updated;
+    });
+  };
+
+  const desktopCountiesChange = (counties: string[]) => {
+    setFilters((prev) => {
+      const updated = { ...prev, counties };
+      applyToUrl(updated);
+      return updated;
+    });
+  };
+
+  // Called by PriceRangeField only after its internal 500ms debounce
+  // settles (or immediately on outside-click flush) — no debouncing
+  // needed here, it's already handled inside the field itself.
+  const desktopPriceChange = (
+    field: "minPrice" | "maxPrice",
+    value: string,
+  ) => {
+    setFilters((prev) => {
+      const updated = { ...prev, [field]: value };
+      applyToUrl(updated);
+      return updated;
+    });
+  };
+
+  const clearFilters = () => {
+    setFilters(EMPTY_FILTERS);
+    setDraftFilters(EMPTY_FILTERS);
+    updateParams(buildParamsPayload(EMPTY_FILTERS));
+  };
+
+  // ---- MOBILE (draft) handlers: only touch local draft state ----
+
+  const draftTogglePropertyType = (type: string) => {
+    setDraftFilters((prev) =>
+      type === "Any Type"
+        ? { ...prev, propertyTypes: [] }
+        : (() => {
+            const exists = prev.propertyTypes.includes(type);
+            const next = exists
+              ? prev.propertyTypes.filter((t) => t !== type)
+              : [...prev.propertyTypes, type];
+            return { ...prev, propertyTypes: next };
+          })(),
+    );
+  };
+
+  const draftToggleStatus = (status: string) => {
+    setDraftFilters((prev) => {
       const exists = prev.status.includes(status);
       return {
         ...prev,
@@ -85,175 +227,154 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
     });
   };
 
-  const handleMinPriceChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, minPrice: value }));
+  const draftCountiesChange = (counties: string[]) => {
+    setDraftFilters((prev) => ({ ...prev, counties }));
   };
 
-  const handleMaxPriceChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, maxPrice: value }));
+  const draftPriceChange = (field: "minPrice" | "maxPrice", value: string) => {
+    setDraftFilters((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleApplyFilters = () => {
-    console.log("Applied filters:", filters);
+    setFilters(draftFilters);
+    updateParams(buildParamsPayload(draftFilters));
     setSheetOpen(false);
   };
 
+  const handleClearDraft = () => {
+    setDraftFilters(EMPTY_FILTERS);
+  };
+
+  const handleSheetOpenChange = (open: boolean) => {
+    if (open) setDraftFilters(filters);
+    setSheetOpen(open);
+  };
+
   const propertyTypeSummary =
-    filters.propertyTypes.includes("Any Type") || filters.propertyTypes.length === 0
+    filters.propertyTypes.length === 0
       ? "Any Type"
       : filters.propertyTypes.length === 1
-      ? filters.propertyTypes[0]
-      : `${filters.propertyTypes.length} selected`;
+        ? filters.propertyTypes[0]
+        : `${filters.propertyTypes.length} selected`;
 
   const statusSummary =
     filters.status.length === 0
       ? "Any"
       : filters.status.length === 1
-      ? filters.status[0]
-      : `${filters.status.length} selected`;
+        ? filters.status[0]
+        : `${filters.status.length} selected`;
 
-  const priceSummary =
-    filters.minPrice || filters.maxPrice
-      ? `$${filters.minPrice || "0"} - $${filters.maxPrice || "Any"}`
-      : "Any Price";
+  const ClearButton = ({
+    onClick,
+    visible,
+  }: {
+    onClick: () => void;
+    visible: boolean;
+  }) => {
+    if (!visible) return null;
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex w-full items-center justify-center gap-1 rounded-full border border-[#E0E3E5] py-2.5 text-sm font-semibold text-primary-gray hover:text-primary-black hover:bg-[#F2F4F6] transition-colors cursor-pointer"
+      >
+        <X className="size-3.5" />
+        Clear Filters
+      </button>
+    );
+  };
 
-  // Shared field blocks (used inside the vertical card AND inside the mobile sheet)
-  const CountyField = () => (
+  const CountyField = ({
+    value,
+    onChange,
+  }: {
+    value: FilterState;
+    onChange: (counties: string[]) => void;
+  }) => (
     <div className="mb-6">
       <label className="mb-2 block text-sm font-semibold text-[#1F2937] uppercase tracking-wider">
         County
       </label>
       <CountySelector
-        selectedCounties={filters.counties}
-        onCountiesChange={(counties) =>
-          setFilters((prev) => ({ ...prev, counties }))
-        }
+        selectedCounties={value.counties}
+        onCountiesChange={onChange}
       />
     </div>
   );
 
-  const PropertyTypeField = () => (
+  const PropertyTypeField = ({
+    value,
+    onToggle,
+  }: {
+    value: FilterState;
+    onToggle: (type: string) => void;
+  }) => (
     <div className="mb-6">
       <label className="mb-3 block text-sm font-medium text-[#594139]">
         Property type
       </label>
       <div className="space-y-3">
-        {PROPERTY_TYPES.map((type, index) => {
-          const checked = filters.propertyTypes.includes(type);
+        {PROPERTY_TYPES.map((type) => {
+          const checked =
+            type === "Any Type"
+              ? value.propertyTypes.length === 0
+              : value.propertyTypes.includes(type);
           return (
-            <motion.label
+            <label
               key={type}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.03, duration: 0.15 }}
               className="flex items-center gap-3 cursor-pointer"
             >
-              <motion.button
+              <button
                 type="button"
-                whileTap={{ scale: 0.9 }}
-                onClick={() => togglePropertyType(type)}
-                animate={{
-                  backgroundColor: checked ? "#00214C" : "#ffffff",
-                  borderColor: checked ? "#00214C" : "#d1d5db",
-                }}
-                transition={{ duration: 0.15 }}
-                className="flex h-5 w-5 items-center justify-center rounded border"
+                onClick={() => onToggle(type)}
+                className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                  checked
+                    ? "bg-primary-color border-primary-color"
+                    : "bg-white border-gray-300"
+                }`}
               >
-                <AnimatePresence>
-                  {checked && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Check className="h-3.5 w-3.5 text-white" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-              <span className=" text-primary-black">{type}</span>
-            </motion.label>
+                {checked && <Check className="h-3.5 w-3.5 text-white" />}
+              </button>
+              <span className="text-primary-black">{type}</span>
+            </label>
           );
         })}
       </div>
     </div>
   );
 
-  const PriceField = () => (
-    <div className="mb-6">
-      <label className="mb-3 block text-sm font-medium text-[#594139]">
-        Price range
-      </label>
-      <div className="space-y-3">
-        <div className="relative">
-          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-gray" />
-          <input
-            type="number"
-            inputMode="numeric"
-            value={filters.minPrice}
-            onChange={(e) => handleMinPriceChange(e.target.value)}
-            placeholder="Min Price"
-            className="w-full rounded-lg bg-[#F2F4F6] py-2.5 pl-9 pr-3 text-sm text-primary-black placeholder:text-primary-gray focus:outline-none focus:ring-2 focus:ring-primary-color/20 border border-[#E2BFB54D] "
-          />
-        </div>
-        <div className="relative">
-          <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary-gray" />
-          <input
-            type="number"
-            inputMode="numeric"
-            value={filters.maxPrice}
-            onChange={(e) => handleMaxPriceChange(e.target.value)}
-            placeholder="Max Price"
-            className="w-full rounded-lg bg-[#F2F4F6] py-2.5 pl-9 pr-3 text-sm text-primary-black placeholder:text-primary-gray focus:outline-none focus:ring-2 focus:ring-primary-color/20 border border-[#E2BFB54D]"
-          />
-        </div>
-      </div>
-    </div>
-  );
-
-  const StatusField = () => (
+  const StatusField = ({
+    value,
+    onToggle,
+  }: {
+    value: FilterState;
+    onToggle: (status: string) => void;
+  }) => (
     <div className="mb-6">
       <label className="mb-3 block text-sm font-medium text-[#594139]">
         Status
       </label>
       <div className="space-y-3">
-        {STATUS_OPTIONS.map((status, index) => {
-          const checked = filters.status.includes(status);
+        {STATUS_OPTIONS.map((status) => {
+          const checked = value.status.includes(status);
           return (
-            <motion.label
+            <label
               key={status}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.03, duration: 0.15 }}
               className="flex items-center gap-3 cursor-pointer"
             >
-              <motion.button
+              <button
                 type="button"
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleStatus(status)}
-                animate={{
-                  backgroundColor: checked ? "#00214C" : "#ffffff",
-                  borderColor: checked ? "#00214C" : "#d1d5db",
-                }}
-                transition={{ duration: 0.15 }}
-                className="flex h-5 w-5 items-center justify-center rounded border"
+                onClick={() => onToggle(status)}
+                className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                  checked
+                    ? "bg-primary-color border-primary-color"
+                    : "bg-white border-gray-300"
+                }`}
               >
-                <AnimatePresence>
-                  {checked && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Check className="h-3.5 w-3.5 text-white" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                {checked && <Check className="h-3.5 w-3.5 text-white" />}
+              </button>
               <span className="text-sm text-primary-black">{status}</span>
-            </motion.label>
+            </label>
           );
         })}
       </div>
@@ -261,20 +382,18 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
   );
 
   const ApplyButton = () => (
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
+    <button
+      type="button"
       onClick={handleApplyFilters}
-      className="w-full cursor-pointer rounded-full bg-primary-color px-6 py-3 text-center font-semibold text-white hover:bg-[#011939] transition-colors duration-500"
+      className="w-full cursor-pointer rounded-full bg-primary-color px-6 py-3 text-center font-semibold text-white hover:bg-[#011939] transition-colors"
     >
       Apply Filters
-    </motion.button>
+    </button>
   );
 
-  // Mobile: icon-only trigger + shadcn Sheet. Used regardless of the `layout` prop.
   const MobileFilterTrigger = (
     <div className="lg:hidden">
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+      <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -293,18 +412,36 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-sm">
+        <SheetContent
+          side="right"
+          className="w-full overflow-y-auto sm:max-w-sm flex flex-col"
+        >
           <SheetHeader>
             <SheetTitle className="text-2xl font-semibold text-primary-black">
               Filters
             </SheetTitle>
           </SheetHeader>
-          <div className="mt-4 px-4 pb-6">
-            <CountyField />
-            <PropertyTypeField />
-            <PriceField />
-            <StatusField />
+          <div className="mt-4 px-4 pb-6 flex-1">
+            <CountyField value={draftFilters} onChange={draftCountiesChange} />
+            <PropertyTypeField
+              value={draftFilters}
+              onToggle={draftTogglePropertyType}
+            />
+            <PriceRangeField
+              minPrice={draftFilters.minPrice}
+              maxPrice={draftFilters.maxPrice}
+              onChange={draftPriceChange}
+              layout={layout}
+            />
+            <StatusField value={draftFilters} onToggle={draftToggleStatus} />
+          </div>
+          {/* Bottom action area */}
+          <div className="px-4 pb-6 space-y-3 border-t border-[#E0E3E5] pt-4">
             <ApplyButton />
+            <ClearButton
+              onClick={handleClearDraft}
+              visible={hasActiveFilters(draftFilters)}
+            />
           </div>
         </SheetContent>
       </Sheet>
@@ -315,14 +452,11 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
     return (
       <>
         {MobileFilterTrigger}
-        <motion.div
+        <div
           ref={containerRef}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="hidden w-full border-none bg-[#E9E9E9] p-4 lg:block"
+          className="hidden w-full border-none bg-[#E9E9E9] px-4 pt-4 pb-1 lg:block"
         >
-          <div className="flex flex-col gap-4 md:flex-row md:items-start">
+          <div className="flex flex-col gap-2 md:flex-row md:items-start">
             {/* County */}
             <div className="flex-1 min-w-0">
               <label className="mb-2 block text-xs font-semibold text-text-primary-gray uppercase tracking-wider">
@@ -330,9 +464,7 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
               </label>
               <CountySelector
                 selectedCounties={filters.counties}
-                onCountiesChange={(counties) =>
-                  setFilters((prev) => ({ ...prev, counties }))
-                }
+                onCountiesChange={desktopCountiesChange}
                 className="border-none rounded-lg bg-[#F3F4F6]"
               />
             </div>
@@ -345,7 +477,9 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
               <button
                 type="button"
                 onClick={() =>
-                  setOpenDropdown((prev) => (prev === "propertyTypes" ? null : "propertyTypes"))
+                  setOpenDropdown((prev) =>
+                    prev === "propertyTypes" ? null : "propertyTypes",
+                  )
                 }
                 className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#F3F4F6] px-4 py-2.5 text-left text-sm font-medium text-primary-black"
               >
@@ -357,86 +491,51 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
                   }`}
                 />
               </button>
-              <AnimatePresence>
-                {openDropdown === "propertyTypes" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E0E3E5] bg-white p-3 shadow-lg"
-                  >
-                    <div className="space-y-3">
-                      {PROPERTY_TYPES.map((type) => {
-                        const checked = filters.propertyTypes.includes(type);
-                        return (
-                          <label
-                            key={type}
-                            className="flex cursor-pointer items-center gap-3"
+              {openDropdown === "propertyTypes" && (
+                <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E0E3E5] bg-white p-3 shadow-lg">
+                  <div className="space-y-3">
+                    {PROPERTY_TYPES.map((type) => {
+                      const checked =
+                        type === "Any Type"
+                          ? filters.propertyTypes.length === 0
+                          : filters.propertyTypes.includes(type);
+                      return (
+                        <label
+                          key={type}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => desktopTogglePropertyType(type)}
+                            className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                              checked
+                                ? "bg-primary-color border-primary-color"
+                                : "bg-white border-gray-300"
+                            }`}
                           >
-                            <motion.button
-                              type="button"
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => togglePropertyType(type)}
-                              animate={{
-                                backgroundColor: checked ? "#00214C" : "#ffffff",
-                                borderColor: checked ? "#00214C" : "#d1d5db",
-                              }}
-                              transition={{ duration: 0.15 }}
-                              className="flex h-5 w-5 items-center justify-center rounded border"
-                            >
-                              <AnimatePresence>
-                                {checked && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    transition={{ duration: 0.15 }}
-                                  >
-                                    <Check className="h-3.5 w-3.5 text-white" />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </motion.button>
-                            <span className="text-sm text-primary-black">{type}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                            {checked && (
+                              <Check className="h-3.5 w-3.5 text-white" />
+                            )}
+                          </button>
+                          <span className="text-sm text-primary-black">
+                            {type}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Price */}
             <div className="relative flex-1 min-w-0">
-              <label className="mb-2 block text-xs font-semibold text-text-primary-gray uppercase tracking-wider">
-                Price range
-              </label>
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1 min-w-0">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#565E74]" />
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={filters.minPrice}
-                    onChange={(e) => handleMinPriceChange(e.target.value)}
-                    placeholder="Min"
-                    className="w-full rounded-lg bg-[#F3F4F6] py-2.5 pl-8 pr-2 text-sm text-primary-black placeholder:text-[#565E74] focus:outline-none focus:ring-2 focus:ring-[#00214C]/20"
-                  />
-                </div>
-                <div className="relative flex-1 min-w-0">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#565E74]" />
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    value={filters.maxPrice}
-                    onChange={(e) => handleMaxPriceChange(e.target.value)}
-                    placeholder="Max"
-                    className="w-full rounded-lg bg-[#F3F4F6] py-2.5 pl-8 pr-2 text-sm text-primary-black placeholder:text-[#565E74] focus:outline-none focus:ring-2 focus:ring-[#00214C]/20"
-                  />
-                </div>
-              </div>
+              <PriceRangeField
+                minPrice={filters.minPrice}
+                maxPrice={filters.maxPrice}
+                onChange={desktopPriceChange}
+                layout={layout}
+              />
             </div>
 
             {/* Status */}
@@ -447,7 +546,9 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
               <button
                 type="button"
                 onClick={() =>
-                  setOpenDropdown((prev) => (prev === "status" ? null : "status"))
+                  setOpenDropdown((prev) =>
+                    prev === "status" ? null : "status",
+                  )
                 }
                 className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#F3F4F6] px-4 py-2.5 text-left text-sm font-medium text-primary-black"
               >
@@ -459,58 +560,49 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
                   }`}
                 />
               </button>
-              <AnimatePresence>
-                {openDropdown === "status" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E0E3E5] bg-white p-3 shadow-lg"
-                  >
-                    <div className="space-y-3">
-                      {STATUS_OPTIONS.map((status) => {
-                        const checked = filters.status.includes(status);
-                        return (
-                          <label
-                            key={status}
-                            className="flex cursor-pointer items-center gap-3"
+              {openDropdown === "status" && (
+                <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E0E3E5] bg-white p-3 shadow-lg">
+                  <div className="space-y-3">
+                    {STATUS_OPTIONS.map((status) => {
+                      const checked = filters.status.includes(status);
+                      return (
+                        <label
+                          key={status}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => desktopToggleStatus(status)}
+                            className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                              checked
+                                ? "bg-primary-color border-primary-color"
+                                : "bg-white border-gray-300"
+                            }`}
                           >
-                            <motion.button
-                              type="button"
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => toggleStatus(status)}
-                              animate={{
-                                backgroundColor: checked ? "#00214C" : "#ffffff",
-                                borderColor: checked ? "#00214C" : "#d1d5db",
-                              }}
-                              transition={{ duration: 0.15 }}
-                              className="flex h-5 w-5 items-center justify-center rounded border"
-                            >
-                              <AnimatePresence>
-                                {checked && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    transition={{ duration: 0.15 }}
-                                  >
-                                    <Check className="h-3.5 w-3.5 text-white" />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </motion.button>
-                            <span className="text-sm text-primary-black">{status}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                            {checked && (
+                              <Check className="h-3.5 w-3.5 text-white" />
+                            )}
+                          </button>
+                          <span className="text-sm text-primary-black">
+                            {status}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </motion.div>
+
+          {/* Clear — bottom of the panel, only visible once a filter is active */}
+          <div className="mt-4">
+            <ClearButton
+              onClick={clearFilters}
+              visible={hasActiveFilters(filters)}
+            />
+          </div>
+        </div>
       </>
     );
   }
@@ -518,26 +610,30 @@ export default function FilterOptions({ layout = "vertical" }: FilterOptionsProp
   return (
     <>
       {MobileFilterTrigger}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="hidden w-full max-w-sm rounded-2xl border border-[#E0E3E5] bg-white p-6 md:block"
-      >
-        {/* Header */}
+      <div className="hidden w-full max-w-sm rounded-2xl border border-[#E0E3E5] bg-white p-6 lg:block">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-semibold text-primary-black">Filters</h2>
-          <motion.div whileHover={{ rotate: 20 }} transition={{ duration: 0.2 }}>
-            <ListFilter color="#565E74" size={18} />
-          </motion.div>
+          <ListFilter color="#565E74" size={18} />
         </div>
 
-        <CountyField />
-        <PropertyTypeField />
-        <PriceField />
-        <StatusField />
-        <ApplyButton />
-      </motion.div>
+        <CountyField value={filters} onChange={desktopCountiesChange} />
+        <PropertyTypeField
+          value={filters}
+          onToggle={desktopTogglePropertyType}
+        />
+        <PriceRangeField
+          minPrice={filters.minPrice}
+          maxPrice={filters.maxPrice}
+          onChange={desktopPriceChange}
+        />
+        <StatusField value={filters} onToggle={desktopToggleStatus} />
+
+        {/* Clear — bottom of the card, only visible once a filter is active */}
+        <ClearButton
+          onClick={clearFilters}
+          visible={hasActiveFilters(filters)}
+        />
+      </div>
     </>
   );
 }

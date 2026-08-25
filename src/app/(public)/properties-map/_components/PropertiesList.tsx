@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { List } from "lucide-react";
 import { PropertyCard } from "@/components/shared/card/property-card";
-import { properties } from "@/data/properties";
 import {
   Sheet,
   SheetContent,
@@ -17,8 +16,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { IPropertyResponse } from "@/types";
+import Container from "@/components/shared/container/Container";
+import Empty from "@/components/ui/empty-data";
 
-export default function PropertiesList({ id }: { id: string }) {
+export default function PropertiesList({
+  properties,
+  id,
+}: {
+  id: string;
+  properties: IPropertyResponse[];
+}) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const scrolledRef = useRef<string | null>(null);
@@ -51,6 +59,16 @@ export default function PropertiesList({ id }: { id: string }) {
     return () => clearTimeout(timeout);
   }, [id, sheetOpen]);
 
+  if (properties?.length === 0)
+    return (
+      <Container>
+        <h1 className="text-2xl font-semibold mb-3">
+          Off-Market Opportunities
+        </h1>
+        <Empty message="No properties found" className="mt-20" />
+      </Container>
+    );
+
   const PropertyGrid = ({
     prioritizeSelected = false,
   }: {
@@ -60,8 +78,8 @@ export default function PropertiesList({ id }: { id: string }) {
       prioritizeSelected && id
         ? [...properties]
             .sort((a, b) => {
-              const aSelected = Number(a.id) === Number(id);
-              const bSelected = Number(b.id) === Number(id);
+              const aSelected = Number(a._id) === Number(id);
+              const bSelected = Number(b._id) === Number(id);
               if (aSelected && !bSelected) return -1;
               if (bSelected && !aSelected) return 1;
               return 0;
@@ -75,13 +93,13 @@ export default function PropertiesList({ id }: { id: string }) {
           <div
             key={index}
             className={
-              Number(property.id) === Number(id)
-                ? "border-2 border-primary-color rounded-md scale-105 duration-300 transform transition-transform mt-4"
+              property._id === id
+                ? "rounded-md scale-105 duration-300 transform transition-transform mt-4"
                 : ""
             }
-            id={`property-${property.id}`}
+            id={`property-${property._id}`}
           >
-            <PropertyCard {...property} />
+            <PropertyCard {...property} active={property._id === id} />
           </div>
         ))}
       </div>
@@ -121,7 +139,7 @@ export default function PropertiesList({ id }: { id: string }) {
                 Off-Market Opportunities
               </SheetTitle>
             </SheetHeader>
-            <div className="max-h-[calc(100vh-96px)] overflow-y-auto px-4 pb-6">
+            <div className="max-h-[calc(100vh-96px)] overflow-y-auto scroll-width-sm px-4 pb-6">
               <PropertyGrid prioritizeSelected />
             </div>
           </SheetContent>
@@ -129,8 +147,10 @@ export default function PropertiesList({ id }: { id: string }) {
       </div>
 
       {/* Desktop */}
-      <div className="hidden max-w-95.75 max-h-[calc(100vh-145px)] overflow-y-auto px-4 lg:block">
-        <h1 className="text-2xl font-semibold mb-3">Off-Market Opportunities</h1>
+      <div className="hidden max-w-95.75 max-h-[calc(100vh-145px)] overflow-y-auto scroll-width-sm px-4 lg:block">
+        <h1 className="text-2xl font-semibold mb-3">
+          Off-Market Opportunities
+        </h1>
         <PropertyGrid />
       </div>
     </>

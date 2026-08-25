@@ -6,7 +6,6 @@ import {
   propertyListingSchema,
   type PropertyListingFormValues,
 } from "@/lib/validations/property-listing.schema";
-
 import { PropertyTypeSection } from "./sections/PropertyTypeSection";
 import { PropertyOwnershipSection } from "./sections/PropertyOwnershipSection";
 import { BasicInformationSection } from "./sections/BasicInformationSection";

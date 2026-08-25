@@ -6,7 +6,6 @@ import { zodFormErrorModification } from "@/lib/errors/zodFormErrorModification"
 import { toast } from "sonner";
 import { useCreatePropertyMutation } from "@/redux/api/propertiesApi";
 import { errorModification } from "@/lib/errors/errorModification";
-import { revalidateProperties } from "@/lib/actions/revalidate";
 
 export default function PropertyListingContainer() {
   const [crateProperty] = useCreatePropertyMutation();
@@ -29,7 +28,6 @@ export default function PropertyListingContainer() {
         );
       }
       await crateProperty(formData).unwrap();
-      await revalidateProperties();
       toast.success(
         "Property Listing request submitted successfully!. Please wait for admin approval.",
       );
@@ -45,8 +43,8 @@ export default function PropertyListingContainer() {
     toast.error(errMessage);
   };
   return (
-    <div>
+    <>
       <PropertyListingForm onSubmit={handleSubmit} onError={handleError} />
-    </div>
+    </>
   );
 }
