@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import {
   FileText,
   AlertCircle,
@@ -6,7 +6,6 @@ import {
   BadgeCheck,
   Archive,
   Calendar,
-  File,
   Download,
   MessageSquare,
   MessageSquareText,
@@ -22,16 +21,13 @@ import {
   PersonalPropertyIcon,
   SellerConcessionsIcon,
 } from "@/icons";
-
-export interface OfferSummaryDocument {
-  name: string;
-  url: string;
-}
+import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 
 export interface OfferSummaryData {
   offerAmount: number;
   earnestMoney: number;
   financingType: string;
+  financingTerms: string;
   closingCosts: string;
 
   sellerContribution: number;
@@ -43,7 +39,7 @@ export interface OfferSummaryData {
 
   personalProperty: {
     included: string[];
-    itemsToRemove?: string;
+    itemsToRemove?: string[];
   };
 
   closingTerms: {
@@ -52,8 +48,9 @@ export interface OfferSummaryData {
     possession: string;
   };
 
-  documents?: OfferSummaryDocument[];
+  documents?: File[];
   notesToSeller?: string;
+  hasAgent?: boolean;
 }
 
 function formatCurrency(amount: number) {
@@ -81,6 +78,20 @@ interface OfferSummaryProps {
  * column below `lg`.
  */
 export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
+  const documentUrls = useMemo(() => {
+    return (data?.documents ?? []).map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+  }, [data?.documents]);
+
+  // Object URLs must be manually revoked, or they leak memory for the
+  // lifetime of the page (the browser won't garbage-collect them itself).
+  useEffect(() => {
+    return () => {
+      documentUrls.forEach(({ url }) => URL.revokeObjectURL(url));
+    };
+  }, [documentUrls]);
   return (
     <div className="mx-auto grid w-full grid-cols-1 gap-6 p-4  sm:p-6 lg:grid-cols-3 lg:items-start border border-[#E6E8EA] md:mt-8 mt-6 rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]">
       {/* Main column */}
@@ -96,7 +107,12 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
               value={formatCurrency(data.earnestMoney)}
             />
             <SummaryField label="Financing type" value={data.financingType} />
-            <SummaryField label="Closing costs" value={data.closingCosts} />
+            {data.financingType !== "cash" && (
+              <SummaryField
+                label="Why not cash, explain terms"
+                value={data.financingTerms}
+              />
+            )}
           </div>
         </SummaryCard>
 
@@ -128,11 +144,17 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
           </div>
         </SummaryCard>
 
-        {data.agent ? (
+        {data?.hasAgent ? (
           <SummaryCard title="Real Estate Agent">
             <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-              <SummaryField label="Agent name" value={data.agent.name} />
-              <SummaryField label="Commission" value={data.agent.commission} />
+              <SummaryField
+                label="Agent name"
+                value={data?.agent?.name || ""}
+              />
+              <SummaryField
+                label="Commission"
+                value={data?.agent?.commission || ""}
+              />
             </div>
           </SummaryCard>
         ) : null}
@@ -143,9 +165,9 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
               <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                 Included items
               </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {data.personalProperty.included.length > 0 ? (
-                  data.personalProperty.included.map((item) => (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {data?.personalProperty?.included?.length > 0 ? (
+                  data?.personalProperty?.included?.map((item) => (
                     <Pill key={item}>{item}</Pill>
                   ))
                 ) : (
@@ -160,9 +182,20 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
                 <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                   Items to be removed
                 </p>
-                <p className="mt-1 text-sm italic text-primary-black">
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {data?.personalProperty?.itemsToRemove.length > 0 ? (
+                    data.personalProperty.itemsToRemove?.map((item) => (
+                      <Pill key={item}>{item}</Pill>
+                    ))
+                  ) : (
+                    <span className="text-sm text-muted-foreground">
+                      None specified
+                    </span>
+                  )}
+                </div>
+                {/* <p className="mt-1 text-sm italic text-primary-black">
                   &ldquo;{data.personalProperty.itemsToRemove}&rdquo;
-                </p>
+                </p> */}
               </div>
             ) : null}
           </div>
@@ -189,19 +222,19 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
 
       {/* Sidebar column */}
       <div className="flex flex-col gap-6">
-        {data.documents && data.documents.length > 0 ? (
+        {documentUrls.length > 0 ? (
           <SummaryCard title="Documents" icon={<DocIcon />}>
             <ul className="flex flex-col gap-2">
-              {data.documents.map((doc) => (
-                <li key={doc.url}>
+              {documentUrls.map(({ file, url }, index) => (
+                <li key={index}>
                   <a
-                    href={doc.url}
-                    download
+                    href={url}
+                    download={file.name}
                     className="flex items-center justify-between gap-3 rounded-lg border border-primary-border-color bg-[#F7F9FB] px-3 py-3 text-sm text-foreground hover:border-primary/50"
                   >
                     <div className="flex items-center gap-1.5">
                       <PDFIcon className="size-5" />
-                      <span className="truncate">{doc.name}</span>
+                      <span className="truncate">{file.name}</span>
                     </div>
                     <Download size={16} className="shrink-0 text-[#594139]" />
                   </a>
@@ -217,7 +250,7 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
             icon={<MessageSquareText color="#00214C" size={20} />}
           >
             <p className="rounded-lg bg-[#F2F4F6] p-3 md:text-base text-sm text-[#594139] italic leading-relaxed">
-              &ldquo;{data.notesToSeller}&rdquo;
+              <ReadMoreText text={`"${data.notesToSeller}"`} wordLimit={100} />
             </p>
           </SummaryCard>
         ) : null}

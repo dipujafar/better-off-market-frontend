@@ -3,6 +3,7 @@ export const tagTypes = {
   property: "Property",
   favorites: "Favorites",
   profile: "Profile",
+  offer: "Offer",
 };
 
 export const tagTypesList = [
@@ -10,4 +11,5 @@ export const tagTypesList = [
   tagTypes.property,
   tagTypes.favorites,
   tagTypes.profile,
+  tagTypes.offer,
 ];

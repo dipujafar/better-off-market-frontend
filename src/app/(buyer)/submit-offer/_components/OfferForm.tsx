@@ -19,8 +19,7 @@ import { SingleTextareaSection } from "./SingleTextareaSectionImpl";
 import { SupportingDocumentsSection } from "./SupportingDocumentsSectionImpl";
 
 interface OfferFormProps {
-  defaultValues?: Partial<OfferFormValues>;
-  /** Shown as "Original: ..." hints under the Personal Property textareas. */
+  defaultValues?: Partial<OfferFormValues> | null;
   originalPersonalProperty?: string;
   originalItemsToBeRemoved?: string;
   onSubmit: (
@@ -28,28 +27,16 @@ interface OfferFormProps {
     supportingDocuments: File[],
   ) => void | Promise<void>;
   onCancel?: () => void;
+  onError?: (errors: any) => void;
 }
 
-/**
- * Top-level offer form. Owns the react-hook-form instance and wires every
- * section up through FormProvider so each section reads/writes the shared
- * form state without prop drilling.
- *
- * Performance notes:
- * - mode: "onBlur" + reValidateMode: "onChange" avoids validating on every
- *   keystroke while still giving fast feedback once a field has an error.
- * - Every section is React.memo'd and only subscribes (via useWatch /
- *   formState) to the specific fields it needs, so typing in one section
- *   never re-renders the others.
- * - File uploads are intentionally kept out of the zod-validated form
- *   state (see SupportingDocumentsSection) and merged in at submit time.
- */
 export function OfferForm({
   defaultValues,
   originalPersonalProperty,
   originalItemsToBeRemoved,
   onSubmit,
   onCancel,
+  onError,
 }: OfferFormProps) {
   const [supportingDocuments, setSupportingDocuments] = useState<File[]>([]);
 
@@ -71,7 +58,7 @@ export function OfferForm({
     <FormProvider {...form}>
       <form
         // @ts-ignore
-        onSubmit={form.handleSubmit<OfferFormValues>(handleSubmit)}
+        onSubmit={form.handleSubmit<OfferFormValues>(handleSubmit, onError)}
         noValidate
         className="flex flex-col gap-6 lg:gap-8 lg:py-8 py-6"
       >

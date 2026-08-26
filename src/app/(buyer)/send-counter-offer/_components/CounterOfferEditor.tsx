@@ -3,12 +3,7 @@
 import { useCallback } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FileText,
-  MessageSquare,
-  Download,
-  MessageSquareText,
-} from "lucide-react";
+import { FileText, Download, MessageSquareText } from "lucide-react";
 import {
   offerFormSchema,
   type OfferFormValues,
@@ -54,18 +49,6 @@ function getChangedFields(
   return changed;
 }
 
-/**
- * Seller-side counter-offer editor. Every section starts read-only with an
- * "Edit" link; clicking it turns that section's fields into inputs (with an
- * "Original: ..." hint under each) and a "Cancel" link to revert just that
- * section. Sections whose values already differ from `originalValues` are
- * shown highlighted with a Current-vs-Original comparison instead of the
- * plain summary.
- *
- * On submit, `onSubmit` receives both the full form values and a diff
- * containing only the fields that changed from the original offer — that
- * diff is "where the edited data is found," per the brief.
- */
 export function CounterOfferEditor({
   originalValues,
   initialValues,

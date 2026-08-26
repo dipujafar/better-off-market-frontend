@@ -6,6 +6,7 @@ import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 import SellerProfileSkeleton from "@/components/skeleton/seller-profile-skeleton";
 import { Button } from "@/components/ui/button";
 import Empty from "@/components/ui/empty-data";
+import { cn } from "@/lib/utils";
 import { useGetSellerProfileQuery } from "@/redux/api/profileApi";
 import { useAppSelector } from "@/redux/hooks";
 import { OctagonAlert } from "lucide-react";
@@ -94,7 +95,9 @@ export function SellerProfileCard() {
                     <span className="text-primary-blue">★</span>
                   </p>
                 </div>
-                <div>
+                <div
+                  className={cn(user?._id === loggedInUser?.userId && "hidden")}
+                >
                   <Link href={`/message?user${user?._id}`}>
                     <Button className="lg:px-10 px-5 py-5 cursor-pointer">
                       Message Seller
@@ -104,15 +107,19 @@ export function SellerProfileCard() {
                 {!loggedInUser?.userId ? (
                   <div
                     onClick={() => setOpenAuthModel(true)}
-                    className="flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer"
+                    className={cn(
+                      "flex items-center text-[#BA1A1A] gap-1 text-xl cursor-pointer",
+                    )}
                   >
                     <OctagonAlert size="20" /> Report this seller
                   </div>
                 ) : (
-                  <ReportSellerDialog
-                    sellerName={user?.name}
-                    sellerId={user?._id}
-                  />
+                 (user?._id === loggedInUser?.userId) || (
+                    <ReportSellerDialog
+                      sellerName={user?.name}
+                      sellerId={user?._id}
+                    />
+                  )
                 )}
               </div>
             </div>

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 interface FormFooterProps {
   onCancel?: () => void;
@@ -21,15 +20,14 @@ export function FormFooter({ onCancel, isSubmitting }: FormFooterProps) {
       {/* <Button size={"lg"} type="submit" disabled={isSubmitting} className="bg-primary-color lg:px-10 px-6 py-4 lg:py-5 cursor-pointer shadow-md">
         {isSubmitting ? "Reviewing..." : "Review offer"}
       </Button> */}
-      <Link href="/review-offer">
-        <Button
-          size={"lg"}
-          disabled={isSubmitting}
-          className="bg-primary-color lg:px-10 px-6 py-4 lg:py-5 cursor-pointer shadow-md"
-        >
-          {isSubmitting ? "Reviewing..." : "Review offer"}
-        </Button>
-      </Link>
+
+      <Button
+        size={"lg"}
+        disabled={isSubmitting}
+        className="bg-primary-color lg:px-10 px-6 py-4 lg:py-5 cursor-pointer shadow-md"
+      >
+        {isSubmitting ? "Reviewing..." : "Review offer"}
+      </Button>
     </div>
   );
 }

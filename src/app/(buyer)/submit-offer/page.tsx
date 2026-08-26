@@ -1,6 +1,5 @@
 import Navbar from "@/components/shared/navbar/Navbar";
 import OfferFormContainer from "./_components/OfferFormContainer";
-import Container from "@/components/shared/container/Container";
 
 export const metadata = {
   title: "Submit Offer",

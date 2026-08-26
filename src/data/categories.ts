@@ -9,7 +9,7 @@ export const categories: ICategory[] = [
   },
   {
     id: 2,
-    title: "Multi-family",
+    title: "Multi-Family",
     listingCount: 63,
     image: "/category/Multi-family.png",
   },

@@ -11,6 +11,7 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import authSlice from "../redux/features/authSlice";
+import offerDraftSlice from "../redux/features/offerDraftSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { baseApi } from "./api/baseApi";
 
@@ -39,29 +40,52 @@ const storage =
     ? createNoopStorage()
     : createWebStorage("local");
 
-const persistConfig = {
+const authPersistConfig = {
   key: "auth",
-storage,
+  storage,
 };
 
-const persistedAuthReducer = persistReducer(persistConfig, authSlice);
+// NEW: separate persist config for offerDraft — blacklist excludes
+// supportingDocuments from being written to localStorage, since File
+// objects can't survive JSON.stringify. values/propertyId/isEdit
+// (all plain, JSON-safe data) DO get persisted.
+const offerDraftPersistConfig = {
+  key: "offerDraft",
+  storage,
+  blacklist: ["supportingDocuments"],
+};
+
+const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);
+const persistedOfferDraftReducer = persistReducer(
+  offerDraftPersistConfig,
+  offerDraftSlice,
+);
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth: persistedAuthReducer,
+    // Now persisted — but only values/propertyId/isEdit survive a refresh.
+    // supportingDocuments always resets to [] on reload (see blacklist above).
+    offerDraft: persistedOfferDraftReducer,
   },
   middleware: (getDefaultMiddlewares) =>
     getDefaultMiddlewares({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          "offerDraft/setOfferDraft",
+        ],
+        ignoredPaths: ["offerDraft.supportingDocuments"],
       },
     }).concat(baseApi.middleware),
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 export const persistor = persistStore(store);

@@ -47,12 +47,6 @@ const optionalDays = z.coerce
   .max(365)
   .optional();
 
-const optionalNonNegativeInt = z.coerce
-  .number()
-  .int()
-  .min(0)
-  .optional()
-  .or(z.literal("").transform(() => undefined));
 
 export const offerFormSchema = z
   .object({
@@ -88,27 +82,6 @@ export const offerFormSchema = z
     commission: z.string().max(20).optional(),
     paidBy: z.enum(["buyer", "seller"]).optional(),
 
-    // Personal Property
-    // bedrooms: optionalNonNegativeInt,
-    // bathrooms: z.coerce
-    //   .number()
-    //   .min(0)
-    //   .optional()
-    //   .or(z.literal("").transform(() => undefined)),
-    // squareFeet: optionalNonNegativeInt,
-    // lotSizeAcres: z.coerce
-    //   .number()
-    //   .min(0)
-    //   .optional()
-    //   .or(z.literal("").transform(() => undefined)),
-    // yearBuilt: z.coerce
-    //   .number()
-    //   .int()
-    //   .min(1600)
-    //   .max(new Date().getFullYear() + 1)
-    //   .optional()
-    //   .or(z.literal("").transform(() => undefined)),
-    // parkingSpaces: optionalNonNegativeInt,
     personalPropertyIncluded: z.string().max(2000).optional(),
     itemsToBeRemoved: z.string().max(2000).optional(),
 

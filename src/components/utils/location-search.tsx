@@ -5,6 +5,7 @@ import { Search, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGetPropertiesForWebQuery } from "@/redux/api/propertiesApi";
 import { IPropertyResponse } from "@/types";
+import Link from "next/link";
 
 type LocationSearchProps = {
   placeholder?: string;
@@ -84,10 +85,10 @@ export default function LocationSearch({
     setIsOpen(true);
   }
 
-  function handleSelectProperty(propertyId: string) {
-    setIsOpen(false);
-    router.push(`/properties-list/${propertyId}`);
-  }
+  // function handleSelectProperty(propertyId: string) {
+  //   setIsOpen(false);
+  //   router.push(`/properties-list/${propertyId}`);
+  // }
 
   const showList = isOpen && debouncedTerm.trim().length > 0;
 
@@ -109,7 +110,7 @@ export default function LocationSearch({
         <button
           type="button"
           onClick={handleSearchClick}
-          className="flex shrink-0 items-center gap-2 rounded-full bg-primary-color cursor-pointer px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+          className="flex shrink-0 items-center gap-2 rounded-full bg-primary-color  px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
         >
           <Search className="h-4 w-4" />
           <span className="hidden md:block">Search Properties</span>
@@ -118,9 +119,9 @@ export default function LocationSearch({
 
       {/* Dropdown */}
       {showList && (
-        <div className="absolute left-2 top-[calc(100%+8px)] z-9999 md:max-w-150 max-w-88 overflow-hidden rounded-xl bg-white shadow-xl">
+        <div className="absolute left-2 top-[calc(100%+8px)] z-9999 md:max-w-150 max-w-88 min-w-72 overflow-hidden rounded-xl bg-white shadow-xl">
           {isLoading ? (
-            <div className="px-4 py-6 text-center text-sm text-gray-500">
+            <div className="px-4 py-6 text-center text-sm text-gray-500 ">
               Searching...
             </div>
           ) : properties.length === 0 ? (
@@ -128,22 +129,24 @@ export default function LocationSearch({
               No properties found.
             </div>
           ) : (
-            <ul className="max-h-80 overflow-y-auto py-2">
+            <ul className="max-h-52 overflow-y-auto py-1">
               {properties.map((property) => {
                 const addressText = `${property?.streetAddress}, ${property?.city}, ${property?.state}, ${property?.zipCode}, ${property?.county}`;
 
                 return (
                   <li key={property._id}>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectProperty(property._id)}
-                      className="flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm text-primary-gray hover:bg-gray-50 cursor-pointer"
-                    >
-                      <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-[#A9ACB3]" />
-                      <span className="truncate">
-                        {highlightMatch(addressText, debouncedTerm)}
-                      </span>
-                    </button>
+                    <Link href={`/properties-list/${property._id}`}>
+                      <button
+                        type="button"
+                        // onClick={() => setIsOpen(false)}
+                        className="flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm text-primary-gray hover:bg-gray-50 cursor-pointer"
+                      >
+                        <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-[#A9ACB3]" />
+                        <span className="truncate">
+                          {highlightMatch(addressText, debouncedTerm)}
+                        </span>
+                      </button>
+                    </Link>
                   </li>
                 );
               })}

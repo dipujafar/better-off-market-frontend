@@ -46,6 +46,7 @@ export default function PropertyContainer({
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
           <ActionBtns
             id={property?._id}
+            seller={property?.seller}
             totalViews={property?.totalViews}
             createdAt={property?.createdAt}
           />

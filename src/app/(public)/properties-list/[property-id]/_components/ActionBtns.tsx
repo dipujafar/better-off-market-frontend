@@ -6,25 +6,36 @@ import { Eye, Share2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import moment from "moment";
+import { useAppSelector } from "@/redux/hooks";
+import { cn } from "@/lib/utils";
+import { IUser } from "@/types";
 
 export function ActionBtns({
   id,
   totalViews,
   createdAt,
+  seller,
 }: {
   id: string;
   totalViews: number;
   createdAt: string;
+  seller: IUser;
 }) {
   const pathName = usePathname();
+  const user: any = useAppSelector((state) => state.auth.user);
   return (
-    <div className="w-full max-w-md mx-auto rounded-lg bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] border border-[#FAEEEA] space-y-4">
+    <div
+      className={cn(
+        "w-full max-w-md mx-auto rounded-lg bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] border border-[#FAEEEA] space-y-4",
+        seller?._id === user?.userId && "hidden",
+      )}
+    >
       <h2 className="lg:text-2xl text-xl font-bold text-black">
         Interested in this property?
       </h2>
 
       {/* Submit an offer button */}
-      <Link href="/submit-offer" className="block">
+      <Link href={`/submit-offer?property=${id}`} className="block">
         <button className="w-full cursor-pointer bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
           Submit an offer
         </button>

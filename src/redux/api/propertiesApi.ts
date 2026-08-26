@@ -50,6 +50,13 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.property],
     }),
+    getSingleProperty: build.query({
+      query: (id) => ({
+        url: `/properties/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.property],
+    }),
     updateProperty: build.mutation({
       query: ({ id, ...data }) => ({
         url: `/properties/${id}`,
@@ -74,6 +81,7 @@ export const {
   useGetPropertiesForWebQuery,
   useGetPriceDroppedPropertiesQuery,
   useGetMyListingsQuery,
+  useGetSinglePropertyQuery,
   useGetSellerPropertiesQuery,
   useUpdatePropertyMutation,
   useDeletePropertyMutation,
