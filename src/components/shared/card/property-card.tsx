@@ -109,8 +109,8 @@ export function PropertyCard({
       >
         {/* Price */}
         <div className="space-y-1">
-          <p className="xl:text-xl text-lg font-bold text-[#1F4E8B]">
-            {priceFormatter.format(listingPrice)}
+          <p className="xl:text-xl text-lg font-bold text-[#1F4E8B] flex items-center flex-wrap gap-x-2">
+           <span> {priceFormatter.format(listingPrice)} </span>
 
             {oldListingPrice && (
               <span className="text-lg text-primary-gray font-medium ml-2  line-through ">
@@ -119,7 +119,7 @@ export function PropertyCard({
             )}
 
             {arv && (
-              <span className={cn("text-primary-gray  font-medium ml-2")}>
+              <span className={cn("text-primary-gray  font-medium ")}>
                 (ARV: {priceFormatter.format(arv)})
               </span>
             )}

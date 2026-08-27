@@ -9,6 +9,7 @@ import {
   User,
   Lock,
   BadgeDollarSign,
+  Heart,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -63,6 +64,12 @@ export default function DashboardSidebar() {
       label: "Analytics",
       icon: <ChartNoAxesCombined size={22} />,
       href: "/user/analytics",
+    },
+    {
+      key: "saved-properties",
+      label: "Saved Properties",
+      icon: <Heart size={22} />,
+      href: "/user/save-properties",
     },
     {
       key: "edit-profile",

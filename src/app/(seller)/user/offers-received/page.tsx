@@ -15,7 +15,7 @@ export default function OffersReceivedPage() {
         </div>
       </div>
       {/* ===========================  page offer list =============================*/}
-      <div className="py-4 border-b border-primary-border-color">
+      <div className="py-4">
         <OfferListContainer />
       </div>
     </div>

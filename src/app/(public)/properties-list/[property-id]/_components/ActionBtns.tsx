@@ -8,18 +8,20 @@ import { usePathname } from "next/navigation";
 import moment from "moment";
 import { useAppSelector } from "@/redux/hooks";
 import { cn } from "@/lib/utils";
-import { IUser } from "@/types";
+import { IUser, TPropertyStatus } from "@/types";
 
 export function ActionBtns({
   id,
   totalViews,
   createdAt,
   seller,
+  status,
 }: {
   id: string;
   totalViews: number;
   createdAt: string;
   seller: IUser;
+  status: TPropertyStatus;
 }) {
   const pathName = usePathname();
   const user: any = useAppSelector((state) => state.auth.user);
@@ -28,6 +30,7 @@ export function ActionBtns({
       className={cn(
         "w-full max-w-md mx-auto rounded-lg bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] border border-[#FAEEEA] space-y-4",
         seller?._id === user?.userId && "hidden",
+        (status === "Sold" || status === "Rejected") && "hidden",
       )}
     >
       <h2 className="lg:text-2xl text-xl font-bold text-black">

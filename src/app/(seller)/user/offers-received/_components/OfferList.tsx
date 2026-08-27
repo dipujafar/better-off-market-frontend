@@ -1,82 +1,40 @@
 import OfferedCard from "@/components/shared/card/offered-card";
+import OfferedCardSkeleton from "@/components/skeleton/OfferedCardSkeleton";
+import Empty from "@/components/ui/empty-data";
+import { IOffer } from "@/types";
+import { IApiResponse } from "@/types/api-response";
+
+export default function OfferList({
+  data,
+  limit,
+  page,
+  loading,
+}: {
+  data: IApiResponse<IOffer[]>;
+  limit: number;
+  page: number;
+  loading: boolean;
+}) {
+  if (loading) {
+    return (
+      <div className="mt-5">
+        <OfferedCardSkeleton />
+      </div>
+    );
+  }
 
 
-const sampleListings = [
-  {
-    id: "1",
-    image: "/properties/property_offer_image_2.jpg",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "PENDING" as const,
-    price: 46000,
-    originalPrice: 48500,
-    actionType: "review" as const,
-    navLink: "/user/offers-received/1",
-  },
-  {
-    id: "2",
-    image: "/properties/property_offer_image_1.jpg",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "PENDING" as const,
-    price: 46000,
-    originalPrice: 48500,
-    actionType: "review" as const,
-    navLink: "/user/offers-received/2",
-  },
-  {
-    id: "3",
-    image: "/properties/property_offer_image_3.png",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "SOLD" as const,
-    price: 19500,
-    actionType: "message" as const,
-    navLink: "/message",
-  },
-  {
-    id: "4",
-    image: "/properties/property_image_1.png",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "SOLD" as const,
-    price: 19500,
-    actionType: "message" as const,
-    navLink: "/message",
-  },
-  {
-    id: "5",
-    image: "/properties/property_image_2.png",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "SOLD" as const,
-    price: 19500,
-    actionType: "message" as const,
-    navLink: "/message",
-  },
-  {
-    id: "6",
-    image: "/properties/property_image_3.png",
-    agent: "James B.",
-    property: "Memphis house",
-    location: "Hamilton County",
-    status: "REJECTED" as const,
-    price: 165000,
-    actionType: "details" as const,
-    navLink: "/user/offers-received/1",
-  },
-];
+  if (!data?.meta?.total)
+    return <Empty message="No offers found" className="mt-16" />;
 
-export default function OfferList() {
+  const OffersData = data?.data || [];
+
+  console.log(OffersData)
+
   return (
-    <div className="w-full   space-y-4">
-      {sampleListings.map((listing) => (
-        <OfferedCard key={listing.id} {...listing} />
+    <div className="w-full   space-y-4 md:mt-0 mt-10">
+      {OffersData?.map((offer) => (
+        <OfferedCard key={offer?._id} data={offer} />
       ))}
     </div>
   );

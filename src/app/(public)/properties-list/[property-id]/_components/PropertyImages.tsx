@@ -147,13 +147,13 @@ export default function PropertyImages({
         </div>
       </div>
 
-      <div>
+      <>
         <ImagePreviewer
           imageUrls={images}
           previewImgIndex={previewImgIndex}
           setPreviewImgIndex={setPreviewImgIndex}
         />
-      </div>
+      </>
     </>
   );
 }

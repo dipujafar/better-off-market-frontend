@@ -3,10 +3,12 @@ import OfferPropertyCard from "@/components/shared/card/offer-property-card";
 import Container from "@/components/shared/container/Container";
 import SectionTitle from "@/components/shared/titles/SectionTitle";
 import { OfferSummary } from "./OfferSummary";
-import FooterActionButton from "./FooterActionButton";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { selectOfferDraft } from "@/redux/features/offerDraftSlice";
+import {
+  clearOfferDraft,
+  selectOfferDraft,
+} from "@/redux/features/offerDraftSlice";
 import { useEffect } from "react";
 import { IPropertyResponse } from "@/types";
 import moment from "moment";
@@ -30,16 +32,14 @@ const getClosingCosts = (value: string) => {
 export default function ReviewOfferContainer() {
   const [createOffer, { isLoading }] = useCreateOfferMutation();
   const router = useRouter();
-
+  const dispatch = useAppDispatch();
   const draft = useAppSelector(selectOfferDraft);
-
-  console.log(draft);
 
   useEffect(() => {
     if (!draft?.values) {
       router.back();
     }
-  }, [draft, router]);
+  }, []);
 
   const offerData = draft?.values;
 
@@ -57,6 +57,8 @@ export default function ReviewOfferContainer() {
       await createOffer(formData).unwrap();
 
       toast.success("Offer submitted successfully!");
+      router.push("/user/my-offers");
+      dispatch(clearOfferDraft());
     } catch (error) {
       const errorMessage = errorModification(error);
       toast.error(errorMessage);

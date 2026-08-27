@@ -49,6 +49,7 @@ export default function PropertyContainer({
             seller={property?.seller}
             totalViews={property?.totalViews}
             createdAt={property?.createdAt}
+            status={property?.status}
           />
           <AuthenticationRequired />
           {property?.openHouse && (

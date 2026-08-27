@@ -89,17 +89,17 @@ export default function DashboardPropertyCard({
             {/* Header with Type and Price */}
             <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-0">
               <div>
-                <Link href="/user/my-listings/1">
+                <Link href={`/user/my-listings/${id}`}>
                   <h3 className="text-sm font-semibold text-primary-black">
                     {type}
                   </h3>
                 </Link>
-                <div className="mt-1 flex items-center font-semibold gap-1 text-sm text-primary-gray">
+                <Link href={`/user/my-listings/${id}`} className="mt-1 flex items-center font-semibold gap-1 text-sm text-primary-gray">
                   <span>
                     <MapPin size={16} />
                   </span>
                   <span className="line-clamp-1">{location}</span>
-                </div>
+                </Link>
               </div>
               <span className="text-base text-primary-color">
                 ${price.toLocaleString()}

@@ -3,7 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import useGreeting from "@/hooks/useGreeting";
 import { useGetMyProfileQuery } from "@/redux/api/profileApi";
-import { useAppSelector } from "@/redux/hooks";
+
 
 export default function GreetingMessage() {
   const { data, isLoading } = useGetMyProfileQuery(undefined);

@@ -87,7 +87,7 @@ export default function OfferFormContainer() {
         onCancel={() => window.history.back()}
         originalPersonalProperty="Refrigerator, Washer/Drye"
         originalItemsToBeRemoved="Broken shed, debris in basement..."
-        defaultValues={draft?.values}
+        defaultValues={propertyId === draft?.propertyId ? draft?.values : null}
       />
     </Container>
   );

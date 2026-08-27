@@ -1,8 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { MapPin, MessageSquare } from "lucide-react";
-import Image from "next/image";
+import { IOffer, IUser } from "@/types";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
+import ImageWithFallback from "../image/ImageWithFallback";
+import { getOfferStatusBadge } from "@/components/utils/getOfferStatusBadge";
+import { Button } from "@/components/ui/button";
 
 export interface PropertyCardProps {
   id: string;
@@ -16,19 +18,6 @@ export interface PropertyCardProps {
   actionType: "review" | "message" | "details";
   navLink: string;
 }
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return "text-blue-700 bg-blue-100";
-    case "SOLD":
-      return "bg-[#565E741A] text-[#565E74]";
-    case "REJECTED":
-      return "bg-[#BA1A1A1A] text-[#BA1A1A]";
-    default:
-      return "bg-gray-400 text-white";
-  }
-};
 
 const getButtonStyle = (status: string, actionType: string) => {
   if (status === "PENDING" && actionType === "review") {
@@ -50,80 +39,62 @@ const getButtonText = (actionType: string) => {
   }
 };
 
-export default function OfferedCard({
-  image,
-  agent,
-  property,
-  location,
-  status,
-  price,
-  originalPrice,
-  actionType,
-  navLink,
-}: PropertyCardProps) {
+export default function OfferedCard({ data }: { data: IOffer }) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 p-4 border border-primary-border-color rounded-lg bg-white hover:shadow-md transition-shadow">
       {/* Property Image */}
       <div className="shrink-0 w-full sm:w-36 md:h-20 h-40">
-        <Image
-          width={1200}
-          height={1200}
-          src={image}
-          alt={property}
-          className="w-full h-full object-cover rounded-lg"
-        />
+        <Link href={`/user/my-listings/${data?.property?._id}`}>
+          <ImageWithFallback
+            width={1200}
+            height={1200}
+            src={data?.property?.photos[0]}
+            alt={"property_image"}
+            className="w-full h-full object-cover rounded-lg"
+          />
+        </Link>
       </div>
 
       {/* Property Information */}
       <div className="grow min-w-0">
-        <h3 className="text-sm font-semibold text-primary-black">
-          {agent} on {property}
-        </h3>
+        <Link
+          href={`/user/my-listings/${data?.property?._id}`}
+          className="text-sm font-semibold text-primary-black"
+        >
+          {(data?.buyer as IUser)?.name} on {data?.property?.propertyType}
+        </Link>
 
-        <div className="flex items-center gap-1 mt-1 mb-3 text-primary-gray text-xs font-semibold">
+        <Link
+          href={`/user/my-listings/${data?.property?._id}`}
+          className="flex items-center gap-1 mt-1 mb-3 text-primary-gray text-xs font-semibold"
+        >
           <MapPin className="w-4 h-4" />
-          <span className="text-sm ">{location}</span>
-        </div>
+          <span className="text-sm line-clamp-1 ">
+            {data?.property?.streetAddress}, {data?.property?.city},{" "}
+            {data?.property?.state}, {data?.property?.zipCode},{" "}
+            {data?.property?.county}
+          </span>
+        </Link>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`text-xs font-semibold px-2 py-1 rounded ${getStatusColor(
-              status,
-            )}`}
-          >
-            {status}
-          </span>
-
+          <span>{getOfferStatusBadge(data?.status)}</span>
           <span className="text-sm font-bold text-primary-color">
-            ${price.toLocaleString()}
+            ${data?.currentTerms?.offerAmount}
           </span>
 
-          {originalPrice && originalPrice > price && (
-            <span className="text-xs text-primary-gray font-semibold">
-              vs ${originalPrice.toLocaleString()} listed
-            </span>
-          )}
+          <span className="text-xs text-primary-gray font-semibold">
+            vs {data?.property?.listingPrice} listed
+          </span>
         </div>
       </div>
 
       {/* Action Button */}
       <div className="flex items-center shrink-0 w-full sm:w-auto">
-        <Link href={navLink}>
+        <Link href={`/user/offers-received/${data?._id}`}>
           <Button
-            className={`w-full sm:w-auto px-6 rounded-lg font-semibold text-sm transition-colors cursor-pointer py-4.5 ${getButtonStyle(
-              status,
-              actionType,
-            )}`}
-            variant={
-              status === "PENDING" && actionType === "review"
-                ? "default"
-                : "outline"
-            }
+            className={`w-full sm:w-auto px-6 rounded-lg font-semibold text-sm transition-colors cursor-pointer py-4.5 bg-primary-color text-white hover:bg-slate-800`}
           >
-            {actionType === "message" && (
-              <MessageSquare color="#594139" className="w-4 h-4 mr-2" />
-            )}
-            {getButtonText(actionType)}
+            Review Offer
           </Button>
         </Link>
       </div>

@@ -73,9 +73,16 @@ export interface IOpenHouse {
 
 // ================================================= backend response =================================================
 
+export type TPropertyStatus =
+  | "Pending"
+  | "Active"
+  | "Under Contract"
+  | "Sold"
+  | "Rejected";
+
 export interface IPropertyResponse {
   _id: string;
-  status: "Pending" | "Active" | "Under Contract" | "Sold" | "Rejected";
+  status: TPropertyStatus;
 
   propertyType: string;
   useType?: string;
@@ -171,7 +178,6 @@ export interface IMetaData {
   totalPage: number;
 }
 
-
 export interface IReview {
   _id: string;
   user: IUser;
@@ -197,4 +203,71 @@ export interface ISellerReviewData {
   data: IReview[];
   meta: IMetaData;
   summary: IReviewSummary;
+}
+
+export type OfferStatus =
+  | "pending"
+  | "countered"
+  | "accepted"
+  | "rejected"
+  | "withdrawn";
+export type OfferParty = "buyer" | "seller";
+
+export interface IOfferTerms {
+  offerAmount: number;
+  earnestMoney: number;
+  financingType: string;
+  otherFinancingType?: string;
+  financingTerms?: string;
+
+  closingCostOption: string;
+  sellerContribution?: number;
+
+  inspectionContingency: "yes" | "no";
+  inspectionDays?: number;
+  appraisalContingency: "yes" | "no";
+  appraisalDays?: number;
+
+  hasAgent: "yes" | "no";
+  agentName?: string;
+  brokerageName?: string;
+  commission?: string;
+  paidBy?: OfferParty;
+
+  personalPropertyIncluded?: string;
+  itemsToBeRemoved?: string;
+
+  titleCompany?: string;
+  closingDate?: string;
+  possession?: string;
+  sellerPostClosingDays?: number;
+
+  additionalTerms?: string;
+  notesToSeller?: string;
+  createdAt: Date;
+}
+
+export interface IOfferHistoryEntry extends IOfferTerms {
+  round: number;
+  madeBy: OfferParty;
+  madeByUser: IUser | string;
+  createdAt: Date;
+}
+
+export interface IOffer {
+  _id: string;
+  property: IPropertyResponse;
+  buyer: IUser | string;
+  seller: IUser | string;
+
+  status: OfferStatus;
+  currentRound: number;
+  lastActionBy: OfferParty;
+
+  currentTerms: IOfferTerms; // latest terms on the table, whoever proposed them
+  history: IOfferHistoryEntry[]; // full audit trail, oldest first
+
+  supportingDocuments: IDocument[];
+
+  isDeleted: boolean;
 }

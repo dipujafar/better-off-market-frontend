@@ -1,24 +1,45 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OfferList from "./OfferList";
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useGetMyReceivedOffersQuery } from "@/redux/api/offerApi";
 
 export default function OfferListContainer() {
+  const [activeTab, setActiveTab] = useState("all");
+  const page = useSearchParams().get("page") || "1";
+  const limit = useSearchParams().get("limit") || "12";
+  const queries: Record<string, string | number> = {};
+  if (activeTab === "all") delete queries.status;
+  else queries.status = activeTab;
+
+  queries.page = page;
+  queries.limit = limit;
+
+  const { data, isLoading } = useGetMyReceivedOffersQuery(queries);
+
+
   return (
-    <Tabs defaultValue="all-offers" className="w-full mt-5">
+    <Tabs
+      onValueChange={(val) => setActiveTab(val)}
+      defaultValue="all"
+      className="w-full mt-5"
+    >
       <TabsList>
         <TabsTrigger
-          value="all-offers"
+          value="all"
           className="data-active:bg-primary-color rounded-full data-active:text-white cursor-pointer px-4 py-3.5 mr-1"
         >
           All offers
         </TabsTrigger>
         <TabsTrigger
-          value="new"
+          value="pending"
           className="data-active:bg-primary-color rounded-full data-active:text-white cursor-pointer px-4 py-3.5 mr-1"
         >
           New
         </TabsTrigger>
         <TabsTrigger
-          value="counter-offers"
+          value="countered"
           className="data-active:bg-primary-color rounded-full data-active:text-white cursor-pointer px-4 py-3.5 mr-1"
         >
           Counter offers
@@ -31,26 +52,51 @@ export default function OfferListContainer() {
         </TabsTrigger>
         <TabsTrigger
           value="rejected"
-         className="data-active:bg-primary-color rounded-full data-active:text-white cursor-pointer px-4 py-3.5 mr-1"
+          className="data-active:bg-primary-color rounded-full data-active:text-white cursor-pointer px-4 py-3.5 mr-1"
         >
           Rejected
         </TabsTrigger>
       </TabsList>
-      <div className="pt-1 mb-4 border-b border-b-primary-border-color"></div>
-      <TabsContent value="all-offers" className="w-full">
-        <OfferList />
+      <div className="pt-1 mb-4 border-b border-b-primary-border-color hidden md:block"></div>
+      <TabsContent value="all" className="w-full">
+        <OfferList
+          data={data}
+          page={Number(page)}
+          limit={Number(limit)}
+          loading={isLoading}
+        />
       </TabsContent>
-      <TabsContent value="new">
-        <OfferList />
+      <TabsContent value="pending">
+        <OfferList
+          data={data}
+          page={Number(page)}
+          limit={Number(limit)}
+          loading={isLoading}
+        />
       </TabsContent>
-      <TabsContent value="counter-offers">
-        <OfferList />
+      <TabsContent value="countered">
+        <OfferList
+          data={data}
+          page={Number(page)}
+          limit={Number(limit)}
+          loading={isLoading}
+        />
       </TabsContent>
       <TabsContent value="accepted">
-        <OfferList />
+        <OfferList
+          data={data}
+          page={Number(page)}
+          limit={Number(limit)}
+          loading={isLoading}
+        />
       </TabsContent>
       <TabsContent value="rejected">
-        <OfferList />
+        <OfferList
+          data={data}
+          page={Number(page)}
+          limit={Number(limit)}
+          loading={isLoading}
+        />
       </TabsContent>
     </Tabs>
   );

@@ -53,15 +53,15 @@ export function AppDialog({
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
       <DialogContent
-        className={cn("sm:max-w-lg rounded-md pb-5 pt-10 text-primary-color", className)}
+        className={cn("sm:max-w-lg rounded-md pb-5 pt-7 text-primary-color", className)}
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold  text-center">
+          <DialogTitle className="text-2xl font-semibold  ">
             {title}
           </DialogTitle>
           {description && (
-            <DialogDescription className="text-gray-700  text-center">
+            <DialogDescription className="text-gray-700 ">
               {description}
             </DialogDescription>
           )}
