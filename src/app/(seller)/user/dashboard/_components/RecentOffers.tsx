@@ -1,5 +1,12 @@
 "use client";
+import RecentOffersTableSkeleton from "@/components/skeleton/RecentOffersTableSkeleton";
 import { Button } from "@/components/ui/button";
+import Empty from "@/components/ui/empty-data";
+import { getOfferStatusBadge } from "@/components/utils/getOfferStatusBadge";
+import { useGetMyReceivedOffersQuery } from "@/redux/api/offerApi";
+import { IOffer, IUser } from "@/types";
+import moment from "moment";
+import Link from "next/link";
 
 interface Transaction {
   id: string;
@@ -12,51 +19,15 @@ interface Transaction {
   actionType: "review" | "message";
 }
 
-const transactions: Transaction[] = [
-  {
-    id: "1",
-    buyer: "James B.",
-    location: "Memphis house",
-    amount: "$46,000",
-    time: "2 hours ago",
-    status: "NEW",
-    action: "Review",
-    actionType: "review",
-  },
-  {
-    id: "2",
-    buyer: "Sarah L.",
-    location: "Nashville duplex",
-    amount: "$298,000",
-    time: "1 day ago",
-    status: "NEW",
-    action: "Review",
-    actionType: "review",
-  },
-  {
-    id: "3",
-    buyer: "Robert K.",
-    location: "Tulsa land",
-    amount: "$19,500",
-    time: "3 days ago",
-    status: "ACCEPTED",
-    action: "Message",
-    actionType: "message",
-  },
-];
-
 export default function RecentOffers() {
-  const getStatusColor = (status: "NEW" | "ACCEPTED") => {
-    return status === "NEW"
-      ? "bg-[#AC3400]/10 text-[#AC3400]"
-      : "bg-[#DCFCE7] text-[#166534]";
-  };
+  const { data, isLoading } = useGetMyReceivedOffersQuery({ limit: 5 });
 
-  const getActionColor = (actionType: "review" | "message") => {
-    return actionType === "review"
-      ? "text-[#AC3400]"
-      : "text-[#565E74]";
-  };
+  const OffersData = data?.data || [];
+
+  if (isLoading) return <RecentOffersTableSkeleton />;
+
+  if (!data?.meta?.total)
+    return <Empty message="No offers found" className="mt-8" />;
 
   return (
     <div className="w-full">
@@ -83,38 +54,48 @@ export default function RecentOffers() {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((transaction) => (
+            {OffersData?.map((transaction: IOffer) => (
               <tr
-                key={transaction.id}
+                key={transaction?._id}
                 className="border-b hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4">
-                  <div className="font-semibold text-primary-black">
-                    {transaction.buyer}
-                  </div>
-                  <div className="text-sm text-primary-gray">
-                    {transaction.location}
-                  </div>
+                  <Link
+                    href={`/seller-profile?seller=${transaction?.buyer?._id}`}
+                  >
+                    <div className="font-semibold text-primary-black">
+                      {(transaction?.buyer as IUser)?.name}
+                    </div>
+                  </Link>
+
+                  <Link
+                    href={`/seller-profile?seller=${transaction?.buyer?._id}`}
+                  >
+                    <div className="text-sm text-primary-gray line-clamp-1 max-w-70">
+                      {(transaction?.buyer as IUser)?.company ||
+                        (transaction?.buyer as IUser)?.location}{" "}
+                    </div>
+                  </Link>
                 </td>
                 <td className="px-6 py-4 font-semibold text-primary-black">
-                  {transaction.amount}
+                  {transaction?.currentTerms?.offerAmount}
                 </td>
-                <td className="px-6 py-4 text-primary-gray">
-                  {transaction.time}
+                <td className="px-6 py-4 text-primary-gray truncate">
+                  {moment(transaction?.createdAt).fromNow()}
                 </td>
                 <td className="px-6 py-4">
                   <span
-                    className={`inline-flex items-center px-2 py-1 text-xs font-bold rounded-full ${getStatusColor(transaction.status)}`}
+                    className={`inline-flex items-center px-2 py-1 text-xs font-bold rounded-full $`}
                   >
-                    {transaction.status}
+                    {getOfferStatusBadge(transaction?.status)}
                   </span>
                 </td>
                 <td className="px-6 py-4">
                   <Button
                     variant="ghost"
-                    className={`text-orange-600 hover:text-orange-700 hover:bg-orange-50 p-0 h-auto font-bold cursor-pointer ${getActionColor(transaction.actionType)}`}
+                    className={`text-orange-600 hover:text-orange-700 hover:bg-orange-50 p-0 h-auto font-bold cursor-pointer`}
                   >
-                    {transaction.action}
+                    Review
                   </Button>
                 </td>
               </tr>
@@ -125,24 +106,33 @@ export default function RecentOffers() {
 
       {/* Mobile Card View */}
       <div className="md:hidden space-y-4">
-        {transactions.map((transaction) => (
+        {OffersData?.map((transaction: IOffer) => (
           <div
-            key={transaction.id}
+            key={transaction?._id}
             className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h3 className="font-semibold text-primary-black">
-                  {transaction.buyer}
-                </h3>
-                <p className="text-sm text-primary-gray">
-                  {transaction.location}
-                </p>
+                <Link
+                  href={`/seller-profile?seller=${transaction?.buyer?._id}`}
+                >
+                  <h3 className="font-semibold text-primary-black">
+                    {(transaction?.buyer as IUser)?.name}
+                  </h3>
+                </Link>
+                <Link
+                  href={`/seller-profile?seller=${transaction?.buyer?._id}`}
+                >
+                  <p className="text-sm text-primary-gray line-clamp-1">
+                    {(transaction?.buyer as IUser)?.company ||
+                      (transaction?.buyer as IUser)?.location}{" "}
+                  </p>
+                </Link>
               </div>
               <span
-                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(transaction.status)}`}
+                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold `}
               >
-                {transaction.status}
+                {getOfferStatusBadge(transaction?.status)}
               </span>
             </div>
 
@@ -150,13 +140,13 @@ export default function RecentOffers() {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-primary-gray">Amount</span>
                 <span className="font-semibold text-primary-black">
-                  {transaction.amount}
+                  {transaction?.currentTerms?.offerAmount}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-primary-gray">Time</span>
                 <span className="text-sm text-primary-black">
-                  {transaction.time}
+                  {moment(transaction?.createdAt).fromNow()}
                 </span>
               </div>
             </div>
@@ -165,7 +155,7 @@ export default function RecentOffers() {
               variant="ghost"
               className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-50 font-bold cursor-pointer"
             >
-              {transaction.action}
+              Review
             </Button>
           </div>
         ))}

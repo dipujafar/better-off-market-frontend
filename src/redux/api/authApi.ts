@@ -18,7 +18,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [tagTypes.auth],
+      invalidatesTags: [tagTypes.auth, tagTypes.property, tagTypes.profile],
     }),
     forgetPassword: build.mutation({
       query: (data) => ({

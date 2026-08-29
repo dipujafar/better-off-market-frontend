@@ -25,6 +25,19 @@ const profileApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.profile],
     }),
+    getSellerDashboardStats: builder.query({
+      query: () => ({
+        url: "/users/seller-stats",
+        method: "GET",
+      }),
+    }),
+    getSellerListingAnalytics: builder.query({
+      query: (params) => ({
+        url: "/users/seller/listing-analytics",
+        method: "GET",
+        params,
+      }),
+    }),
   }),
 });
 
@@ -32,4 +45,6 @@ export const {
   useGetMyProfileQuery,
   useUpdateProfileMutation,
   useGetSellerProfileQuery,
+  useGetSellerDashboardStatsQuery,
+  useGetSellerListingAnalyticsQuery,
 } = profileApi;

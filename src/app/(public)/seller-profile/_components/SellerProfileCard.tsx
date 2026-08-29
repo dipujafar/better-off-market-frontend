@@ -2,6 +2,8 @@
 import { AppDialog } from "@/components/shared/dialog/AppDialog";
 import ReportSellerDialog from "@/components/shared/dialog/ReportSellerDialog";
 import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
+import Preview from "@/components/shared/utils/image_preview_option";
+import ImagePreviewer from "@/components/shared/utils/images-previewer";
 import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 import SellerProfileSkeleton from "@/components/skeleton/seller-profile-skeleton";
 import { Button } from "@/components/ui/button";
@@ -15,6 +17,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export function SellerProfileCard() {
+  const [previewImgIndex, setPreviewImgIndex] = useState(-1);
   const sellerId = useSearchParams().get("seller");
   const { data, isLoading } = useGetSellerProfileQuery(sellerId, {
     skip: !sellerId,
@@ -34,15 +37,17 @@ export function SellerProfileCard() {
   return (
     <>
       <div className="rounded-lg bg-white p-5 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row lg:gap-8">
+        <div className="flex flex-col items-center md:items-start gap-5 sm:flex-row lg:gap-8">
           {/* Avatar */}
+          <Preview onClick={() => setPreviewImgIndex(0)}>
           <ImageWithFallback
             src={user?.profile || "/default_user_profile.png"}
             alt={"seller profile avatar"}
             width={1200}
             height={1200}
-            className="size-20 shrink-0 rounded-lg object-cover sm:size-28 lg:size-40"
+            className="size-32 shrink-0 rounded-lg object-cover sm:size-36 lg:size-40"
           />
+          </Preview>
 
           {/* Info */}
           <div className="min-w-0 flex-1 flex flex-col justify-between">
@@ -147,6 +152,13 @@ export function SellerProfileCard() {
           },
         ]}
       />
+      { user?.profile && <>
+        <ImagePreviewer
+          imageUrls={[user?.profile]}
+          previewImgIndex={previewImgIndex}
+          setPreviewImgIndex={setPreviewImgIndex}
+        />
+      </>}
     </>
   );
 }

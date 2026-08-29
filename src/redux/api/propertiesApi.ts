@@ -1,3 +1,4 @@
+import IncreaseViewsCount from "@/app/(public)/properties-list/[property-id]/_components/IncreaseViewsCount";
 import { tagTypes } from "../tagTypes";
 import { baseApi } from "./baseApi";
 
@@ -65,6 +66,22 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.property],
     }),
+    increaseViewCount: build.mutation({
+      query: (id) => ({
+        url: `/properties/increase-views/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.property],
+    }),
+
+    increaseRSVPCount: build.mutation({
+      query: (id) => ({
+        url: `/properties/increase-rsvp/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.property],
+    }),
+
     deleteProperty: build.mutation({
       query: (id) => ({
         url: `/properties/${id}`,
@@ -85,4 +102,6 @@ export const {
   useGetSellerPropertiesQuery,
   useUpdatePropertyMutation,
   useDeletePropertyMutation,
+  useIncreaseViewCountMutation,
+  useIncreaseRSVPCountMutation,
 } = propertyApi;

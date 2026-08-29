@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import AuthenticationRequired from "./AuthenticationRequired";
 import { IPropertyResponse } from "@/types";
 import { BasicPropertyDetails } from "./BasicPropertyDetails";
+import IncreaseViewsCount from "./IncreaseViewsCount";
 
 export default function PropertyContainer({
   property,
@@ -19,6 +20,7 @@ export default function PropertyContainer({
 }) {
   return (
     <Container className="mt-12">
+      <IncreaseViewsCount id={property?._id} seller={property?.seller} />
       <PropertyImages
         propertyImages={property?.photos}
         propertyType={property?.propertyType}
@@ -53,7 +55,7 @@ export default function PropertyContainer({
           />
           <AuthenticationRequired />
           {property?.openHouse && (
-            <OpenHouse openHouse={property?.openHouse} id={property?._id} />
+            <OpenHouse openHouse={property?.openHouse} id={property?._id} sellerId={property?.seller?._id} />
           )}
 
           <ProfileCard seller={property?.seller} />

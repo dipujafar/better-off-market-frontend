@@ -34,6 +34,12 @@ const offerApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.offer],
     }),
+    getSingleOffer: builder.query({
+      query: (id) => ({
+        url: `/offers/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -42,4 +48,5 @@ export const {
   useGetMyOffersQuery,
   useWithdrawOfferMutation,
   useGetMyReceivedOffersQuery,
+  useGetSingleOfferQuery,
 } = offerApi;

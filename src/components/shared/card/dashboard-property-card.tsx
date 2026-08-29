@@ -15,6 +15,7 @@ import { useDeletePropertyMutation } from "@/redux/api/propertiesApi";
 import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
 import { revalidateProperties } from "@/lib/actions/revalidate";
+import { priceFormatter } from "../utils/priceFormatter";
 
 interface PropertyCardProps {
   id: string;
@@ -102,7 +103,7 @@ export default function DashboardPropertyCard({
                 </Link>
               </div>
               <span className="text-base text-primary-color">
-                ${price.toLocaleString()}
+                {priceFormatter.format(price)}
               </span>
             </div>
 

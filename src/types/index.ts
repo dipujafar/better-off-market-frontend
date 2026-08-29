@@ -257,8 +257,8 @@ export interface IOfferHistoryEntry extends IOfferTerms {
 export interface IOffer {
   _id: string;
   property: IPropertyResponse;
-  buyer: IUser | string;
-  seller: IUser | string;
+  buyer: IUser;
+  seller: IUser;
 
   status: OfferStatus;
   currentRound: number;
@@ -270,4 +270,6 @@ export interface IOffer {
   supportingDocuments: IDocument[];
 
   isDeleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }

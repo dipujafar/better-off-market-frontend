@@ -5,7 +5,6 @@ import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 import { priceFormatter } from "../utils/priceFormatter";
-import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
 import moment from "moment";
 import { statusColor } from "@/components/utils/status-color";
 

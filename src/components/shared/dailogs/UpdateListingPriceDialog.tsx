@@ -74,7 +74,6 @@ export function UpdateListingPriceDialog({
       await revalidateProperties();
       toast.success("Listing price updated successfully!");
     } catch (error) {
-      console.log(error);
       const errorMessage = errorModification(error);
       toast.error(errorMessage);
     }

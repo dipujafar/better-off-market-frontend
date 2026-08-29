@@ -1,13 +1,15 @@
 "use client";
 import { IOpenHouse } from "@/types";
 import moment from "moment";
+import RSVPHereButton from "./RSVPHereButton";
 
 interface OpenHouseProps {
   openHouse: IOpenHouse;
   id: string;
+  sellerId: string;
 }
 
-export function OpenHouse({ openHouse, id }: OpenHouseProps) {
+export function OpenHouse({ openHouse, id, sellerId }: OpenHouseProps) {
   return (
     <div className="bg-white lg:p-6 p-4 shadow-[0_20px_50px_0_rgba(15,23,42,0.10)] rounded-md border border-[#FAEEEA] ">
       <h2 className="text-2xl font-semibold text-primary-black mb-4">
@@ -30,9 +32,7 @@ export function OpenHouse({ openHouse, id }: OpenHouseProps) {
           </span>
         </div>
 
-        <button className="w-full rounded-md bg-white py-3 text-base text-primary-blue transition-opacity hover:opacity-90 cursor-pointer text-primary-color font-semibold">
-          RSVP Here
-        </button>
+       <RSVPHereButton id={id} sellerId={sellerId} />
       </div>
     </div>
   );

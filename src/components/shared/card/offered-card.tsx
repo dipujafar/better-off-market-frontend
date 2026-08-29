@@ -5,6 +5,7 @@ import Link from "next/link";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { getOfferStatusBadge } from "@/components/utils/getOfferStatusBadge";
 import { Button } from "@/components/ui/button";
+import { priceFormatter } from "../utils/priceFormatter";
 
 export interface PropertyCardProps {
   id: string;
@@ -79,11 +80,11 @@ export default function OfferedCard({ data }: { data: IOffer }) {
         <div className="flex flex-wrap items-center gap-2">
           <span>{getOfferStatusBadge(data?.status)}</span>
           <span className="text-sm font-bold text-primary-color">
-            ${data?.currentTerms?.offerAmount}
+            {priceFormatter.format(data?.currentTerms?.offerAmount)}
           </span>
 
           <span className="text-xs text-primary-gray font-semibold">
-            vs {data?.property?.listingPrice} listed
+            vs {priceFormatter.format(data?.property?.listingPrice)} listed
           </span>
         </div>
       </div>

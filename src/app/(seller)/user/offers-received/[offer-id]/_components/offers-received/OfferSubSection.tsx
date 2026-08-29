@@ -17,16 +17,6 @@ export function OfferSubSection({ title, icon, onEdit, children }: OfferSubSecti
           {icon ? <span className="text-primary">{icon}</span> : null}
           {title}
         </h3>
-        {/* {onEdit ? (
-          <button
-            type="button"
-            onClick={onEdit}
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-          >
-            <Pencil size={13} />
-            Edit
-          </button>
-        ) : null} */}
       </div>
       {children}
     </div>

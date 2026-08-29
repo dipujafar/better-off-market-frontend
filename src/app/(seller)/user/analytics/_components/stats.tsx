@@ -1,6 +1,15 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { Eye, Handshake } from "lucide-react";
 
-export default function Stats() {
+export default function Stats({
+  totalOffersReceived,
+  totalViewsThisWeek,
+  loading,
+}: {
+  totalOffersReceived?: number;
+  totalViewsThisWeek?: number;
+  loading?: boolean;
+}) {
   return (
     <div className="grid grid-cols-2 gap-6">
       <div className=" rounded-lg p-6  shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]">
@@ -14,7 +23,11 @@ export default function Stats() {
             Total views this week
           </p>
         </div>
-        <p className="text-4xl font-bold text-primary-black mt-1">284</p>
+        {loading ? (
+          <Skeleton className="w-24 h-9 bg-gray-300" />
+        ) : (
+          <p className="text-4xl font-bold text-primary-black mt-1">{totalViewsThisWeek || 0}</p>
+        )}
       </div>
 
       <div className=" rounded-lg p-6  shadow-[0_10px_30px_0_rgba(15,23,42,0.05)]">
@@ -28,7 +41,11 @@ export default function Stats() {
             Total offers received
           </p>
         </div>
-        <p className="text-4xl font-bold text-primary-black mt-1">7</p>
+        {loading ? (
+          <Skeleton className="w-24 h-9 bg-gray-300" />
+        ) : (
+          <p className="text-4xl font-bold text-primary-black mt-1">{totalOffersReceived || 0}</p>
+        )}
       </div>
     </div>
   );

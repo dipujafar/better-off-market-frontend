@@ -1,3 +1,4 @@
+import { priceFormatter } from "@/components/shared/utils/priceFormatter";
 import ReadMoreText from "@/components/shared/utils/ReadMoreText";
 import { statusColor } from "@/components/utils/status-color";
 import { cn } from "@/lib/utils";
@@ -49,10 +50,10 @@ export function BasicPropertyDetails({ property }: PropertyListingProps) {
         {/* ------------------ Pricing details ---------------- */}
         <div className="rounded-md shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] lg:p-6 p-4 bg-white border border-[#EFEAE8]">
           <p className="text-xl md:text-2xl font-bold text-[#1F4E8B]">
-            ${property?.listingPrice}{" "}
+            {priceFormatter.format(property?.listingPrice)}{" "}
             {/* <span className="text-blue-900/40 font-normal mx-1">|</span> */}
             <span className="text-xl md:text-2xl font-normal  text-primary-gray scroll-pl-2.5">
-              (ARV : ${property?.arv})
+              (ARV : {priceFormatter.format(property?.arv as number)})
             </span>
           </p>
 
@@ -63,7 +64,11 @@ export function BasicPropertyDetails({ property }: PropertyListingProps) {
                 <span>
                   Price Reduced{" "}
                   <span className="">
-                    ~~ ${property?.oldListingPrice - property?.listingPrice} ~~
+                    ~~ 
+                    {priceFormatter.format(
+                      property?.oldListingPrice - property?.listingPrice,
+                    )}{" "}
+                    ~~
                   </span>
                 </span>
               </div>
@@ -92,8 +97,6 @@ export function BasicPropertyDetails({ property }: PropertyListingProps) {
                 </div>
               ),
             )}
-
-          
           </div>
         )}
 

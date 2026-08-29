@@ -15,6 +15,7 @@ import { useWithdrawOfferMutation } from "@/redux/api/offerApi";
 import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
 import { getOfferStatusBadge } from "@/components/utils/getOfferStatusBadge";
+import { priceFormatter } from "@/components/shared/utils/priceFormatter";
 
 export default function OfferList({
   data,
@@ -123,7 +124,7 @@ export default function OfferList({
                       Offer Amount
                     </p>
                     <p className="text-primary-color lg:text-2xl text-xl font-semibold">
-                      ${offer?.currentTerms?.offerAmount}
+                      {priceFormatter.format(offer?.currentTerms?.offerAmount)}
                     </p>
                   </div>
                   <div>{getOfferStatusBadge(offer.status)}</div>

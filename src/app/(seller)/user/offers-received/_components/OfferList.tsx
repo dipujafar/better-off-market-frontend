@@ -1,4 +1,5 @@
 import OfferedCard from "@/components/shared/card/offered-card";
+import PaginationSection from "@/components/shared/pagination/PaginationSection";
 import OfferedCardSkeleton from "@/components/skeleton/OfferedCardSkeleton";
 import Empty from "@/components/ui/empty-data";
 import { IOffer } from "@/types";
@@ -17,25 +18,31 @@ export default function OfferList({
 }) {
   if (loading) {
     return (
-      <div className="mt-5">
-        <OfferedCardSkeleton />
+      <div className="space-y-4">
+        {Array.from({ length: limit }).map((_, index) => (
+          <OfferedCardSkeleton key={index} />
+        ))}
       </div>
     );
   }
-
 
   if (!data?.meta?.total)
     return <Empty message="No offers found" className="mt-16" />;
 
   const OffersData = data?.data || [];
 
-  console.log(OffersData)
-
   return (
-    <div className="w-full   space-y-4 md:mt-0 mt-10">
-      {OffersData?.map((offer) => (
-        <OfferedCard key={offer?._id} data={offer} />
-      ))}
-    </div>
+    <>
+      <div className="w-full   space-y-4 md:mt-0 mt-10">
+        {OffersData?.map((offer) => (
+          <OfferedCard key={offer?._id} data={offer} />
+        ))}
+      </div>
+      <PaginationSection
+        total={data?.meta?.total}
+        current={page}
+        pageSize={limit}
+      />
+    </>
   );
 }
