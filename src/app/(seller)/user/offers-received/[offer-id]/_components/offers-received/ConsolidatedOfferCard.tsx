@@ -1,14 +1,11 @@
 import {
-  FileText,
-  Archive,
   AlertCircle,
   Search,
   BadgeCheck,
   Calendar,
-  File,
   Download,
-  MessageSquare,
   MessageSquareText,
+  UserRound,
 } from "lucide-react";
 import { OfferSubSection } from "./OfferSubSection";
 import {
@@ -20,21 +17,32 @@ import { SummaryField } from "@/app/(buyer)/review-offer/_components/SummaryFiel
 import { ContingencyItem } from "@/app/(buyer)/review-offer/_components/ContingencyItem";
 import { Pill } from "@/app/(buyer)/review-offer/_components/Pill";
 import { DocIcon, DollarIcon, PersonalPropertyIcon } from "@/icons";
+import Link from "next/link";
 
 interface ConsolidatedOfferCardProps {
+  buyerId: string;
   name: string;
   data: ConsolidatedOfferData;
   onEditOfferDetails?: () => void;
 }
 
 export function ConsolidatedOfferCard({
+  buyerId,
   name: buyerName,
   data,
   onEditOfferDetails,
 }: ConsolidatedOfferCardProps) {
   return (
-    <div className="border border-[#E6E8EA] bg-card p-5 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 rounded-lg">
-      <h4 className="text-2xl font-semibold">Offer from {buyerName}</h4>
+    <div className="border border-primary-border-color bg-card p-5 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 rounded-lg">
+      <h4 className="text-2xl font-semibold">
+        {" "}
+        <Link
+          href={`/seller-profile?seller=${buyerId}`}
+          className="hover:text-blue-800 hover:underline duration-200 ease-in-out "
+        >
+          Offer from {buyerName}{" "}
+        </Link>
+      </h4>
       <section className=" space-y-4 rounded-xl mt-5">
         <OfferSubSection
           title="Offer Details"
@@ -51,10 +59,13 @@ export function ConsolidatedOfferCard({
               value={formatCurrency(data.earnestMoney)}
             />
             <SummaryField label="Financing type" value={data.financingType} />
-            <SummaryField label="Closing costs" value={data.closingCosts} />
-            {data.commission ? (
-              <SummaryField label="Commission" value={data.commission} />
+            {data.financingTerms ? (
+              <SummaryField
+                label="Financing Terms"
+                value={data?.financingTerms}
+              />
             ) : null}
+            <SummaryField label="Closing costs" value={data.closingCosts} />
           </div>
         </OfferSubSection>
 
@@ -62,7 +73,7 @@ export function ConsolidatedOfferCard({
           title="Personal Property"
           icon={<PersonalPropertyIcon />}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                 Included items
@@ -84,9 +95,18 @@ export function ConsolidatedOfferCard({
                 <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
                   Items to be removed
                 </p>
-                <p className="mt-1 text-sm italic text-foreground">
-                  &ldquo;{data.personalProperty.itemsToRemove}&rdquo;
-                </p>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {data?.personalProperty?.itemsToRemove ? (
+                    data?.personalProperty?.itemsToRemove
+                      ?.split(",")
+                      ?.map((item) => <Pill key={item}>{item}</Pill>)
+                  ) : (
+                    <span className="text-sm text-muted-foreground">
+                      None specified
+                    </span>
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -107,6 +127,41 @@ export function ConsolidatedOfferCard({
           </div>
         </OfferSubSection>
 
+        <OfferSubSection
+          title="Real Estate Agent"
+          icon={<UserRound size={18} />}
+        >
+          {data.agent?.hasAgent ? (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+              <SummaryField
+                label="Agent name"
+                value={data.agent.agentName || "—"}
+              />
+              <SummaryField
+                label="Brokerage name"
+                value={data.agent.brokerageName || "—"}
+              />
+              <SummaryField
+                label="Commission"
+                value={data.agent.commission || "—"}
+              />
+              <SummaryField
+                label="Paid by"
+                value={
+                  data.agent.paidBy
+                    ? data.agent.paidBy.charAt(0).toUpperCase() +
+                      data.agent.paidBy.slice(1)
+                    : "—"
+                }
+              />
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Buyer is not working with a real estate agent.
+            </p>
+          )}
+        </OfferSubSection>
+
         <OfferSubSection title="Closing Terms" icon={<Calendar size={18} />}>
           <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             <SummaryField
@@ -121,6 +176,12 @@ export function ConsolidatedOfferCard({
               label="Possession"
               value={data.closingTerms.possession}
             />
+            <SummaryField
+              label="Seller post-closing occupancy"
+              value={
+                data?.closingTerms?.sellerPostClosingDays?.toString() ?? "—"
+              }
+            />
           </div>
         </OfferSubSection>
 
@@ -132,17 +193,27 @@ export function ConsolidatedOfferCard({
                   <a
                     href={doc.url}
                     download
-                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/40 px-3 py-2 text-sm text-foreground hover:border-primary/50"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-3 rounded-md border border-primary-border-color/60 bg-muted/50 px-3 py-2.5 text-sm text-foreground hover:border-primary/50"
                   >
                     <span className="truncate">{doc.name}</span>
-                    <Download
-                      size={16}
-                      className="shrink-0 text-muted-foreground"
-                    />
+                    <Download className="shrink-0 text-muted-foreground hover:bg-gray-200 size-5 p-0.5 rounded-full" />
                   </a>
                 </li>
               ))}
             </ul>
+          </OfferSubSection>
+        ) : null}
+
+        {data.additionalTerms ? (
+          <OfferSubSection
+            title="Additional Terms / Conditions"
+            icon={<MessageSquareText color="#00214C" size={18} />}
+          >
+            <p className="rounded-lg bg-[#F2F4F6] text-[#594139] p-3  italic leading-relaxed">
+              &ldquo;{data?.additionalTerms}&rdquo;
+            </p>
           </OfferSubSection>
         ) : null}
 

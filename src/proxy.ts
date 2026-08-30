@@ -33,6 +33,7 @@ export const config = {
     "/my-offer",
     "/offer-negotiation-story",
     "/review-counter-offer",
+    "/review-sent-offer",
     "/review-offer",
     "/send-counter-offer",
     "/sign-agreement-contact",

@@ -40,6 +40,28 @@ const offerApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    sentCounterOffer: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/:${id}/counter`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.offer],
+    }),
+    acceptOffer: builder.mutation({
+      query: (id) => ({
+        url: `/offers/${id}/accept`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.offer],
+    }),
+    rejectOffer: builder.mutation({
+      query: (id) => ({
+        url: `/offers/${id}/reject`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.offer],
+    }),
   }),
 });
 
@@ -48,5 +70,8 @@ export const {
   useGetMyOffersQuery,
   useWithdrawOfferMutation,
   useGetMyReceivedOffersQuery,
+  useSentCounterOfferMutation,
+  useAcceptOfferMutation,
   useGetSingleOfferQuery,
+  useRejectOfferMutation,
 } = offerApi;

@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Pencil } from "lucide-react";
 
 interface OfferSubSectionProps {
   title: string;

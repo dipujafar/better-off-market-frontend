@@ -8,16 +8,27 @@ export interface OfferSnapshot {
 interface OfferComparisonRowProps {
   yourOffer: OfferSnapshot;
   counterOffer?: OfferSnapshot & { badgeNumber?: number };
+  yourOfferTitle?: string;
+  counterOfferTitle?: string;
 }
 
-export function OfferComparisonRow({ yourOffer, counterOffer }: OfferComparisonRowProps) {
+export function OfferComparisonRow({
+  yourOffer,
+  counterOffer,
+  yourOfferTitle = "Your offer",
+  counterOfferTitle = "Counter offer",
+}: OfferComparisonRowProps) {
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:max-w-3/4">
-      <OfferComparisonCard title="Your offer" amount={yourOffer.amount} closingDate={yourOffer.closingDate} />
+      <OfferComparisonCard
+        title={yourOfferTitle}
+        amount={yourOffer.amount}
+        closingDate={yourOffer.closingDate}
+      />
 
       {counterOffer ? (
         <OfferComparisonCard
-          title="Counter offer"
+          title={counterOfferTitle}
           amount={counterOffer.amount}
           previousAmount={yourOffer.amount}
           closingDate={counterOffer.closingDate}

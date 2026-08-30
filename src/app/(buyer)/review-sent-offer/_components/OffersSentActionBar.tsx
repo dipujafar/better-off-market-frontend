@@ -1,7 +1,10 @@
 import { MessageSquareText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { CLOSED_OFFER_STATUSES, OFFER_STATUS } from "./utils.offer-received";
+import {
+  CLOSED_OFFER_STATUSES,
+  OFFER_STATUS,
+} from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
 
 interface OffersReceivedActionBarProps {
   offerId: string;
@@ -11,6 +14,7 @@ interface OffersReceivedActionBarProps {
   onReject?: () => void;
   isSubmitting?: boolean;
   className?: string;
+
   lastActionBy?: "buyer" | "seller";
   status: (typeof OFFER_STATUS)[keyof typeof OFFER_STATUS];
 }
@@ -18,7 +22,7 @@ interface OffersReceivedActionBarProps {
 const baseButton =
   "inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 
-export function OffersReceivedActionBar({
+export function OffersSentActionBar({
   offerId,
   onAcceptOffer,
   onCounterOffer,
@@ -30,7 +34,7 @@ export function OffersReceivedActionBar({
   status,
 }: OffersReceivedActionBarProps) {
   console.log(status);
-  const showFullActions = lastActionBy !== "seller";
+  const showFullActions = lastActionBy === "buyer";
   const isStatusClosed = CLOSED_OFFER_STATUSES.includes(status);
 
   return (

@@ -3,13 +3,7 @@ import {
   useGetSingleOfferQuery,
   useRejectOfferMutation,
 } from "@/redux/api/offerApi";
-import { OffersReceived } from "./offers-received";
-import { useParams } from "next/navigation";
-import {
-  formatDate,
-  getRoundTitle,
-  mapTermsToConsolidatedOfferData,
-} from "./offers-received/utils.offer-received";
+import { useSearchParams } from "next/navigation";
 import Empty from "@/components/ui/empty-data";
 import { useState } from "react";
 import { AppDialog } from "@/components/shared/dialog/AppDialog";
@@ -17,10 +11,16 @@ import { errorModification } from "@/lib/errors/errorModification";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import OffersDetailsPageSkeleton from "@/components/skeleton/OffersDetailsPageSkeleton";
+import {
+  formatDate,
+  getRoundTitle,
+  mapTermsToConsolidatedOfferData,
+} from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
+import { OffersSent } from "./OffersSent";
+import OfferPropertyCard from "@/components/shared/card/offer-property-card";
 
-export default function OfferReceivedContainer() {
-  const params = useParams();
-  const offerId = params["offer-id"] as string;
+export default function ReviewSentOfferContainer() {
+  const offerId = useSearchParams().get("offer");
   const router = useRouter();
   const [rejectOffer] = useRejectOfferMutation();
   const [openRejectModal, setOpenRejectModal] = useState(false);
@@ -38,7 +38,7 @@ export default function OfferReceivedContainer() {
   if (!offer) return <Empty message="Offer not found" className="mt-16" />;
 
   const {
-    buyer,
+    seller,
     property,
     history,
     currentTerms,
@@ -47,7 +47,6 @@ export default function OfferReceivedContainer() {
     supportingDocuments,
   } = offer;
 
-  const buyerName = buyer?.name;
   const propertyLabel = `${property.propertyType} — ${property.streetAddress},  ${property.city}, ${property.state}, ${property.zipCode}, ${property.county}`;
   const offersSubmittedCount = history.length;
 
@@ -92,7 +91,7 @@ export default function OfferReceivedContainer() {
     try {
       await rejectOffer(offerId).unwrap();
       toast.success("Offer rejected successfully!", { id: "reject" });
-      router.push("/user/offers-received");
+      router.push("/my-offer");
     } catch (error) {
       setOpenRejectModal(false);
       const errorMessage = errorModification(error);
@@ -102,11 +101,10 @@ export default function OfferReceivedContainer() {
 
   return (
     <>
-      <OffersReceived
-        offerId={offerId}
+      <OffersSent
+        offerId={offerId as string}
         property={property}
-        buyerName={buyerName}
-        buyerId={buyer?._id}
+        seller={seller}
         propertyId={property?._id}
         propertyLabel={propertyLabel}
         offersSubmittedCount={offersSubmittedCount}

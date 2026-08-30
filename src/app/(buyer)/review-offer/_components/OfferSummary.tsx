@@ -234,7 +234,7 @@ export function OfferSummary({ data, sidebarFooter }: OfferSummaryProps) {
                   >
                     <div className="flex items-center gap-1.5">
                       <PDFIcon className="size-5" />
-                      <span className="truncate">{file.name}</span>
+                      <span className="truncate max-w-64">{file.name}</span>
                     </div>
                     <Download size={16} className="shrink-0 text-[#594139]" />
                   </a>

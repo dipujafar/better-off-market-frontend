@@ -37,7 +37,7 @@ export default function OfferPropertyCard({
             width={1200}
             height={1200}
             alt="property_image"
-            className="rounded-md size-22 object-cover"
+            className="rounded-md md:w-32 w-24 h-22 object-cover"
           />
         </Preview>
         <div>

@@ -9,7 +9,7 @@ interface OffersReceivedHeaderProps {
   onViewHistory?: () => void;
 }
 
-export function OffersReceivedHeader({
+export function OffersSentHeader({
   propertyId,
   propertyLabel,
   offersSubmittedCount,
@@ -19,12 +19,12 @@ export function OffersReceivedHeader({
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-primary-black sm:text-2xl mb-1">
+      <h1 className=" font-semibold text-primary-black lg:text-2xl sm:text-xl text-base mb-1">
         <Link
-          href={`/user/my-listings/${propertyId}`}
+          href={`/properties-list/${propertyId}`}
           className="hover:text-blue-800 hover:underline duration-200 ease-in-out "
         >
-          Offers received — on {propertyLabel}{" "}
+          Offers sent — on {propertyLabel}{" "}
         </Link>
       </h1>
       <div className="mb-5 flex gap-3 items-center justify-between">

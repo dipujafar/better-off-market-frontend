@@ -1,16 +1,19 @@
-import { OffersReceivedHeader } from "./OffersReceivedHeader";
-import { OfferComparisonRow, type OfferSnapshot } from "./OfferComparisonRow";
-import { ConsolidatedOfferCard } from "./ConsolidatedOfferCard";
-import { OffersReceivedActionBar } from "./OffersReceivedActionBar";
-import { ConsolidatedOfferData, OFFER_STATUS } from "./utils.offer-received";
-import { IPropertyResponse } from "@/types";
+import {
+  ConsolidatedOfferData,
+  OfferComparisonRow,
+  OfferSnapshot,
+} from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received";
+import { OFFER_STATUS } from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
+import { OffersSentHeader } from "./OffersSentHeader";
+import { ConsolidatedSentOfferCard } from "./ConsolidatedSentOfferCard";
+import { IPropertyResponse, IUser } from "@/types";
 import OfferPropertyCard from "@/components/shared/card/offer-property-card";
+import { OffersSentActionBar } from "./OffersSentActionBar";
 
 interface OffersReceivedProps {
   offerId: string;
   property: IPropertyResponse;
-  buyerName: string;
-  buyerId: string;
+  seller: IUser;
   propertyId: string;
   propertyLabel: string;
   offersSubmittedCount: number;
@@ -30,12 +33,11 @@ interface OffersReceivedProps {
   isSubmitting?: boolean;
 }
 
-export function OffersReceived({
+export function OffersSent({
   offerId,
   property,
-  buyerName,
+  seller,
   propertyId,
-  buyerId,
   propertyLabel,
   offersSubmittedCount,
   yourOffer,
@@ -56,7 +58,7 @@ export function OffersReceived({
   return (
     <div>
       <OfferPropertyCard property={property} className="mb-2" />
-      <OffersReceivedHeader
+      <OffersSentHeader
         propertyId={propertyId}
         propertyLabel={propertyLabel}
         offersSubmittedCount={offersSubmittedCount}
@@ -70,16 +72,15 @@ export function OffersReceived({
         counterOfferTitle={counterOfferTitle}
       />
 
-      <ConsolidatedOfferCard
-        name={buyerName}
-        buyerId={buyerId}
+      <ConsolidatedSentOfferCard
+        seller={seller}
         data={offer}
         onEditOfferDetails={onEditOfferDetails}
       />
 
-      <OffersReceivedActionBar
-        className="mt-6"
+      <OffersSentActionBar
         offerId={offerId}
+        className="mt-6"
         onAcceptOffer={onAcceptOffer}
         onCounterOffer={onCounterOffer}
         onMessageBuyer={onMessageBuyer}

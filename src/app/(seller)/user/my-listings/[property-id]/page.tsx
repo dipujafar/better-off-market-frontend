@@ -76,7 +76,7 @@ export default async function PropertyDetailsPage({ params }: PageProps) {
       {!property?.data && (
         <Empty message="Property not found" className="mt-16" />
       )}
-      {property?.data && <ListingPropertyDetails property={property?.data} />};
+      {property?.data && <ListingPropertyDetails property={property?.data} />}
     </div>
   );
 }

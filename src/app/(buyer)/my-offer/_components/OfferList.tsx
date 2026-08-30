@@ -137,7 +137,7 @@ export default function OfferList({
               <div className="flex gap-2">
                 {handleStatusAction(offer.status, offer._id)}
 
-                <Link href={`/review-counter-offer?offer=${offer._id}`}>
+                <Link href={`/review-sent-offer?offer=${offer._id}`}>
                   <Button
                     variant={"outline"}
                     className="cursor-pointer border border-gray-400 bg-primary-color text-white px-4 rounded-md"
