@@ -2,8 +2,9 @@
 import type { OfferFormValues } from "@/lib/validations/offer-form";
 import { CounterOfferEditor } from "./CounterOfferEditor";
 import Container from "@/components/shared/container/Container";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import OfferPropertyCard from "@/components/shared/card/offer-property-card";
+import { useGetSingleOfferQuery } from "@/redux/api/offerApi";
 
 const originalOffer: OfferFormValues = {
   offerAmount: 48500,
@@ -33,6 +34,10 @@ const originalOffer: OfferFormValues = {
 };
 
 export default function SendCounterFormContainer() {
+  const offerId = useSearchParams().get("offer");
+  const {data} = useGetSingleOfferQuery(offerId, {
+    skip: !offerId
+  });
   const router = useRouter();
   return (
     <Container className="mt-8">
