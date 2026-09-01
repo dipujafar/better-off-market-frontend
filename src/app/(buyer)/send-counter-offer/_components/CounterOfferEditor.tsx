@@ -1,9 +1,8 @@
 "use client";
-
 import { useCallback } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileText, Download, MessageSquareText } from "lucide-react";
+import { FileText, Download } from "lucide-react";
 import {
   offerFormSchema,
   type OfferFormValues,
@@ -17,17 +16,16 @@ import { ClosingTermsEditable } from "./sections/ClosingTermsEditable";
 import { useEditableSections } from "@/hooks/useEditableSections";
 import { SectionKey } from "./counter-offer-helpers";
 import { SummaryCard } from "../../review-offer/_components/SummaryCard";
-import { OfferSummaryDocument } from "../../review-offer/_components/OfferSummary";
-import SellerProfileCard from "@/components/shared/card/seller-profile-card";
+import { IDocument, IUser } from "@/types";
+import { NoteEditable } from "./sections/NoteEditable";
+import ProfileCard from "@/app/(public)/properties-list/[property-id]/_components/ProfileCard";
 
 export interface CounterOfferEditorProps {
-  /** The buyer's original offer — the baseline every "Original: ..." hint and change badge compares against. */
-  originalValues: OfferFormValues;
-  /** Starting values for the form; defaults to originalValues. Pass a partially-modified offer to start with a section already flagged "Changed". */
+  user: IUser;
+  originalValues: OfferFormValues & { lastActionBy?: "buyer" | "seller" };
   initialValues?: Partial<OfferFormValues>;
-  /** Force these sections to render as "Changed" even before any field literally differs (rare — usually the diff against originalValues is enough). */
   initiallyChangedSections?: SectionKey[];
-  documents?: OfferSummaryDocument[];
+  documents?: IDocument[];
   notesToBuyer?: string;
   onSubmit: (
     values: OfferFormValues,
@@ -50,18 +48,17 @@ function getChangedFields(
 }
 
 export function CounterOfferEditor({
+  user,
   originalValues,
-  initialValues,
   initiallyChangedSections,
   documents,
-  notesToBuyer,
   onSubmit,
   onCancel,
 }: CounterOfferEditorProps) {
   const form = useForm<OfferFormValues>({
     // @ts-ignore
     resolver: zodResolver(offerFormSchema),
-    defaultValues: { ...originalValues, ...initialValues },
+    defaultValues: { ...originalValues },
     mode: "onBlur",
     reValidateMode: "onChange",
   });
@@ -101,7 +98,8 @@ export function CounterOfferEditor({
           <SellerConcessionsEditable
             originalValues={originalValues}
             isEditing={editing.sellerConcessions}
-            isChanged={changed.sellerConcessions}
+            // isChanged={changed.sellerConcessions}
+            isChanged={false}
             onEdit={() => startEdit("sellerConcessions")}
             onCancel={() => cancelEdit("sellerConcessions")}
           />
@@ -161,6 +159,14 @@ export function CounterOfferEditor({
 
         {/* Sidebar column */}
         <div className="flex flex-col gap-6">
+          <NoteEditable
+            originalValues={originalValues}
+            isEditing={editing.notes}
+            isChanged={changed.notes}
+            onEdit={() => startEdit("notes")}
+            onCancel={() => cancelEdit("notes")}
+          />
+
           {documents && documents.length > 0 ? (
             <SummaryCard title="Documents" icon={<FileText size={18} />}>
               <ul className="flex flex-col gap-2">
@@ -169,7 +175,8 @@ export function CounterOfferEditor({
                     <a
                       href={doc.url}
                       download
-                      className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/40 px-3 py-2 text-sm text-foreground hover:border-primary/50"
+                      target="_blank"
+                      className="flex items-center justify-between gap-3 rounded-md border border-primary-border-color bg-muted/40 px-3 py-2.5 text-sm text-foreground hover:border-primary/50 hover:bg-muted/50"
                     >
                       <span className="truncate">{doc.name}</span>
                       <Download
@@ -183,18 +190,7 @@ export function CounterOfferEditor({
             </SummaryCard>
           ) : null}
 
-          {notesToBuyer ? (
-            <SummaryCard
-              title="Notes to Buyer"
-              icon={<MessageSquareText color="#00214C" size={18} />}
-            >
-              <p className="rounded-lg bg-[#F2F4F6] p-3 text-[#594139] italic leading-relaxed">
-                &ldquo;{notesToBuyer}&rdquo;
-              </p>
-            </SummaryCard>
-          ) : null}
-
-          <SellerProfileCard />
+          <ProfileCard seller={user} />
 
           <div className="flex flex-wrap items-center gap-3 lg:hidden">
             <button

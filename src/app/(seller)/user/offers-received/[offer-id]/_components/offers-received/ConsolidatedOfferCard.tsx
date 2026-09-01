@@ -34,7 +34,7 @@ export function ConsolidatedOfferCard({
 }: ConsolidatedOfferCardProps) {
   return (
     <div className="border border-primary-border-color bg-card p-5 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 rounded-lg">
-      <h4 className="text-2xl font-semibold">
+      <h4 className="md:text-2xl text-lg font-semibold">
         {" "}
         <Link
           href={`/seller-profile?seller=${buyerId}`}
@@ -43,7 +43,7 @@ export function ConsolidatedOfferCard({
           Offer from {buyerName}{" "}
         </Link>
       </h4>
-      <section className=" space-y-4 rounded-xl mt-5">
+      <section className=" space-y-4 rounded-xl lg:mt-5 mt-3">
         <OfferSubSection
           title="Offer Details"
           icon={<DollarIcon />}
@@ -227,6 +227,18 @@ export function ConsolidatedOfferCard({
             </p>
           </OfferSubSection>
         ) : null}
+
+        {data.notesToBuyer ? (
+          <OfferSubSection
+            title="Notes to Buyer"
+            icon={<MessageSquareText color="#00214C" size={18} />}
+          >
+            <p className="rounded-lg bg-[#F2F4F6] text-[#594139] p-3  italic leading-relaxed">
+              &ldquo;{data.notesToBuyer}&rdquo;
+            </p>
+          </OfferSubSection>
+        ) : null}
+        
       </section>
     </div>
   );

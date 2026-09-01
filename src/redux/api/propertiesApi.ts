@@ -1,4 +1,3 @@
-import IncreaseViewsCount from "@/app/(public)/properties-list/[property-id]/_components/IncreaseViewsCount";
 import { tagTypes } from "../tagTypes";
 import { baseApi } from "./baseApi";
 

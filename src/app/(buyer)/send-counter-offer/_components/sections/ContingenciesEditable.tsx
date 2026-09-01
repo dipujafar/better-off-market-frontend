@@ -52,14 +52,14 @@ export function ContingenciesEditable({
               values.inspectionContingency ?? "yes",
             )}
           />
-          <ContingencyItem
+          {/* <ContingencyItem
             icon={<BadgeCheck size={16} />}
             label="Appraisal"
             value={formatDays(
               values.appraisalDays,
               values.appraisalContingency ?? "yes",
             )}
-          />
+          /> */}
         </div>
       }
       editContent={
@@ -145,15 +145,15 @@ export function ContingenciesEditable({
                 />
               )}
             />
-            <OriginalHint
+            {/* <OriginalHint
               value={formatDays(
                 originalValues.appraisalDays,
                 originalValues.appraisalContingency,
               )}
-            />
+            /> */}
           </div>
 
-          <FormField
+          {/* <FormField
             control={control}
             name="appraisalDays"
             render={({ field }) => (
@@ -171,7 +171,7 @@ export function ContingenciesEditable({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </div>
       }
     />

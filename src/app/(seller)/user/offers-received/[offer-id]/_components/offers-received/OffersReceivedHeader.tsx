@@ -3,6 +3,7 @@ import { History } from "lucide-react";
 import Link from "next/link";
 
 interface OffersReceivedHeaderProps {
+  offerId: string;
   propertyId: string;
   propertyLabel: string;
   offersSubmittedCount: number;
@@ -10,6 +11,7 @@ interface OffersReceivedHeaderProps {
 }
 
 export function OffersReceivedHeader({
+  offerId,
   propertyId,
   propertyLabel,
   offersSubmittedCount,
@@ -28,14 +30,14 @@ export function OffersReceivedHeader({
         </Link>
       </h1>
       <div className="mb-5 flex gap-3 items-center justify-between">
-        <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary-color">
+        <Link href={`/offer-negotiation-story?offer=${offerId}`} className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary-color">
           <SubmitOfferIcon />
           {offersSubmittedCount} offer{offersSubmittedCount === 1 ? "" : "s"}{" "}
           submitted
-        </p>
+        </Link>
 
         {showHistoryButton ? (
-          <Link href="/offer-negotiation-story">
+          <Link href={`/offer-negotiation-story?offer=${offerId}`}>
             <button
               type="button"
               onClick={onViewHistory}

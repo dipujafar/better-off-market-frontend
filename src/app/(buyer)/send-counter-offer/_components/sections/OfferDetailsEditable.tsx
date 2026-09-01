@@ -1,4 +1,3 @@
-import { FileText } from "lucide-react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { EditableCard } from "../ui/EditableCard";
 import { EditableCurrencyField } from "../ui/EditableCurrencyField";
@@ -63,13 +62,11 @@ export function OfferDetailsEditable({
             control={control}
             name="offerAmount"
             label="Offer amount ($)"
-            originalValue={formatCurrency(originalValues.offerAmount)}
           />
           <EditableCurrencyField
             control={control}
             name="earnestMoney"
             label="Earnest money ($)"
-            originalValue={formatCurrency(originalValues.earnestMoney)}
           />
           <EditableSelectField
             control={control}
@@ -88,7 +85,6 @@ export function OfferDetailsEditable({
             label="If not cash, explain terms"
             placeholder="Describe financing terms..."
             disabled={values.financingType === "cash"}
-            originalValue={formatOrDash(originalValues.financingTerms)}
           />
         </div>
       }

@@ -33,6 +33,7 @@ export interface ConsolidatedOfferData {
   notesToSeller?: string;
   additionalTerms?: string;
   sellerPostClosingDays?: number;
+  notesToBuyer?: string;
 }
 
 // Shape of currentTerms / each history[] entry from the API
@@ -47,7 +48,7 @@ export interface OfferTerms {
   inspectionContingency: string;
   inspectionDays?: number;
   appraisalContingency: string;
-  appraisalDays?: number;
+  // appraisalDays?: number;
   commission?: string;
   paidBy?: string;
   hasAgent: string;
@@ -70,7 +71,7 @@ interface RawSupportingDocument {
 }
 
 export function formatCurrency(amount: number) {
-  return amount.toLocaleString("en-US", {
+  return amount?.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
@@ -174,7 +175,7 @@ export function mapTermsToConsolidatedOfferData(
     },
     appraisal: {
       required: terms.appraisalContingency === "yes",
-      days: terms.appraisalDays,
+      // days: terms.appraisalDays,
     },
     closingTerms: {
       titleCompany: terms.titleCompany,

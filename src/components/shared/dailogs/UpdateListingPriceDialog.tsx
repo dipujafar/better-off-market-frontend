@@ -105,7 +105,7 @@ export function UpdateListingPriceDialog({
           <div className="flex items-center gap-2 rounded-lg border border-[#F3B896] bg-[#F2F4F6] px-3.5 py-3 mt-2">
             <Wallet className="size-4 text-primary-black" />
             <span className="text-base font-semibold text-primary-black">
-              ${currentPrice.toLocaleString()}
+              ${currentPrice?.toLocaleString()}
             </span>
           </div>
         </div>

@@ -54,7 +54,7 @@ export interface OfferSummaryData {
 }
 
 function formatCurrency(amount: number) {
-  return amount.toLocaleString("en-US", {
+  return amount?.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: amount % 1 === 0 ? 0 : 2,

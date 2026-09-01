@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { IPropertyResponse } from "@/types";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
+import Link from "next/link";
+import { formatCurrency } from "@/app/(buyer)/offer-negotiation-story/_components/utils.data";
 
 export default function OfferPropertyCard({
   property,
@@ -40,8 +42,8 @@ export default function OfferPropertyCard({
             className="rounded-md md:w-32 w-24 h-22 object-cover"
           />
         </Preview>
-        <div>
-          <h4 className="text-2xl font-semibold">${property?.listingPrice}</h4>
+        <Link href={`/properties-list/${property?._id}`}>
+          <h4 className="text-2xl font-semibold">{formatCurrency(property?.listingPrice)}</h4>
           <div className="space-x-2">
             {propertySpecs?.slice(0, 3)?.map((spec, index) => (
               <span
@@ -54,7 +56,7 @@ export default function OfferPropertyCard({
             ))}
           </div>
           {/* <p className="text-primary-gray">3bd house — 1,450 sqft</p> */}
-        </div>
+        </Link>
       </div>
       <ImagePreviewer
         imageUrls={images}

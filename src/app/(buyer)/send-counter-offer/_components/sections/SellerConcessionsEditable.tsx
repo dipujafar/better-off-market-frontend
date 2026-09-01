@@ -56,15 +56,15 @@ export function SellerConcessionsEditable({
           />
         </div>
       }
-      changedContent={
-        <div>
-          <p className="mb-4 text-primary-black">{description}</p>
-          <ComparisonBox
-            currentValue={formatCurrency(values.sellerContribution)}
-            originalValue={formatCurrency(originalValues.sellerContribution)}
-          />
-        </div>
-      }
+      // changedContent={
+      //   <div>
+      //     <p className="mb-4 text-primary-black">{description}</p>
+      //     <ComparisonBox
+      //       currentValue={formatCurrency(values.sellerContribution)}
+      //       originalValue={formatCurrency(originalValues.sellerContribution)}
+      //     />
+      //   </div>
+      // }
       editContent={
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
           <EditableSelectField
@@ -78,7 +78,6 @@ export function SellerConcessionsEditable({
             control={control}
             name="sellerContribution"
             label="Seller contribution ($)"
-            originalValue={formatCurrency(originalValues.sellerContribution)}
           />
         </div>
       }

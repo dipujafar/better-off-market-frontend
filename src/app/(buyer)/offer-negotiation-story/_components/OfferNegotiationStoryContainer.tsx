@@ -1,64 +1,49 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { NegotiationStory } from "./NegotiationStory";
-import type { NegotiationEvent } from "./utils.data";
-
-const events: NegotiationEvent[] = [
-  {
-    id: "1",
-    status: "pending",
-    amount: 48500,
-    date: "June 24, 2024",
-    time: "2:15 PM EST",
-    actionLabel: "Submitted by James Butler",
-    actorName: "James Butler",
-    actorInitials: "JB",
-    actorRole: "Buyer",
-  },
-  {
-    id: "2",
-    status: "rejected",
-    amount: 47500,
-    date: "June 22, 2024",
-    time: "11:05 AM EST",
-    actionLabel: "Rejected by James Butler",
-    actorName: "James Butler",
-    actorInitials: "JB",
-    actorRole: "Seller",
-  },
-  {
-    id: "3",
-    status: "countered",
-    amount: 49500,
-    date: "June 21, 2024",
-    time: "4:50 PM EST",
-    actionLabel: "Counter by James Butler",
-    actorName: "Emma Parker",
-    actorInitials: "EP",
-    actorRole: "Seller",
-  },
-  {
-    id: "4",
-    status: "rejected",
-    amount: 46000,
-    date: "June 20, 2024",
-    time: "9:30 AM EST",
-    actionLabel: "Rejected by James Butler",
-    actorName: "James Butler",
-    actorInitials: "JB",
-    actorRole: "Seller",
-  },
-];
+import { mapOfferHistoryToNegotiationEvents } from "./utils.data";
+import { useGetSingleOfferQuery } from "@/redux/api/offerApi";
+import Empty from "@/components/ui/empty-data";
+import { useAppSelector } from "@/redux/hooks";
 
 export default function OfferNegotiationStoryContainer() {
+  const offerId = useSearchParams().get("offer");
+  const { data, isLoading } = useGetSingleOfferQuery(offerId, {
+    skip: !offerId,
+  });
   const router = useRouter();
+  const user: any = useAppSelector((state) => state.auth.user);
+
+  const offer = data?.data;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="h-8 w-56 rounded bg-gray-200" />
+        <div className="h-32 rounded bg-gray-100" />
+        <div className="h-32 rounded bg-gray-100" />
+      </div>
+    );
+  }
+
+  if (!offer) return <Empty message="Offer not found" className="mt-16" />;
+
+  const events = mapOfferHistoryToNegotiationEvents(offer);
+
+  // Determine which side the logged-in user is on, so the button
+  // always points at the OTHER party.
+  const isCurrentUserSeller = user?.userId === offer.seller._id;
+
+  const messageLabel = isCurrentUserSeller ? "Message Buyer" : "Message Seller";
+  const messageTargetId = isCurrentUserSeller ? offer.buyer._id : offer.seller._id;
+  const messageHref = `/message?selectedUser=${messageTargetId}`;
+
   return (
     <NegotiationStory
       events={events}
       onBack={() => router.back()}
-      onMessage={() => console.log("message seller")}
-      hasMore
-      onLoadMore={() => console.log("load more")}
+      messageLabel={messageLabel}
+      messageHref={messageHref}
     />
   );
 }

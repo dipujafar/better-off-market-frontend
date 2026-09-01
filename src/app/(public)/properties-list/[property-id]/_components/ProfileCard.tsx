@@ -6,6 +6,7 @@ import Link from "next/link";
 import moment from "moment";
 import { useGetSellerProfileQuery } from "@/redux/api/profileApi";
 import { cn } from "@/lib/utils";
+import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 
 interface ProfileCardProps {
   seller: IUser;
@@ -19,8 +20,8 @@ export default function ProfileCard({ seller }: ProfileCardProps) {
         {/* Profile Image */}
         <div className="shrink-0">
           <Link href={`/seller-profile?seller=${seller?._id}`}>
-            <Image
-              src={seller?.profile}
+            <ImageWithFallback
+              src={seller?.profile || "/default_user_profile.png"}
               alt={"seller avatar"}
               width={1200}
               height={1200}

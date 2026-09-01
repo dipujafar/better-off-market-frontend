@@ -7,20 +7,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { OriginalHint } from "./OriginalHint";
 
 interface EditableCurrencyFieldProps<T extends FieldValues> {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
-  originalValue: string;
 }
 
 export function EditableCurrencyField<T extends FieldValues>({
   control,
   name,
   label,
-  originalValue,
 }: EditableCurrencyFieldProps<T>) {
   return (
     <FormField
@@ -28,16 +25,24 @@ export function EditableCurrencyField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-primary-gray font-medium">{label}</FormLabel>
+          <FormLabel className="text-primary-gray font-medium">
+            {label}
+          </FormLabel>
           <FormControl>
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 $
               </span>
-              <Input {...field} type="number" inputMode="decimal" step="0.01" min="0" className="pl-7 border border-primary-border-color bg-[#F2F4F6] py-5" />
+              <Input
+                {...field}
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                min="0"
+                className="pl-7 border border-primary-border-color bg-[#F2F4F6] py-5"
+              />
             </div>
           </FormControl>
-          <OriginalHint value={originalValue} />
           <FormMessage />
         </FormItem>
       )}

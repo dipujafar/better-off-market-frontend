@@ -4,15 +4,13 @@ interface SummaryFieldProps {
   label: string;
   value: string;
   className?: string;
-  muted?: boolean;
 }
 
 /** Uppercase muted label with a bold value beneath it, e.g. OFFER AMOUNT / $48,500 */
 export function SummaryField({
   label,
   value,
-  className,
-  muted,
+  className
 }: SummaryFieldProps) {
   return (
     <div className={cn("min-w-0", className)}>

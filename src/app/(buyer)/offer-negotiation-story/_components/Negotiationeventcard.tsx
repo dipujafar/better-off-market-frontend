@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   STATUS_CONFIG,
   avatarColorForName,
@@ -29,6 +30,7 @@ export function NegotiationEventCard({ event }: { event: NegotiationEvent }) {
             {config.label}
           </span>
           <p
+
             className={cn(
               "mt-1.5 text-2xl font-semibold sm:text-[28px]",
               config.amountClassName,
@@ -47,14 +49,25 @@ export function NegotiationEventCard({ event }: { event: NegotiationEvent }) {
       <div className={cn("my-3 border-t", config.dividerClassName)} />
 
       <div className="flex items-center gap-2.5">
-        <span
-          className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-            avatarClassName,
-          )}
-        >
-          {event.actorInitials}
-        </span>
+        {event.actorProfile ? (
+          <Image
+            src={event.actorProfile}
+            alt={event.actorName}
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <span
+            className={cn(
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+              avatarClassName,
+            )}
+
+          >
+            {event.actorInitials}
+          </span>
+        )}
         <div>
           <p className="text-sm font-medium text-foreground">
             {event.actionLabel}
@@ -62,7 +75,6 @@ export function NegotiationEventCard({ event }: { event: NegotiationEvent }) {
           <p className="text-xs text-muted-foreground">{event.actorRole}</p>
         </div>
       </div>
-      <div className={cn("my-3 border-t", config.dividerClassName)} />
     </div>
   );
 }

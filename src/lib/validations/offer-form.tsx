@@ -47,7 +47,6 @@ const optionalDays = z.coerce
   .max(365)
   .optional();
 
-
 export const offerFormSchema = z
   .object({
     // Offer Details
@@ -71,7 +70,7 @@ export const offerFormSchema = z
     appraisalContingency: z.enum(["yes", "no"], {
       error: "Select an appraisal option",
     }),
-    appraisalDays: optionalDays,
+    // appraisalDays: optionalDays,
 
     // Real Estate Agent
     hasAgent: z.enum(["yes", "no"], {
@@ -96,7 +95,18 @@ export const offerFormSchema = z
 
     // Additional Terms / Notes
     additionalTerms: z.string().max(3000).optional(),
-    notesToSeller: z.string().max(2000).optional(),
+    notesToSeller: z
+      .string()
+      .max(2000)
+      .nullable()
+      .optional()
+      .transform((v) => v ?? ""),
+    notesToBuyer: z
+      .string()
+      .max(2000)
+      .nullable()
+      .optional()
+      .transform((v) => v ?? ""),
   })
   .superRefine((data, ctx) => {
     if (data.financingType !== "cash" && !data.financingTerms?.trim()) {
@@ -137,16 +147,16 @@ export const offerFormSchema = z
       });
     }
 
-    if (
-      data.appraisalContingency === "yes" &&
-      (data.appraisalDays === undefined || data.appraisalDays <= 0)
-    ) {
-      ctx.addIssue({
-        path: ["appraisalDays"],
-        code: z.ZodIssueCode.custom,
-        message: "Enter the number of days for appraisal",
-      });
-    }
+    // if (
+    //   data.appraisalContingency === "yes" &&
+    //   (data.appraisalDays === undefined || data.appraisalDays <= 0)
+    // ) {
+    //   ctx.addIssue({
+    //     path: ["appraisalDays"],
+    //     code: z.ZodIssueCode.custom,
+    //     message: "Enter the number of days for appraisal",
+    //   });
+    // }
 
     if (data.hasAgent === "yes") {
       if (!data.agentName?.trim()) {
@@ -201,4 +211,5 @@ export const offerFormDefaultValues: Partial<OfferFormValues> = {
   sellerPostClosingDays: 0,
   additionalTerms: "",
   notesToSeller: "",
+  notesToBuyer: "",
 };

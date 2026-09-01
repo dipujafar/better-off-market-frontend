@@ -7,6 +7,7 @@ import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import MessageInput from "./MessageInput";
 import type { Conversation, ChatThread } from "@/types";
+import { useSocket } from "@/context/SocketContextApi";
 
 type Props = {
   conversations: Conversation[];
@@ -14,8 +15,11 @@ type Props = {
 };
 
 export default function MessagesContainer({ conversations, threads }: Props) {
-  const [activeId, setActiveId] = useState<string | null>(conversations[0]?.id ?? null);
+  const [activeId, setActiveId] = useState<string | null>(
+    conversations[0]?.id ?? null,
+  );
   const activeThread = activeId ? threads[activeId] : null;
+  const { socket } = useSocket();
 
   return (
     <div className="flex h-[calc(100vh-8rem)] bg-white rounded-xl overflow-hidden ">
@@ -37,8 +41,14 @@ export default function MessagesContainer({ conversations, threads }: Props) {
       >
         {activeThread ? (
           <>
-            <ChatHeader contact={activeThread.contact} onBack={() => setActiveId(null)} />
-            <ChatMessages dateLabel={activeThread.dateLabel} messages={activeThread.messages} />
+            <ChatHeader
+              contact={activeThread.contact}
+              onBack={() => setActiveId(null)}
+            />
+            <ChatMessages
+              dateLabel={activeThread.dateLabel}
+              messages={activeThread.messages}
+            />
             <MessageInput
               onSend={(content) => {
                 // TODO: wire up to backend — e.g. sendMessage(activeId, content)

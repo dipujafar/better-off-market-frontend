@@ -57,6 +57,7 @@ export function OffersReceived({
     <div>
       <OfferPropertyCard property={property} className="mb-2" />
       <OffersReceivedHeader
+        offerId={offerId}
         propertyId={propertyId}
         propertyLabel={propertyLabel}
         offersSubmittedCount={offersSubmittedCount}

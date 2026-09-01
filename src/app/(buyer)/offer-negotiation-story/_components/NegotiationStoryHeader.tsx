@@ -1,4 +1,4 @@
-import { ArrowLeft, MessageSquare, MessageSquareText } from "lucide-react";
+import { ArrowLeft, MessageSquareText } from "lucide-react";
 import Link from "next/link";
 
 interface NegotiationStoryHeaderProps {
@@ -6,15 +6,15 @@ interface NegotiationStoryHeaderProps {
   backLabel?: string;
   onBack?: () => void;
   messageLabel?: string;
-  onMessage?: () => void;
+  messageHref: string;
 }
 
 export function NegotiationStoryHeader({
   title = "Negotiation Story",
   backLabel = "Back to Offer",
   onBack,
-  messageLabel = "Message Seller",
-  onMessage,
+  messageLabel,
+  messageHref,
 }: NegotiationStoryHeaderProps) {
   return (
     <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
@@ -32,10 +32,9 @@ export function NegotiationStoryHeader({
         </h1>
       </div>
 
-      <Link href="/message">
+      <Link href={messageHref || "#"}>
         <button
           type="button"
-          onClick={onMessage}
           className="inline-flex items-center gap-2 self-start rounded-lg bg-primary-gray px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-black sm:self-auto cursor-pointer duration-300 transform-active:scale-95"
         >
           <MessageSquareText size={14} />

@@ -4,7 +4,6 @@ import { EditableCard } from "../ui/EditableCard";
 import { EditableTextareaField } from "../ui/EditableTextareaField";
 import type { OfferFormValues } from "@/lib/validations/offer-form";
 import { Pill } from "@/app/(buyer)/review-offer/_components/Pill";
-import { formatOrDash } from "../counter-offer-helpers";
 
 interface PersonalPropertyEditableProps {
   originalValues: OfferFormValues;
@@ -31,6 +30,7 @@ export function PersonalPropertyEditable({
   const { control } = useFormContext<OfferFormValues>();
   const values = useWatch({ control });
   const includedPills = toPills(values.personalPropertyIncluded);
+  const removedPills = toPills(values.itemsToBeRemoved);
 
   return (
     <EditableCard
@@ -41,7 +41,7 @@ export function PersonalPropertyEditable({
       onEdit={onEdit}
       onCancel={onCancel}
       viewContent={
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
               Included items
@@ -56,16 +56,20 @@ export function PersonalPropertyEditable({
               )}
             </div>
           </div>
-          {values.itemsToBeRemoved ? (
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
-                Items to be removed
-              </p>
-              <p className="mt-1 text-sm italic text-foreground">
-                &ldquo;{values.itemsToBeRemoved}&rdquo;
-              </p>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#594139]">
+              Items to be removed
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {removedPills.length > 0 ? (
+                removedPills.map((item) => <Pill key={item}>{item}</Pill>)
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  None specified
+                </span>
+              )}
             </div>
-          ) : null}
+          </div>
         </div>
       }
       editContent={
@@ -75,16 +79,12 @@ export function PersonalPropertyEditable({
             name="personalPropertyIncluded"
             label="Personal property included"
             placeholder="e.g. Refrigerator, Washer/Dryer..."
-            originalValue={formatOrDash(
-              originalValues.personalPropertyIncluded,
-            )}
           />
           <EditableTextareaField
             control={control}
             name="itemsToBeRemoved"
             label="Items to be removed"
             placeholder="e.g. Broken shed, debris in basement..."
-            originalValue={formatOrDash(originalValues.itemsToBeRemoved)}
           />
         </div>
       }

@@ -39,10 +39,11 @@ const offerApi = baseApi.injectEndpoints({
         url: `/offers/${id}`,
         method: "GET",
       }),
+      providesTags: [tagTypes.offer],
     }),
     sentCounterOffer: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/:${id}/counter`,
+        url: `/offers/${id}/counter`,
         method: "PATCH",
         body: data,
       }),

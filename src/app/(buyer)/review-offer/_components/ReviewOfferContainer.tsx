@@ -99,7 +99,7 @@ export default function ReviewOfferContainer() {
             },
             appraisal: {
               required: offerData?.appraisalContingency === "yes",
-              days: offerData?.appraisalDays ?? 0,
+              // days: offerData?.appraisalDays ?? 0,
             },
             agent: {
               name: offerData?.agentName ?? "",

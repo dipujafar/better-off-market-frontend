@@ -110,7 +110,7 @@ function ContingenciesSectionImpl() {
         />
       </div>
 
-      <FormField
+      {/* <FormField
         control={control}
         name="appraisalDays"
         render={({ field }) => (
@@ -130,7 +130,7 @@ function ContingenciesSectionImpl() {
             <FormMessage />
           </FormItem>
         )}
-      />
+      /> */}
     </FormSectionCard>
   );
 }

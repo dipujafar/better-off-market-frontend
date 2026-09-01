@@ -9,7 +9,7 @@ function useGreeting(timeZone = null) {
 
     const updateGreeting = () => {
       const date = new Date();
-      const timeInTimeZone = new Date(date.toLocaleString('en-US', { timeZone: zone }));
+      const timeInTimeZone = new Date(date?.toLocaleString('en-US', { timeZone: zone }));
       const hours = timeInTimeZone.getHours();
       if (hours >= 6 && hours < 12) {
         setGreeting('Good Morning');

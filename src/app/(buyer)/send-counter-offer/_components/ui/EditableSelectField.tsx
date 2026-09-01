@@ -51,7 +51,7 @@ export function EditableSelectField<T extends FieldValues>({
               ))}
             </SelectContent>
           </Select>
-          <OriginalHint value={originalValue} />
+          {/* <OriginalHint value={originalValue} /> */}
           <FormMessage />
         </FormItem>
       )}

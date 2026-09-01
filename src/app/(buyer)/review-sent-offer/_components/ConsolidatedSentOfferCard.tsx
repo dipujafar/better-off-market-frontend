@@ -237,6 +237,17 @@ export function ConsolidatedSentOfferCard({
             </OfferSubSection>
           ) : null}
 
+          {data.notesToBuyer ? (
+            <OfferSubSection
+              title="Notes to Buyer"
+              icon={<MessageSquareText color="#00214C" size={18} />}
+            >
+              <p className="rounded-lg bg-[#F2F4F6] text-[#594139] p-3  italic leading-relaxed">
+                &ldquo;{data.notesToBuyer}&rdquo;
+              </p>
+            </OfferSubSection>
+          ) : null}
+
           {seller && <ProfileCard seller={seller} />}
         </div>
       </section>

@@ -2,7 +2,7 @@ import type { OfferFormValues } from "@/lib/validations/offer-form";
 
 export function formatCurrency(amount: number | undefined) {
   if (amount === undefined || Number.isNaN(amount)) return "—";
-  return amount.toLocaleString("en-US", {
+  return amount?.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
@@ -55,7 +55,7 @@ export const SECTION_FIELDS = {
     "inspectionContingency",
     "inspectionDays",
     "appraisalContingency",
-    "appraisalDays",
+    // "appraisalDays",
   ],
   agent: ["hasAgent", "agentName", "brokerageName", "commission", "paidBy"],
   personalProperty: [
@@ -63,6 +63,7 @@ export const SECTION_FIELDS = {
     "itemsToBeRemoved",
   ],
   closingTerms: ["titleCompany", "closingDate", "possession", "sellerPostClosingDays"],
+  notes: ["notesToBuyer", "notesToSeller"],
 } as const satisfies Record<string, (keyof OfferFormValues)[]>;
 
 export type SectionKey = keyof typeof SECTION_FIELDS;

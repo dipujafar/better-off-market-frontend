@@ -59,6 +59,7 @@ export function OffersSent({
     <div>
       <OfferPropertyCard property={property} className="mb-2" />
       <OffersSentHeader
+        offerId={offerId}
         propertyId={propertyId}
         propertyLabel={propertyLabel}
         offersSubmittedCount={offersSubmittedCount}
