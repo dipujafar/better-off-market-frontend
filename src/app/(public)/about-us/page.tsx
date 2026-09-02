@@ -12,7 +12,7 @@ export const metadata = {
 export default function page() {
   return (
     <div>
-      <div className="space-y-16">
+      <div className="md:space-y-16 space-y-10">
         <Navbar variant="colored" className="pt-10" />
         <Header />
         <Stats />

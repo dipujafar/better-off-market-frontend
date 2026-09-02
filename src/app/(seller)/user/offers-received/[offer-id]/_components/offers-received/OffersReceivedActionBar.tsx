@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CLOSED_OFFER_STATUSES, OFFER_STATUS } from "./utils.offer-received";
 
 interface OffersReceivedActionBarProps {
+  buyerId?: string;
   offerId: string;
   onAcceptOffer?: () => void;
   onCounterOffer?: () => void;
@@ -19,6 +20,7 @@ const baseButton =
   "inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 
 export function OffersReceivedActionBar({
+  buyerId,
   offerId,
   onAcceptOffer,
   onCounterOffer,
@@ -72,7 +74,7 @@ export function OffersReceivedActionBar({
         </Link>
       ) : null}
 
-      <Link href={"/message"}>
+      <Link href={`/message?user=${buyerId}`}>
         <button
           type="button"
           onClick={onMessageBuyer}

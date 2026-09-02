@@ -7,6 +7,7 @@ import {
 } from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
 
 interface OffersReceivedActionBarProps {
+  sellerId?: string;
   offerId: string;
   onAcceptOffer?: () => void;
   onCounterOffer?: () => void;
@@ -23,6 +24,7 @@ const baseButton =
   "inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 
 export function OffersSentActionBar({
+  sellerId,
   offerId,
   onAcceptOffer,
   onCounterOffer,
@@ -76,7 +78,7 @@ export function OffersSentActionBar({
         </Link>
       ) : null}
 
-      <Link href={"/message"}>
+      <Link href={`/message?user=${sellerId}`}>
         <button
           type="button"
           onClick={onMessageBuyer}

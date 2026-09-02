@@ -36,7 +36,7 @@ export default function OfferNegotiationStoryContainer() {
 
   const messageLabel = isCurrentUserSeller ? "Message Buyer" : "Message Seller";
   const messageTargetId = isCurrentUserSeller ? offer.buyer._id : offer.seller._id;
-  const messageHref = `/message?selectedUser=${messageTargetId}`;
+  const messageHref = `/message?user=${messageTargetId}`;
 
   return (
     <NegotiationStory

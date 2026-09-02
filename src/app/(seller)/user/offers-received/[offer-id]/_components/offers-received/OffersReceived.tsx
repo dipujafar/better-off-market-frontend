@@ -79,6 +79,7 @@ export function OffersReceived({
       />
 
       <OffersReceivedActionBar
+        buyerId={buyerId}
         className="mt-6"
         offerId={offerId}
         onAcceptOffer={onAcceptOffer}

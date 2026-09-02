@@ -1,4 +1,3 @@
-import { mockConversations, mockThreads } from "@/data/message";
 import MessagesContainer from "./_components/MessagesPage";
 import Container from "@/components/shared/container/Container";
 import Navbar from "@/components/shared/navbar/Navbar";
@@ -13,10 +12,7 @@ export default function MessagePage() {
     <div className="space-y-8">
       <Navbar className="pt-10" />
       <Container>
-        <MessagesContainer
-          conversations={mockConversations}
-          threads={mockThreads}
-        />
+        <MessagesContainer />
       </Container>
     </div>
   );

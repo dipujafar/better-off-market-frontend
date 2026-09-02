@@ -45,7 +45,7 @@ export function ActionBtns({
       </Link>
 
       {/* Message seller button */}
-      <Link href="/message" className="block">
+      <Link href={`/message?user=${seller?._id}`} className="block">
         <button className="w-full cursor-pointer bg-[#2D3133] hover:bg-gray-900 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
           Message seller
         </button>

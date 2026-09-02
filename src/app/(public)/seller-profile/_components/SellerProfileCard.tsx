@@ -103,7 +103,7 @@ export function SellerProfileCard() {
                 <div
                   className={cn(user?._id === loggedInUser?.userId && "hidden")}
                 >
-                  <Link href={`/message?user${user?._id}`}>
+                  <Link href={`/message?user=${user?._id}`}>
                     <Button className="lg:px-10 px-5 py-5 cursor-pointer">
                       Message Seller
                     </Button>

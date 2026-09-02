@@ -39,7 +39,7 @@ export function EditableTextField<T extends FieldValues>({
             <Input {...field} type={type} placeholder={placeholder} step={step} min={type === "number" ? "0" : undefined}
             className="border border-primary-border-color bg-[#F2F4F6] py-5"/>
           </FormControl>
-          {/* <OriginalHint value={originalValue} /> */}
+          <OriginalHint value={originalValue} />
           <FormMessage />
         </FormItem>
       )}

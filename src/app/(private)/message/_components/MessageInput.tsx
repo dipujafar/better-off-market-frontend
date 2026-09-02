@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, KeyboardEvent } from "react";
-import { Plus, Send, X, Paperclip } from "lucide-react";
+import { Plus, Send, X, Paperclip, SmilePlus } from "lucide-react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { useOnClickOutside } from "usehooks-ts";
 import { cn } from "@/lib/utils";
 
 type Props = {
   onSend: (content: string, files?: File[]) => void;
+  onTyping?: () => void;
+  disabled?: boolean;
 };
 
 type Attachment = {
@@ -13,11 +17,17 @@ type Attachment = {
   previewUrl: string | null; // object URL for images, null for other file types
 };
 
-export default function MessageInput({ onSend }: Props) {
+export default function MessageInput({ onSend, onTyping, disabled }: Props) {
   const [value, setValue] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(emojiPickerRef as React.RefObject<HTMLElement>, () =>
+    setShowEmojiPicker(false),
+  );
 
   // clean up object URLs when attachments change/unmount to avoid memory leaks
   useEffect(() => {
@@ -29,6 +39,7 @@ export default function MessageInput({ onSend }: Props) {
   }, [attachments]);
 
   const handleSend = () => {
+    if (disabled) return;
     const trimmed = value.trim();
     if (!trimmed && attachments.length === 0) return;
     onSend(
@@ -38,6 +49,7 @@ export default function MessageInput({ onSend }: Props) {
     attachments.forEach((a) => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
     setValue("");
     setAttachments([]);
+    setShowEmojiPicker(false);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
@@ -50,9 +62,15 @@ export default function MessageInput({ onSend }: Props) {
 
   const handleTextareaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
+    onTyping?.();
     const el = e.target;
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+  };
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setValue((prev) => prev + emojiData.emoji);
+    textareaRef.current?.focus();
   };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +140,6 @@ export default function MessageInput({ onSend }: Props) {
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/*,.pdf,.doc,.docx"
           className="hidden"
           onChange={handleFilesSelected}
         />
@@ -130,7 +147,8 @@ export default function MessageInput({ onSend }: Props) {
         <button
           onClick={() => fileInputRef.current?.click()}
           aria-label="Attach files"
-          className="size-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 mb-0.5"
+          disabled={disabled}
+          className="size-9 shrink-0 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 mb-0.5 disabled:opacity-50"
         >
           <Plus className="size-5" />
         </button>
@@ -149,10 +167,29 @@ export default function MessageInput({ onSend }: Props) {
           )}
         />
 
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowEmojiPicker((v) => !v)}
+            aria-label="Add emoji"
+            disabled={disabled}
+            className="size-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 mb-0.5 disabled:opacity-50"
+          >
+            <SmilePlus className="size-5" />
+          </button>
+
+          {showEmojiPicker && (
+            <div ref={emojiPickerRef} className="absolute bottom-12 right-0 z-50">
+              <EmojiPicker open={showEmojiPicker} onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
+        </div>
+
         <button
           onClick={handleSend}
+          disabled={disabled}
           aria-label="Send message"
-          className="size-9 shrink-0 rounded-full bg-slate-900 flex items-center justify-center text-white hover:bg-slate-800 mb-0.5 group cursor-pointer"
+          className="size-9 shrink-0 rounded-full bg-slate-900 flex items-center justify-center text-white hover:bg-slate-800 mb-0.5 group cursor-pointer disabled:opacity-50"
         >
           <Send className="size-4 group-hover:rotate-45 transition-transform duration-300" />
         </button>

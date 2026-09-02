@@ -1,10 +1,10 @@
 "use client";
-
-import { ChevronLeft, Map, MapPin, UserCircle2 } from "lucide-react";
+import { ChevronLeft, MapPin, UserCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { ChatContact } from "@/types";
+import type { ChatContact } from "./types";
 import Link from "next/link";
+import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 
 type Props = {
   contact: ChatContact;
@@ -13,36 +13,60 @@ type Props = {
 
 export default function ChatHeader({ contact, onBack }: Props) {
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 border-b border-primary-border-color">
+    <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 border-b border-primary-border-color cursor-pointer">
       <div className="flex items-center gap-3 min-w-0">
         {onBack && (
           <button
             onClick={onBack}
-            className="md:hidden -ml-1 size-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 shrink-0"
+            className="md:hidden -ml-1 size-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 shrink-0 cursor-pointer transition-colors"
             aria-label="Back to messages"
           >
             <ChevronLeft className="size-5" />
           </button>
         )}
-        <div
-          className={cn(
-            "size-10 rounded-full flex items-center justify-center text-base font-semibold shrink-0 bg-[#DAE2FD] text-[#131B2E]",
-          )}
+        <Link
+          href={`/seller-profile?seller=${contact?._id}`}
+          className="relative shrink-0"
         >
-          {contact.initials}
-        </div>
+          {contact?.profile ? (
+            <ImageWithFallback
+              src={contact.profile}
+              alt={"profile_image"}
+              width={40}
+              height={40}
+              className="size-10 rounded-full object-cover"
+            />
+          ) : (
+            <div
+              className={cn(
+                "size-10 rounded-full flex items-center justify-center text-base font-semibold bg-[#DAE2FD] text-[#131B2E]",
+              )}
+            >
+              {contact.initials}
+            </div>
+          )}
+          {contact.online && (
+            <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+          )}
+        </Link>
         <div className="min-w-0">
-          <p className="text-sm font-bold text-slate-900 truncate">
+           <Link href={`/seller-profile?seller=${contact?._id}`} className="text-sm font-bold text-slate-900 truncate">
             {contact.name}
-          </p>
-          <p className="text-xs text-[#505F76] truncate flex items-center gap-0.5">
-            <MapPin size={11} /> {contact.propertyType} · {contact.city} ·{" "}
-            {contact.county}
-          </p>
+          </Link>
+          {contact.propertyType || contact.city ? (
+            <p className="text-xs text-[#505F76] truncate flex items-center gap-0.5">
+              <MapPin size={11} /> {contact.propertyType} · {contact.city} ·{" "}
+              {contact.county}
+            </p>
+          ) : (
+            <p className="text-xs text-[#505F76]">
+              {contact.online ? "Online" : "Offline"}
+            </p>
+          )}
         </div>
       </div>
 
-      <Link href={`/seller-profile`}>
+      <Link href={`/seller-profile?seller=${contact?._id}`}>
         <Button
           variant="outline"
           size="sm"

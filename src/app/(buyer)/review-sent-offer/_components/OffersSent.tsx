@@ -80,6 +80,7 @@ export function OffersSent({
       />
 
       <OffersSentActionBar
+        sellerId={seller?._id}
         offerId={offerId}
         className="mt-6"
         onAcceptOffer={onAcceptOffer}

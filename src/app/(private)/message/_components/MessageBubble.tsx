@@ -1,22 +1,50 @@
+import { CheckCheck } from "lucide-react";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { ChatMessage } from "@/types";
+import AttachmentGrid from "./AttachmentGrid";
+import type { ChatMessage } from "./types";
 
-export default function MessageBubble({ message }: { message: ChatMessage }) {
-  const isMe = message.sender === "me";
+type Props = {
+  message: ChatMessage;
+  userId?: string;
+  showTimestamp: boolean;
+};
+
+export default function MessageBubble({ message, userId, showTimestamp }: Props) {
+  const isMe = message.sender === userId;
+  const hasImages = (message.imageUrl?.length ?? 0) > 0;
+  const time = message.createdAt ? format(new Date(message.createdAt), "h:mm a") : "";
 
   return (
-    <div className={cn("flex flex-col", isMe ? "items-end" : "items-start")}>
-      <div
-        className={cn(
-          "max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-          isMe
-            ? "bg-primary-color text-white rounded-br-md"
-            : "bg-[#ECEEF0] text-primary-black rounded-bl-md",
-        )}
-      >
-        {message.content}
-      </div>
-      <span className="text-xs text-slate-400 mt-1 px-1">{message.time}</span>
+    <div className={cn("flex flex-col  ", isMe ? "items-end" : "items-start")}>
+      {showTimestamp && (
+        <span className="mb-1 px-1 text-xs text-slate-400">{time}</span>
+      )}
+
+      {hasImages && (
+        <AttachmentGrid urls={message.imageUrl ?? []} align={isMe ? "end" : "start"} />
+      )}
+
+      {message.text && (
+        <div className="relative ">
+          <div
+            className={cn(
+              "rounded-2xl px-4 py-2.5 text-sm leading-relaxed ",
+              isMe
+                ? "bg-primary-color text-white rounded-br-md"
+                : "bg-[#ECEEF0] text-primary-black rounded-bl-md",
+              isMe && message.seen && "pr-7",
+              message._isPending && "opacity-60",
+            )}
+          >
+            {message.text}
+          </div>
+
+          {isMe && message.seen && (
+            <CheckCheck className="absolute bottom-2 right-2 size-3 text-emerald-300" />
+          )}
+        </div>
+      )}
     </div>
   );
 }
