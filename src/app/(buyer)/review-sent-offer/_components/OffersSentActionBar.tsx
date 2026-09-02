@@ -35,7 +35,6 @@ export function OffersSentActionBar({
   lastActionBy = "buyer",
   status,
 }: OffersReceivedActionBarProps) {
-  console.log(status);
   const showFullActions = lastActionBy !== "buyer";
   const isStatusClosed = CLOSED_OFFER_STATUSES.includes(status);
 

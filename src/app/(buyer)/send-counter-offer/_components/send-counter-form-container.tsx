@@ -48,7 +48,6 @@ export default function SendCounterFormContainer() {
     }
   };
 
-  console.log("property offer ===>", data?.data?.property);
   return (
     <Container className="mt-8">
       <h3 className="md:text-[28px] text-2xl font-bold text-primary-black mb-3">

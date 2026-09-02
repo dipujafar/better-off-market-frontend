@@ -13,8 +13,6 @@ export default function AnalyticsPage() {
 
   const stats = data?.data;
 
-  console.log(stats)
-
   return (
     <div className="space-y-8">
       <h4 className="lg:text-[32px] md:text-3xl text-2xl font-semibold">

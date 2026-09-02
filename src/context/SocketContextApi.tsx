@@ -32,9 +32,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         },
       });
 
-      console.log("=========================>")
       socketStore.on("connect", () => {
-        toast.success("Socket Connected Successfully!");
         setSocketLoading(false);
       });
 

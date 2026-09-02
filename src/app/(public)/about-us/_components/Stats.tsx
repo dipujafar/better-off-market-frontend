@@ -8,7 +8,6 @@ import { useGetStatsQuery } from "@/redux/api/statsApi";
 export default function Stats() {
   const { data, isLoading } = useGetStatsQuery(undefined);
 
-  console.log(data?.data);
 
   const StatsData = [
     {
