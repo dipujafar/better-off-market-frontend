@@ -82,16 +82,15 @@ export function PropertyCard({
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
           {propertyType}
         </div>
-        {isPropertyStatusVisible && (
-          <div
-            className={cn(
-              "absolute bottom-3 right-3 px-2.5  py-0.5 rounded-full ",
-              statusColor[status],
-            )}
-          >
-            {status}
-          </div>
-        )}
+
+        <div
+          className={cn(
+            "absolute bottom-3 right-3 px-2.5  py-0.5 rounded-full text-sm ",
+            statusColor[status],
+          )}
+        >
+          {status}
+        </div>
 
         {/* Original Price Badge */}
 
@@ -109,7 +108,7 @@ export function PropertyCard({
         {/* Price */}
         <div className="space-y-1">
           <p className="xl:text-xl text-lg font-bold text-[#1F4E8B] flex items-center flex-wrap gap-x-2">
-           <span> {priceFormatter.format(listingPrice)} </span>
+            <span> {priceFormatter.format(listingPrice)} </span>
 
             {oldListingPrice && (
               <span className="text-lg text-primary-gray font-medium ml-2  line-through ">

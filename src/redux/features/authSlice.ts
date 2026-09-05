@@ -21,12 +21,12 @@ const authSlice = createSlice({
       // Store token in Cookies for middleware authentication
       Cookies.set("betteroffmarket-access-token", token, {
         path: "/",
-        expires: 7,
+        expires: 30,
       });
 
-      Cookies.set("refreshToken", refreshToken, {
+      // Cookies.set("refreshToken", refreshToken, {
         
-      })
+      // })
     },
 
     logout: (state) => {
@@ -35,7 +35,7 @@ const authSlice = createSlice({
 
       // Remove token from cookie
       Cookies.remove("betteroffmarket-access-token", { path: "/" });
-      Cookies.remove("refreshToken", { path: "/" });
+      // Cookies.remove("refreshToken", { path: "/" });
     },
   },
 });

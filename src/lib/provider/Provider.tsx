@@ -9,7 +9,6 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SocketProvider>{children}</SocketProvider>
-        {/* {children} */}
       </PersistGate>
     </Provider>
   );

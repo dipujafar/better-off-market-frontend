@@ -6,7 +6,7 @@ import ImageWithFallback from "../image/ImageWithFallback";
 import { handlePropertiesSpecifications } from "@/utils/handlePropertiesSpecifications";
 import { priceFormatter } from "../utils/priceFormatter";
 import moment from "moment";
-import { PropertyDistanceBadge } from "../utils/PropertyDistanceBadge";
+import { statusColor } from "@/components/utils/status-color";
 
 export function SavePropertyCard({
   _id,
@@ -20,8 +20,8 @@ export function SavePropertyCard({
   className,
   propertyType,
   specifications,
-  location,
   createdAt,
+  status,
   propertiesSpecificationsClassName,
   saveDate,
 }: IPropertyResponse & {
@@ -78,6 +78,15 @@ export function SavePropertyCard({
         {/* Property Type Badge */}
         <div className="absolute bottom-3 left-3  text-white px-2.5 py-1 text-xs font-semibold rounded-full border border-[rgba(255,255,255,0.19)] bg-[rgba(0,0,0,0.45)]">
           {propertyType}
+        </div>
+
+        <div
+          className={cn(
+            "absolute bottom-3 right-3 px-2.5  py-0.5 rounded-full text-sm ",
+            statusColor[status],
+          )}
+        >
+          {status}
         </div>
 
         {/* Original Price Badge */}
