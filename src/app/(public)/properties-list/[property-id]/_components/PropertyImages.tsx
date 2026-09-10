@@ -1,10 +1,8 @@
 "use client";
 import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 import Preview from "@/components/shared/utils/image_preview_option";
-import ImagePreviewer from "@/components/shared/utils/images-previewer";
-import { PropertyDistanceBadge } from "@/components/shared/utils/PropertyDistanceBadge";
+import ImagePreviewer from "@/components/shared/utils/images-previewer";  
 import Share from "@/components/utils/share";
-import { ILocation } from "@/types";
 import { LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -12,11 +10,10 @@ import { useState } from "react";
 export default function PropertyImages({
   propertyImages,
   propertyType,
-  location,
 }: {
   propertyImages: string[];
   propertyType: string;
-  location: ILocation;
+
 }) {
   const [previewImgIndex, setPreviewImgIndex] = useState(-1);
   const pathName = usePathname();

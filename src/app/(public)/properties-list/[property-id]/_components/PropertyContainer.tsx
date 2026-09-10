@@ -24,14 +24,16 @@ export default function PropertyContainer({
       <PropertyImages
         propertyImages={property?.photos}
         propertyType={property?.propertyType}
-        location={property?.location}
       />
       <div className="grid lg:grid-cols-6 gap-6 mt-4">
         <div className="lg:col-span-4 space-y-6">
           <BasicPropertyDetails property={property} />
           <PropertyInfo property={property} />
-          {(property?.documents?.length || property?.assignableContractFile) ? (
-            <Documents documents={ property?.documents} assignableContractFile={property?.assignableContractFile} />
+          {property?.documents?.length || property?.assignableContractFile ? (
+            <Documents
+              documents={property?.documents}
+              assignableContractFile={property?.assignableContractFile}
+            />
           ) : (
             ""
           )}
@@ -55,7 +57,11 @@ export default function PropertyContainer({
           />
           <AuthenticationRequired />
           {property?.openHouse && (
-            <OpenHouse openHouse={property?.openHouse} id={property?._id} sellerId={property?.seller?._id} />
+            <OpenHouse
+              openHouse={property?.openHouse}
+              id={property?._id}
+              sellerId={property?.seller?._id}
+            />
           )}
 
           <ProfileCard seller={property?.seller} />

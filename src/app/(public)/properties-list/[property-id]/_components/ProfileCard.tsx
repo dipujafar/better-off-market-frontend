@@ -1,7 +1,6 @@
 "use client";
 import { IUser } from "@/types";
 import { Star } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import moment from "moment";
 import { useGetSellerProfileQuery } from "@/redux/api/profileApi";
