@@ -1,7 +1,6 @@
 import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getFileNameFromUrl, isImageUrl } from "./Chatfileutils";
-import Image from "next/image";
 import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 
 type Props = {
@@ -9,11 +8,6 @@ type Props = {
   align?: "start" | "end";
 };
 
-/**
- * Shows each attachment as either an image thumbnail (image extensions)
- * or a file chip (everything else). Clicking either opens the file in a
- * new tab.
- */
 export default function AttachmentGrid({ urls, align = "start" }: Props) {
   const cleaned = urls.filter(Boolean);
   if (cleaned.length === 0) return null;

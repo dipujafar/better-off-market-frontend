@@ -24,7 +24,6 @@ import { toast } from "sonner";
 import { useGetUserByIdQuery } from "@/redux/api/profileApi";
 import { useFileUploadMutation } from "@/redux/api/uploadApi";
 
-/** Normalize a raw server message into a consistent shape */
 function normalizeMessage(raw: any): ChatMessage {
   return {
     _id: raw._id,
@@ -50,7 +49,7 @@ function toConversation(item: ChatListItem, userId?: string): Conversation {
     id: item.chat._id,
     name: other?.name ?? "Unknown",
     initials: initialsFromName(other?.name),
-    online: false, // filled in against activeUsers where this is used
+    online: false, 
     timestamp: item.message?.createdAt
       ? formatDistanceToNowStrict(new Date(item.message.createdAt), {
           addSuffix: true,
@@ -85,30 +84,19 @@ export default function MessagesContainer() {
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSendsRef = useRef<string[]>([]);
 
-  // ── Selected user: local state, seeded from the URL ─────────────────────
-  // Seeding from searchParams on first render is what makes selection
-  // survive a reload. From then on, clicks update THIS state directly and
-  // synchronously — the UI never waits on a router round-trip, so it can't
-  // go dead if a push happens to not re-trigger useSearchParams() (which is
-  // what was happening: the URL may have been changing, but nothing forced
-  // a re-render off it after a full page load).
   const [selectedUserId, setSelectedUserIdState] = useState<string | null>(
     () => searchParams.get("user"),
   );
 
-  // Still listen for the URL changing from OUTSIDE our own clicks — the
-  // browser's native back/forward buttons — and keep local state in sync.
-  // Harmless no-op when it's just echoing a change we already made locally.
   useEffect(() => {
     setSelectedUserIdState(searchParams.get("user"));
   }, [searchParams]);
 
   const setSelectedUserId = useCallback(
     (id: string | null) => {
-      // Update local state immediately — this is what actually drives the UI.
+      
       setSelectedUserIdState(id);
 
-      // Keep the URL in sync as a side effect, so reload/sharing still work.
       const params = new URLSearchParams(searchParams.toString());
       if (id) {
         params.set("user", id);
@@ -121,9 +109,6 @@ export default function MessagesContainer() {
     [router, pathname, searchParams],
   );
 
-  // Prefer the participant data we already have from the chat list (it also
-  // carries chatId). Only hit the network for a user we don't have yet —
-  // e.g. starting a brand-new conversation from a profile link.
   const chatListMatch = useMemo(() => {
     if (!selectedUserId) return null;
     const item = chatList.find(
@@ -365,8 +350,6 @@ export default function MessagesContainer() {
       }
     : null;
 
-  // Selecting a conversation just updates the URL — the derived
-  // `selectedUser` above picks it up from there.
   const handleSelectConversation = (id: string) => {
     const item = chatList.find((c) => c.chat._id === id);
     const other = item?.chat.participants[0];

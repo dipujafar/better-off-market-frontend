@@ -61,6 +61,7 @@ export interface OfferTerms {
   possession: string;
   sellerPostClosingDays?: number;
   notesToSeller?: string;
+  notesToBuyer?: string;
   additionalTerms?: string;
   madeBy?: "buyer" | "seller";
 }
@@ -192,6 +193,7 @@ export function mapTermsToConsolidatedOfferData(
     },
     documents: documents?.map((doc) => ({ name: doc.name, url: doc.url })),
     notesToSeller: terms.notesToSeller,
+    notesToBuyer: terms.notesToBuyer,
     additionalTerms: terms.additionalTerms,
   };
 }

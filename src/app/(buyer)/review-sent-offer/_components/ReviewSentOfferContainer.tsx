@@ -17,7 +17,7 @@ import {
   mapTermsToConsolidatedOfferData,
 } from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
 import { OffersSent } from "./OffersSent";
-import OfferPropertyCard from "@/components/shared/card/offer-property-card";
+
 
 export default function ReviewSentOfferContainer() {
   const offerId = useSearchParams().get("offer");

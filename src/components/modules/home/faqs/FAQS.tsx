@@ -1,8 +1,16 @@
 "use client";
-import { faqs } from "@/data/faqs";
+import { useGetFaqsQuery } from "@/redux/api/faqApi";
 import { Minus, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
+import FAQsSkeleton from "./FAQsSkeleton";
+
+export interface FaqEntry {
+  _id: string;
+  question: string;
+  answer: string;
+}
+
 const containerVariants = {
   hidden: {},
   visible: {
@@ -28,9 +36,14 @@ const itemVariants = {
 };
 
 export default function FAQS() {
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const { data, isLoading } = useGetFaqsQuery({ limit: 1000 });
 
-  const toggle = (id: number) => {
+  if (isLoading) return <FAQsSkeleton count={6} />;
+
+  const faqsData = data?.data?.data;
+
+  const toggle = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
   };
   return (
@@ -42,24 +55,24 @@ export default function FAQS() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
-        {faqs.map((item) => {
-          const isOpen = openId === item.id;
+        {faqsData?.map((item : FaqEntry) => {
+          const isOpen = openId === item?._id;
 
           return (
             <motion.div
-              key={item.id}
+              key={item?._id}
               // @ts-ignore
               variants={itemVariants}
               layout
               className="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] "
             >
               <button
-                onClick={() => toggle(item.id)}
+                onClick={() => toggle(item?._id)}
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between p-6 text-left cursor-pointer"
               >
                 <span className="lg:text-2xl sm:text-xl font-semibold text-primary-black text-lg">
-                  {item.question}
+                  {item?.question}
                 </span>
 
                 <motion.div
@@ -96,7 +109,7 @@ export default function FAQS() {
                       transition={{ duration: 0.2 }}
                       className="px-6 pb-5 text-base leading-relaxed text-slate-600"
                     >
-                      {item.answer}
+                      {item?.answer}
                     </motion.p>
                   </motion.div>
                 )}
