@@ -45,10 +45,10 @@ export default function ContactUs() {
                       Email us
                     </p>
                     <Link
-                      href="mailto:support@propmarket.com"
+                      href="mailto:support@betteroffmarket.com"
                       className=" font-semibold text-primary-black"
                     >
-                      support@propmarket.com
+                      support@betteroffmarket.com
                     </Link>
                   </div>
                 </div>
@@ -65,10 +65,10 @@ export default function ContactUs() {
                       Call us
                     </p>
                     <Link
-                      href="tel:+1 (800) PROP-MKT"
+                      href="tel:+1 (800) 456789"
                       className="font-semibold text-primary-black"
                     >
-                      +1 (800) PROP-MKT
+                      +1 (800) 456789
                     </Link>
                   </div>
                 </div>
