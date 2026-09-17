@@ -54,7 +54,7 @@ const CustomToast = ({
     <div
       className={`
         transform transition-all duration-200 ease-out
-        ${isExiting ? "translate-x-full opacity-0" : "-translate-x-0 opacity-100"}
+        ${isExiting ? "translate-x-full opacity-0" : "translate-x-0 opacity-100"}
       `}
     >
       <Link
@@ -85,7 +85,7 @@ const CustomToast = ({
           </div>
 
           {/* Footer */}
-          <div className='bg-gradient-to-r from-gray-50 to-gray-50/80 px-5 py-3 border-t border-gray-100/80'>
+          <div className='bg-linear-to-r from-gray-50 to-gray-50/80 px-5 py-3 border-t border-gray-100/80'>
             <div className='flex items-center justify-between'>
               <p className='text-xs text-gray-500 font-medium'>Click to view details</p>
               <div className='w-1.5 h-1.5 bg-blue-500 rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-200' />
