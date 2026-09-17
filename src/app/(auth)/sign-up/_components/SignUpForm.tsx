@@ -222,21 +222,6 @@ export default function SignupForm() {
           )}
         </div>
 
-        {/* Remember Me */}
-        {/* <label
-          htmlFor="rememberMe"
-          className="flex items-center gap-2 text-sm text-gray-700"
-        >
-          <input
-            id="rememberMe"
-            type="checkbox"
-            {...register("rememberMe")}
-            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 transition focus:ring-blue-500 accent-primary-color"
-          />
-          Remember me
-        </label> */}
-
-        {/* Agree to Terms */}
         <label
           htmlFor="agreeToTerms"
           className="flex mt-2  gap-2 text-sm text-gray-700"
@@ -265,7 +250,7 @@ export default function SignupForm() {
         <button
           type="submit"
           disabled={isLoading || !agreeToTerms}
-          className="w-full rounded-lg bg-gray-900 px-4 py-2.5 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black"
+          className="w-full rounded-lg bg-gray-900 px-4 py-2.5 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-black cursor-pointer"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">

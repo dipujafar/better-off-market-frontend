@@ -13,6 +13,8 @@ export default async function page({
   searchParams: SearchParams;
 }) {
   const resolvedParams = await searchParams;
+
+  console.log(resolvedParams)
   return (
     <div className="lg:space-y-10 space-y-6">
       <Navbar className="pt-10" />

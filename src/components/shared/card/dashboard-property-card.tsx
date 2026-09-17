@@ -129,7 +129,7 @@ export default function DashboardPropertyCard({
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3">
-            <Link href="/user/my-listings/property-listing">
+            <Link href={`/user/my-listings/property-listing?property=${id}`}>
               <Button className="rounded-md cursor-pointer bg-[#1F4E8B] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1F4E8B] hover:opacity-90">
                 Edit Listing
               </Button>

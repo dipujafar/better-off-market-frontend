@@ -35,10 +35,14 @@ export default function Analytics({
   loading,
 }: TProps) {
   const currentYear = new Date().getFullYear();
+  const publicationYear = 2026;
   const [activeTab, setActiveTab] = useState<ActiveTab>("views");
 
-  // Generate last 5 years
-  const years = Array.from({ length: 5 }, (_, i) => currentYear - i).reverse();
+  const firstYear = Math.max(publicationYear, currentYear - 4);
+  const years = Array.from(
+    { length: currentYear - firstYear + 1 },
+    (_, i) => firstYear + i,
+  );
 
   if (loading) return <ViewsSavesSkeleton />;
 

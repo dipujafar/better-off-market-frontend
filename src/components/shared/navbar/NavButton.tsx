@@ -7,6 +7,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { MessageIcon, ProfileIcon } from "@/icons";
 import { logout } from "@/redux/features/authSlice";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useGetNotificationQuery } from "@/redux/api/notificationApi";
+import { INotification } from "@/app/(private)/notifications/_components/NotificationsPanel";
 
 export default function NavButton({
   setOpen,
@@ -18,6 +21,20 @@ export default function NavButton({
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [isUnread, setIsUnread] = useState(false);
+  const { data: notificationData } = useGetNotificationQuery(undefined, {
+    skip: !user,
+  });
+
+  useEffect(() => {
+    if (notificationData) {
+      const isUnreadNotification = notificationData?.data?.some(
+        (notification: INotification) => notification.read === false,
+      );
+      setIsUnread(isUnreadNotification);
+    }
+  }, [notificationData]);
+
   const handleLogout = () => {
     dispatch(logout());
     router.push("/login");
@@ -50,8 +67,11 @@ export default function NavButton({
               </div>
             </Link>
             <Link href="/notifications">
-              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+              <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500 relative">
                 <BellDotIcon size={20} />
+                {isUnread && (
+                  <div className="absolute top-1 right-1.5 w-3 h-3 bg-red-500 rounded-full"></div>
+                )}
               </div>
             </Link>
             <Link href="/user/dashboard">
@@ -108,8 +128,11 @@ export default function NavButton({
                 </div>
               </Link>
               <Link href="/notifications">
-                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500">
+                <div className="size-10 flex-center bg-[#F6F6F6] hover:bg-[#F6F6F6]/80 hover:scale-105  cursor-pointer rounded-full duration-500 relative">
                   <BellDotIcon size={20} />
+                  {isUnread && (
+                    <div className="absolute top-1 right-1.5 w-3 h-3 bg-red-500 rounded-full"></div>
+                  )}
                 </div>
               </Link>
               <Link href="/user/dashboard">
@@ -127,7 +150,11 @@ export default function NavButton({
             </div>
           ) : (
             <div className="space-y-3">
-              <Link href="/login" onClick={() => setOpen(false)} className="block">
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="block"
+              >
                 <Button
                   size={"lg"}
                   className="bg-[#F3F4F6] hover:bg-[#F3F4F6]/70 text-black font-semibold cursor-pointer px-4 rounded-full w-full"
@@ -135,7 +162,11 @@ export default function NavButton({
                   Login
                 </Button>
               </Link>
-              <Link href="/sign-up" onClick={() => setOpen(false)} className="block">
+              <Link
+                href="/sign-up"
+                onClick={() => setOpen(false)}
+                className="block"
+              >
                 <Button
                   size={"lg"}
                   className="bg-primary-color hover:bg-[#1F4E8B]/85 text-white font-semibold cursor-pointer px-4 rounded-full w-full"

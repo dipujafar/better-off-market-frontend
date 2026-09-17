@@ -1,4 +1,3 @@
-import Navbar from "@/components/shared/navbar/Navbar";
 import PropertyListingContainer from "./_components/PropertyListingContainer";
 import SectionTitle from "@/components/shared/titles/SectionTitle";
 

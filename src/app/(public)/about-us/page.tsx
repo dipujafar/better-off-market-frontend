@@ -15,7 +15,7 @@ export default function page() {
       <div className="md:space-y-16 space-y-10">
         <Navbar variant="colored" className="pt-10" />
         <Header />
-        <Stats />
+        {/* <Stats /> */} {/* temporary disabled */}
         <MissionSection />
       </div>
       <HowItWorks />

@@ -18,7 +18,6 @@ export default function ListingPropertyDetails({
       <PropertyImages
         propertyImages={property?.photos}
         propertyType={property?.propertyType}
-        location={property?.location}
       />
 
       <BasicPropertyDetails property={property} />
@@ -33,7 +32,7 @@ export default function ListingPropertyDetails({
         lng={property?.location?.coordinates[0]}
       />
       <div className="mt-5 flex items-center gap-4">
-        <Link href={"/user/my-listings/property-listing"}>
+        <Link href={`/user/my-listings/property-listing?property=${property?._id}`}>
           <Button className="bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-5.5 px-7 rounded-lg transition-colors cursor-pointer">
             Edit Properties
           </Button>

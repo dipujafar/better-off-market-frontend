@@ -12,10 +12,10 @@ export default function NotificationPage() {
     <div>
       <Navbar className="pt-10" />
       <Container className="mt-6">
-        <h3 className="text-primary-black text-3xl font-semibold mb-1">
+  
+        <h3 className="text-primary-black md:text-3xl text-2xl font-semibold mb-4">
           Notifications
         </h3>
-        <p className="text-[#5D5F5F] mb-4">All notifications</p>
         <NotificationsPanel />
       </Container>
     </div>

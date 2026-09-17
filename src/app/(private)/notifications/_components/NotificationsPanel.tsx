@@ -1,74 +1,100 @@
+"use client";
 import { cn } from "@/lib/utils";
+import {
+  useGetNotificationQuery,
+  useReadNotificationMutation,
+} from "@/redux/api/notificationApi";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { NotificationsSkeleton } from "./NotificationsSkeleton";
+import moment from "moment";
+import PaginationSection from "@/components/shared/pagination/PaginationSection";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface Notification {
-  id: string;
+export interface INotification {
+  _id: string;
   message: string;
-  timestamp: string;
+  description: string;
+  read: boolean;
+  link: string;
+  createdAt: string;
 }
-
 interface NotificationsPanelProps {
-  title?: string;
   notifications?: Notification[];
   className?: string;
 }
 
-const DEFAULT_NOTIFICATIONS: Notification[] = [
-  {
-    id: "1",
-    message: "Your offer on Condo — Phoenix, AZ was accepted!",
-    timestamp: "2 hours ago",
-  },
-  {
-    id: "2",
-    message: "Counter offer on Duplex — Nashville, TN — seller countered at $305,000",
-    timestamp: "1 year ago",
-  },
-  {
-    id: "3",
-    message: "Congratulations! Your listing has been approved. It is now live.",
-    timestamp: "1 year ago",
-  },
-  {
-    id: "4",
-    message: "New message from James R. about the Memphis property",
-    timestamp: "2 hours ago",
-  },
-  {
-    id: "5",
-    message: "Your offer on Condo — Phoenix, AZ was accepted!",
-    timestamp: "2 hours ago",
-  },
-];
-
 export default function NotificationsPanel({
-  title = "Today",
-  notifications = DEFAULT_NOTIFICATIONS,
   className,
 }: NotificationsPanelProps) {
+  const page = useSearchParams().get("page") || "1";
+  const limit = useSearchParams().get("limit") || "10";
+
+  const queries: Record<string, string | number> = { page, limit };
+  const { data, isLoading } = useGetNotificationQuery(queries);
+  const [makeRedNotification] = useReadNotificationMutation();
+
+  const notifications = data?.data;
+
+  useEffect(() => {
+    makeRedNotification({});
+  }, []);
+
+  if (isLoading) return <NotificationsSkeleton />;
+
   return (
     <div
       className={cn(
-        "rounded-3xl border border-[#C4C7C780] bg-white p-6",
+        "rounded-3xl border border-[#C4C7C780] bg-white ",
         className,
       )}
     >
-      <p className="mb-4  text-primary-black">{title}</p>
-
       <div className="space-y-4">
-        {notifications.map((notification) => (
-          <div
-            key={notification.id}
-            className="rounded-2xl border border-[#C4C7C780] px-5 py-4"
+        {notifications.map((notification: INotification) => (
+          <Link
+            key={notification?._id}
+            href={notification?.link ? `${notification?.link}` : `#`}
+            className="block"
           >
-            <p className="text-sm font-semibold text-gray-scale-900">
-              {notification.message}
-            </p>
-            <p className="mt-1 text-xs text-primary-gray">
-              {notification.timestamp}
-            </p>
-          </div>
+            <div
+              key={notification?._id}
+              className="rounded-2xl border border-[#C4C7C780] md:px-5 px-3 py-4"
+            >
+              <div className=" flex justify-between gap-1.5">
+                <p className="text-sm font-semibold text-gray-scale-900">
+                  {notification?.message}
+                </p>
+
+                <Tooltip>
+                  <TooltipTrigger>
+                    <p className="mt-1 text-xs text-primary-gray">
+                      {moment(notification?.createdAt).fromNow()}
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {moment(notification?.createdAt).format("llll")}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <p className="mt-1 text-xs text-primary-gray">
+                {notification?.description}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
+      {data?.meta?.total > Number(limit) && (
+        <PaginationSection
+          total={data?.meta?.total}
+          current={Number(page)}
+          pageSize={Number(limit)}
+        />
+      )}
     </div>
   );
 }

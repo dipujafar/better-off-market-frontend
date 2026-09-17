@@ -16,6 +16,7 @@ import { useLoginMutation } from "@/redux/api/authApi";
 import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
 import { LoaderIcon } from "@/icons";
+import useFcmToken from "@/hooks/useFcmToken";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -33,6 +34,7 @@ export default function LoginForm() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
+  const { fcmToken } = useFcmToken();
 
   const callbackUrl = useSearchParams().get("callbackUrl");
 
@@ -50,7 +52,8 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData & { fcmToken?: string }) => {
+    if (fcmToken) data.fcmToken = fcmToken;
     try {
       const res = await login(data).unwrap();
 

@@ -3,6 +3,7 @@
 import { getToken } from "firebase/messaging";
 import { getFcmMessaging } from "@/lib/firebase/messaging-client";
 import { useEffect, useState } from "react";
+import { envConfig } from "@/config";
 
 const useFcmToken = () => {
   const [token, setToken] = useState("");
@@ -27,7 +28,7 @@ const useFcmToken = () => {
         if (currentPermission === "denied") return; // let the component handle the toast
 
         const registration = await navigator.serviceWorker.register(
-          "/firebase-messaging-sw.js"
+          "/firebase-messaging-sw.js",
         );
 
         const permission = await Notification.requestPermission();
@@ -36,7 +37,7 @@ const useFcmToken = () => {
         if (permission !== "granted") return;
 
         const currentToken = await getToken(messaging, {
-          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
+          vapidKey: envConfig.firebaseVapidKey,
           serviceWorkerRegistration: registration,
         });
 

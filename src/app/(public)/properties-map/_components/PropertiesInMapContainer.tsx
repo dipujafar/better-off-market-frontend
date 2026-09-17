@@ -21,7 +21,7 @@ export default function PropertiesInMapContainer({
   useGeolocationParams();
   const { data, isLoading } = useGetPropertiesForWebQuery({
     ...searchParams,
-    limit: 25,
+    limit: 1000,
   });
 
   if (isLoading)
