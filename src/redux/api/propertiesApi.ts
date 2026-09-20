@@ -58,10 +58,10 @@ const propertyApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.property],
     }),
     updateProperty: build.mutation({
-      query: ({ id, ...data }) => ({
+      query: ({ id, formData }) => ({
         url: `/properties/${id}`,
         method: "PATCH",
-        body: data,
+        body: formData,
       }),
       invalidatesTags: [tagTypes.property],
     }),

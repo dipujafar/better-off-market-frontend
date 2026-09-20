@@ -31,7 +31,7 @@ export function PropertyPhotosSection() {
         name="photos"
         control={control}
         render={({ field }) => {
-          const files: File[] = field.value ?? [];
+          const files = ((field.value ?? []) as Array<File | string>) || [];
 
           const addFiles = (newFiles: FileList | File[]) => {
             field.onChange([...files, ...Array.from(newFiles)]);
@@ -80,7 +80,7 @@ export function PropertyPhotosSection() {
                       className="group relative aspect-square overflow-hidden rounded-lg"
                     >
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={typeof file === "string" ? file : URL.createObjectURL(file)}
                         alt={`photo-${index}`}
                         className="size-full object-cover"
                       />

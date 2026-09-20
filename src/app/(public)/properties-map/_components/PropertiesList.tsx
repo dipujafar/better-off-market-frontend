@@ -92,11 +92,11 @@ export default function PropertiesList({
         {list.map((property, index) => (
           <div
             key={index}
-            className={
-              property._id === id
-                ? "rounded-md scale-105 duration-300 transform transition-transform mt-4"
-                : ""
-            }
+            // className={
+            //   property._id === id
+            //     ? "rounded-md scale-105 duration-300 transform transition-transform mt-4"
+            //     : ""
+            // }
             id={`property-${property._id}`}
           >
             <PropertyCard {...property} active={property._id === id} />

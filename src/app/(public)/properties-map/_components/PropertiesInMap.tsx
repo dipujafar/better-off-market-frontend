@@ -2,9 +2,9 @@
 
 import { GoogleMap, OverlayView } from "@react-google-maps/api";
 import { CardContent } from "@/components/ui/card";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IPropertyResponse } from "@/types";
 
 const containerStyle = {
@@ -56,27 +56,76 @@ export function PropertiesInMap({
   onMarkerClick,
 }: LocationMapProps) {
   const { isLoaded } = useGoogleMaps();
-  const [, setMap] = useState<google.maps.Map | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [internalActiveId, setInternalActiveId] = useState<
     IPropertyResponse["_id"] | null
   >(null);
+  const [browserCenter, setBrowserCenter] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const activeId = activeIdProp ?? internalActiveId;
-  const center = useMemo(() => getCenter(properties), [properties]);
+
+  const explicitCenter = useMemo(() => {
+    const latParam = Number(searchParams.get("lat"));
+    const lngParam = Number(searchParams.get("lng"));
+
+    if (Number.isFinite(latParam) && Number.isFinite(lngParam)) {
+      return { lat: latParam, lng: lngParam };
+    }
+
+    return null;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (explicitCenter) {
+      setBrowserCenter(null);
+      return;
+    }
+
+    if (typeof window === "undefined" || !("geolocation" in navigator)) {
+      setBrowserCenter(null);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setBrowserCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      () => {
+        setBrowserCenter(null);
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 5 * 60 * 1000,
+      },
+    );
+  }, [explicitCenter]);
+
+  const center = explicitCenter ?? browserCenter ?? DHAKA_CENTER;
 
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
       setMap(mapInstance);
-      if (properties.length > 1) {
-        const bounds = new google.maps.LatLngBounds();
-        properties.forEach((p) => bounds.extend({ lat: p.location.coordinates[1], lng: p.location.coordinates[0] }));
-        mapInstance.fitBounds(bounds, 60);
-      }
+      mapInstance.setCenter(center);
+      mapInstance.setZoom(zoom);
     },
-    [properties],
+    [center, zoom],
   );
+
+  useEffect(() => {
+    if (!map) return;
+    map.setCenter(center);
+    map.setZoom(zoom);
+  }, [map, center, zoom]);
 
   const onUnmount = useCallback(() => setMap(null), []);
 

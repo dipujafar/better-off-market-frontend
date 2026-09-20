@@ -1,3 +1,17 @@
+export interface IProperty {
+  id: number;
+  imageUrl: string;
+  timeEstimate: string;
+  price: number;
+  originalPrice?: number;
+  arv: number;
+  address: string;
+  beds: number;
+  baths: number;
+  sqft: number;
+  propertyType: string;
+}
+
 export interface ICategory {
   id: number;
   title: string;

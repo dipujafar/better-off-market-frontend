@@ -8,6 +8,11 @@ const fileSchema = z
   .instanceof(File)
   .refine((f) => f.size <= 100 * 1024 * 1024, "File must be under 100MB");
 
+const fileOrUrlSchema = z.union([
+  fileSchema,
+  z.string().min(1, "Value is required"),
+]);
+
 const locationSchema = z.object(
   {
     type: z.literal("Point"),
@@ -16,7 +21,7 @@ const locationSchema = z.object(
   {
     error: "Location is required",
   },
-)
+);
 
 export const propertyListingSchema = z
   .object({
@@ -31,7 +36,7 @@ export const propertyListingSchema = z
     ownership: z.enum(["own", "assignable"], {
       error: "Select an ownership type",
     }),
-    assignableContractFile: fileSchema.optional().nullable(),
+    assignableContractFile: fileOrUrlSchema.optional().nullable(),
 
     // map location
     location: locationSchema,
@@ -100,8 +105,8 @@ export const propertyListingSchema = z
     closingDate: z.string().min(1, "Closing preference is required"),
 
     // Files
-    photos: z.array(fileSchema).min(5, "At least 5 property photos required"),
-    documents: z.array(fileSchema).optional(),
+    photos: z.array(fileOrUrlSchema).min(5, "At least 5 property photos required"),
+    documents: z.array(fileOrUrlSchema).optional(),
   })
   .superRefine((data, ctx) => {
     const config = BASIC_INFO_CONFIG[data.propertyType];

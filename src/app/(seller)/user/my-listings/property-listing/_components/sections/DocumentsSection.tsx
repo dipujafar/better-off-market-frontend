@@ -15,7 +15,7 @@ export function DocumentsSection() {
         name="documents"
         control={control}
         render={({ field }) => {
-          const files: File[] = field.value ?? [];
+          const files = ((field.value ?? []) as Array<File | string>) || [];
 
           const addFiles = (newFiles: FileList) => {
             field.onChange([...files, ...Array.from(newFiles)]);
@@ -47,33 +47,53 @@ export function DocumentsSection() {
               </div>
 
               <div className="space-y-3">
-                {files.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between gap-3 rounded-lg bg-gray-50 p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="flex size-9 items-center justify-center rounded-md bg-green-50 text-green-600">
-                        <CheckCircleIcon className="size-4" />
-                      </span>
-                      <div>
-                        <p className="text-sm font-medium text-primary-black">
-                          {file.name}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {formatFileSize(file.size)} • Just now
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeFile(index)}
-                      className="text-red-500 hover:text-red-700 cursor-pointer duration-300   transform-active:scale-95 "
+                {files.map((file, index) => {
+                  const isExistingFile = typeof file === "string";
+                  const fileUrl = isExistingFile ? file : "";
+                  const fileLabel = isExistingFile
+                    ? file.split("/").pop() || "Uploaded document"
+                    : file.name;
+                  const fileMeta = isExistingFile
+                    ? "Existing file"
+                    : `${formatFileSize(file.size)} • Just now`;
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between gap-3 rounded-lg bg-gray-50 p-3"
                     >
-                      <Trash2Icon className="size-4" />
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex items-center gap-3">
+                        <span className="flex size-9 items-center justify-center rounded-md bg-green-50 text-green-600">
+                          <CheckCircleIcon className="size-4" />
+                        </span>
+                        <div>
+                          {isExistingFile ? (
+                            <a
+                              href={fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-medium text-primary-black underline-offset-2 hover:underline"
+                            >
+                              {fileLabel}
+                            </a>
+                          ) : (
+                            <p className="text-sm font-medium text-primary-black">
+                              {fileLabel}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-400">{fileMeta}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="text-red-500 hover:text-red-700 cursor-pointer duration-300   transform-active:scale-95 "
+                      >
+                        <Trash2Icon className="size-4" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </>
           );

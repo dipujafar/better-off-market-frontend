@@ -116,31 +116,45 @@ function AssignableContractUpload() {
             <p className="mb-1.5 text-sm font-medium text-primary-black">
               Assignable Contract PDF
             </p>
-            <label
-              onDrop={(e) => {
-                e.preventDefault();
-                const dropped = e.dataTransfer.files?.[0];
-                if (dropped) field.onChange(dropped);
-              }}
-              onDragOver={(e) => e.preventDefault()}
-              className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-10 text-center"
-            >
-              <FileUp className="mb-3 size-6 text-gray-400" />
-              <p className="mb-4 text-sm text-gray-500">
-                {field.value
-                  ? field.value.name
-                  : "Drag and drop PDF or DOCX here"}
-              </p>
-              <Button type="button" asChild className="py-5 px-5 bg-primary-color">
-                <span>Upload Contract</span>
-              </Button>
-              <input
-                type="file"
-                accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                className="hidden"
-                onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
-              />
-            </label>
+            {field.value && typeof field.value === "string" ? (
+              <a
+                href={field.value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-4 inline-flex items-center gap-2 rounded-lg border border-primary-color/30 bg-primary-color/5 px-4 py-3 text-sm font-medium text-primary-color underline-offset-2 hover:underline"
+              >
+                <FileUp className="size-4" />
+                {field.value.split("/").pop() || "Uploaded contract"}
+              </a>
+            ) : (
+              <label
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const dropped = e.dataTransfer.files?.[0];
+                  if (dropped) field.onChange(dropped);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-10 text-center"
+              >
+                <FileUp className="mb-3 size-6 text-gray-400" />
+                <p className="mb-4 text-sm text-gray-500">
+                  {field.value
+                    ? typeof field.value === "string"
+                      ? field.value.split("/").pop() || "Uploaded contract"
+                      : field.value.name
+                    : "Drag and drop PDF or DOCX here"}
+                </p>
+                <Button type="button" asChild className="py-5 px-5 bg-primary-color">
+                  <span>Upload Contract</span>
+                </Button>
+                <input
+                  type="file"
+                  accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  className="hidden"
+                  onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            )}
 
             <div className="mt-4 flex items-start gap-2 rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
               <Lock className="mt-0.5 size-4 shrink-0 text-gray-500" />

@@ -4,30 +4,106 @@ import { PropertyListingForm } from "./PropertyListingForm";
 import { ZodError } from "zod";
 import { zodFormErrorModification } from "@/lib/errors/zodFormErrorModification";
 import { toast } from "sonner";
-import { useCreatePropertyMutation } from "@/redux/api/propertiesApi";
+import {
+  useCreatePropertyMutation,
+  useGetSinglePropertyQuery,
+  useUpdatePropertyMutation,
+} from "@/redux/api/propertiesApi";
 import { errorModification } from "@/lib/errors/errorModification";
+import { useSearchParams } from "next/navigation";
+
+const mapPropertyToFormValues = (
+  property: Record<string, any>,
+): Partial<PropertyListingFormValues> => ({
+  propertyType: property?.propertyType ?? "Multi-Family",
+  useType: property?.useType ?? undefined,
+  useTypeOther: property?.useTypeOther ?? undefined,
+  ownership: property?.ownership ?? "own",
+  assignableContractFile:
+    property?.assignableContractFile?.url ?? property?.assignableContractFile ?? null,
+  location: property?.location ?? { type: "Point", coordinates: [0, 0] },
+  streetAddress: property?.streetAddress ?? "",
+  state: property?.state ?? "",
+  county: property?.county ?? "",
+  city: property?.city ?? "",
+  zipCode: property?.zipCode ?? "",
+  parcelIds: property?.parcelIds ?? "",
+  listingPrice: property?.listingPrice ?? 0,
+  buyItNowPrice: property?.buyItNowPrice ?? undefined,
+  arv: property?.arv ?? undefined,
+  marketingDescription: property?.marketingDescription ?? "",
+  utilities: property?.utilities ?? undefined,
+  specifications: property?.specifications ?? {},
+  roofMaterial: property?.roofMaterial ?? undefined,
+  roofAge: property?.roofAge ?? undefined,
+  heatingSystem: property?.heatingSystem ?? undefined,
+  heatingAge: property?.heatingAge ?? undefined,
+  cooling: property?.cooling ?? undefined,
+  coolingAge: property?.coolingAge ?? undefined,
+  waterHeating: property?.waterHeating ?? undefined,
+  waterHeatingAge: property?.waterHeatingAge ?? undefined,
+  water: property?.water ?? undefined,
+  sewer: property?.sewer ?? undefined,
+  foundation: property?.foundation ?? undefined,
+  otherUpdates: property?.otherUpdates ?? undefined,
+  roofMaterialOther: property?.roofMaterialOther ?? undefined,
+  heatingSystemOther: property?.heatingSystemOther ?? undefined,
+  coolingOther: property?.coolingOther ?? undefined,
+  waterHeatingOther: property?.waterHeatingOther ?? undefined,
+  waterOther: property?.waterOther ?? undefined,
+  sewerOther: property?.sewerOther ?? undefined,
+  foundationOther: property?.foundationOther ?? undefined,
+  hasHoa: property?.hasHoa ?? "no",
+  hoaAmount: property?.hoaAmount ?? undefined,
+  hoaFrequency: property?.hoaFrequency ?? undefined,
+  hoaIncludes: property?.hoaIncludes ?? "",
+  titleCompany: property?.titleCompany ?? undefined,
+  closingDate: property?.closingDate ?? "",
+  photos: Array.isArray(property?.photos) ? property.photos : [],
+  documents: Array.isArray(property?.documents)
+    ? property.documents.map((doc: any) => doc?.url ?? doc?.name ?? "")
+    : [],
+});
 
 export default function PropertyListingContainer() {
-  const [crateProperty] = useCreatePropertyMutation();
+  const propertyId = useSearchParams().get("property");
+  const { data } = useGetSinglePropertyQuery(propertyId, { skip: !propertyId });
+  const [createProperty] = useCreatePropertyMutation();
+  const [updateProperty] = useUpdatePropertyMutation();
+
+  const defaultValues = data?.data
+    ? mapPropertyToFormValues(data.data)
+    : undefined;
+
   const handleSubmit = async (values: PropertyListingFormValues) => {
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(values));
-      values?.photos?.forEach((file) => formData.append("photos", file));
 
-      if (values?.documents?.length) {
-        values?.documents?.forEach((file) =>
-          formData.append("documents", file),
-        );
-      }
+      const uploadedPhotos = values.photos.filter(
+        (file): file is File => file instanceof File,
+      );
+      uploadedPhotos.forEach((file) => formData.append("photos", file));
 
-      if (values?.assignableContractFile) {
+      const uploadedDocuments = (values.documents ?? []).filter(
+        (file): file is File => file instanceof File,
+      );
+      uploadedDocuments.forEach((file) => formData.append("documents", file));
+
+      if (values.assignableContractFile instanceof File) {
         formData.append(
           "assignableContractFile",
-          values?.assignableContractFile,
+          values.assignableContractFile,
         );
       }
-      await crateProperty(formData).unwrap();
+
+      if (propertyId && data?.data) {
+        await updateProperty({ id: propertyId, formData }).unwrap();
+        toast.success("Property updated successfully.");
+        return true;
+      }
+
+      await createProperty(formData).unwrap();
       toast.success(
         "Property Listing request submitted successfully!. Please wait for admin approval.",
       );
@@ -42,9 +118,14 @@ export default function PropertyListingContainer() {
     const errMessage = zodFormErrorModification(err);
     toast.error(errMessage);
   };
+
   return (
     <>
-      <PropertyListingForm onSubmit={handleSubmit} onError={handleError} />
+      <PropertyListingForm
+        defaultValues={defaultValues}
+        onSubmit={handleSubmit}
+        onError={handleError}
+      />
     </>
   );
 }

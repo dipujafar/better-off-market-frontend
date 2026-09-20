@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ import { PropertyPhotosSection } from "./sections/PropertyPhotosSection";
 import { DocumentsSection } from "./sections/DocumentsSection";
 import { LoaderIcon } from "@/icons";
 import SelectLocationInMap from "./sections/SelectLocationInMap";
+import { useSearchParams } from "next/navigation";
+import { useGetSinglePropertyQuery } from "@/redux/api/propertiesApi";
 
 interface PropertyListingFormProps {
   defaultValues?: Partial<PropertyListingFormValues>;
@@ -43,6 +46,18 @@ export function PropertyListingForm({
       ...defaultValues,
     },
   });
+
+  useEffect(() => {
+    methods.reset({
+      propertyType: "Multi-Family",
+      ownership: "own",
+      hasHoa: "no",
+      photos: [],
+      documents: [],
+      specifications: {},
+      ...defaultValues,
+    });
+  }, [defaultValues, methods]);
 
   const {
     handleSubmit,
