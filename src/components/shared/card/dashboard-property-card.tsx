@@ -9,7 +9,7 @@ import { ScheduleOpenHouseDialog } from "../dailogs/ScheduleOpenHouseDialog";
 import ImageWithFallback from "../image/ImageWithFallback";
 import { cn, PROPERTY_STATUS } from "@/lib/utils";
 import { IOpenHouse } from "@/types";
-import { statusColor } from "@/components/utils/status-color";
+import { getStatus, statusColor } from "@/components/utils/status-color";
 import { AppDialog } from "../dialog/AppDialog";
 import { useDeletePropertyMutation } from "@/redux/api/propertiesApi";
 import { toast } from "sonner";
@@ -79,7 +79,7 @@ export default function DashboardPropertyCard({
                 statusColor[status],
               )}
             >
-              {status}
+              {getStatus(status)}
             </div>
           </div>
         </Link>
@@ -95,7 +95,10 @@ export default function DashboardPropertyCard({
                     {type}
                   </h3>
                 </Link>
-                <Link href={`/user/my-listings/${id}`} className="mt-1 flex items-center font-semibold gap-1 text-sm text-primary-gray">
+                <Link
+                  href={`/user/my-listings/${id}`}
+                  className="mt-1 flex items-center font-semibold gap-1 text-sm text-primary-gray"
+                >
                   <span>
                     <MapPin size={16} />
                   </span>

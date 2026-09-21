@@ -18,8 +18,6 @@ import { PropertyPhotosSection } from "./sections/PropertyPhotosSection";
 import { DocumentsSection } from "./sections/DocumentsSection";
 import { LoaderIcon } from "@/icons";
 import SelectLocationInMap from "./sections/SelectLocationInMap";
-import { useSearchParams } from "next/navigation";
-import { useGetSinglePropertyQuery } from "@/redux/api/propertiesApi";
 
 interface PropertyListingFormProps {
   defaultValues?: Partial<PropertyListingFormValues>;

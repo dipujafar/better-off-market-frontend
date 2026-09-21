@@ -42,19 +42,17 @@ export function OffersReceivedActionBar({
       )}
     >
       {showFullActions && !isStatusClosed ? (
-        <Link href={"/sign-agreement-contact"}>
-          <button
-            type="button"
-            onClick={onAcceptOffer}
-            disabled={isSubmitting}
-            className={cn(
-              baseButton,
-              "bg-[#0D6F3A] text-white rounded-md hover:bg-emerald-700 cursor-pointer",
-            )}
-          >
-            Accept Offer
-          </button>
-        </Link>
+        <button
+          type="button"
+          onClick={onAcceptOffer}
+          disabled={isSubmitting}
+          className={cn(
+            baseButton,
+            "bg-[#0D6F3A] text-white rounded-md hover:bg-emerald-700 cursor-pointer",
+          )}
+        >
+          Accept Offer
+        </button>
       ) : null}
 
       {showFullActions && !isStatusClosed ? (

@@ -5,6 +5,7 @@ import SignatureCanvas from "react-signature-canvas";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import { AuthorizedSignersForm } from "./_components/AuthorizedSignersForm";
 
 const PdfViewer = dynamic(
   () => import("@/components/shared/pdf-viewer/PdfViewer"),
@@ -70,7 +71,7 @@ export default function SignAgreementPage() {
           </div>
         </div> */}
 
-        {/* <AuthorizedSignersForm /> */}
+        {/* <AuthorizedSignersForm/> */}
         <div  className="space-y-10">
           <PdfViewer
             pdfUrl="pdf.pdf"

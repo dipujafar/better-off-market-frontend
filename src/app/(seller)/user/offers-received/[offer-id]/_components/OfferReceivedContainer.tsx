@@ -1,5 +1,6 @@
 "use client";
 import {
+  useAcceptOfferMutation,
   useGetSingleOfferQuery,
   useRejectOfferMutation,
 } from "@/redux/api/offerApi";
@@ -23,6 +24,8 @@ export default function OfferReceivedContainer() {
   const offerId = params["offer-id"] as string;
   const router = useRouter();
   const [rejectOffer] = useRejectOfferMutation();
+  const [acceptOffer, { isLoading: isAcceptingOffer }] =
+    useAcceptOfferMutation();
   const [openRejectModal, setOpenRejectModal] = useState(false);
 
   const { data, isLoading } = useGetSingleOfferQuery(offerId, {
@@ -82,8 +85,16 @@ export default function OfferReceivedContainer() {
     supportingDocuments,
   );
 
-  const handleAcceptOffer = () => {
+  const handleAcceptOffer = async () => {
+    try {
+      await acceptOffer(offerId).unwrap();
+      toast.success("Offer accepted successfully!");
+    } catch (error) {
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage);
+    }
     console.log("accept offer");
+    // router.push("/sign-agreement-contact")
   };
 
   const handleRejectOffer = async () => {
@@ -117,11 +128,7 @@ export default function OfferReceivedContainer() {
         offer={consolidatedOfferData}
         lastActionBy={lastActionBy}
         status={offer.status}
-        onViewHistory={() => console.log("view history")}
-        onEditOfferDetails={() => console.log("edit offer details")}
         onAcceptOffer={() => handleAcceptOffer()}
-        onCounterOffer={() => console.log("counter")}
-        onMessageBuyer={() => console.log("message")}
         onReject={() => setOpenRejectModal(true)}
       />
       <AppDialog

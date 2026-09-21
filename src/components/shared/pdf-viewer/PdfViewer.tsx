@@ -3,7 +3,6 @@
 interface PdfViewerProps {
   pdfUrl?: string;
   title?: string;
-  pageWidth?: number;
   maxHeight?: string;
   className?: string;
 }
@@ -11,7 +10,6 @@ interface PdfViewerProps {
 export default function PdfViewer({
   pdfUrl = "/pdf.pdf",
   title = "Agreement PDF",
-  pageWidth = 720,
   maxHeight = "75vh",
   className = "",
 }: PdfViewerProps) {

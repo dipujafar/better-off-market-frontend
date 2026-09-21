@@ -11,6 +11,7 @@ import {
 } from "@/redux/api/propertiesApi";
 import { errorModification } from "@/lib/errors/errorModification";
 import { useSearchParams } from "next/navigation";
+import SectionTitle from "@/components/shared/titles/SectionTitle";
 
 const mapPropertyToFormValues = (
   property: Record<string, any>,
@@ -20,7 +21,9 @@ const mapPropertyToFormValues = (
   useTypeOther: property?.useTypeOther ?? undefined,
   ownership: property?.ownership ?? "own",
   assignableContractFile:
-    property?.assignableContractFile?.url ?? property?.assignableContractFile ?? null,
+    property?.assignableContractFile?.url ??
+    property?.assignableContractFile ??
+    null,
   location: property?.location ?? { type: "Point", coordinates: [0, 0] },
   streetAddress: property?.streetAddress ?? "",
   state: property?.state ?? "",
@@ -75,6 +78,20 @@ export default function PropertyListingContainer() {
     ? mapPropertyToFormValues(data.data)
     : undefined;
 
+  const isEditMode = Boolean(propertyId && data?.data);
+
+  const sectionTitleData = isEditMode
+    ? {
+        title: "Edit Listing",
+        description:
+          "Update your property details to keep the listing accurate and competitive.",
+      }
+    : {
+        title: "Create new listing",
+        description:
+          "Provide detailed information to attract high-quality buyers and investors.",
+      };
+
   const handleSubmit = async (values: PropertyListingFormValues) => {
     try {
       const formData = new FormData();
@@ -120,12 +137,13 @@ export default function PropertyListingContainer() {
   };
 
   return (
-    <>
+    <div className="space-y-4">
+      <SectionTitle data={sectionTitleData} />
       <PropertyListingForm
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
         onError={handleError}
       />
-    </>
+    </div>
   );
 }
