@@ -13,7 +13,7 @@ type ListingTab =
   | "pending"
   | "rejected"
   | "sold"
-  | "under-contract";
+  | "under-contact";
 
 const handleStatusValue = (status: ListingTab) => {
   switch (status) {
@@ -25,7 +25,7 @@ const handleStatusValue = (status: ListingTab) => {
       return "Rejected";
     case "sold":
       return "Sold";
-    case "under-contract":
+    case "under-contact":
       return "Under Contract";
     default:
       return "";
@@ -66,12 +66,13 @@ export default function MyListingContainer() {
   const statusCounts = data?.data?.statusCounts;
   const metaData = data?.meta;
 
+
   return (
     <div>
       <Tabs
         defaultValue="all"
         className="w-full mt-5"
-        onValueChange={(value) => setActiveTab(value as ListingTab)}
+        onValueChange={(value) => {setActiveTab(value as ListingTab); console.log(value)}}
       >
         <TabsList>
           <TabsTrigger

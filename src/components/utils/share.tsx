@@ -25,7 +25,7 @@ export default function Share({
   return (
     <div onClick={handleShare}>
       {children || (
-        <button className={cn("rounded p-2 hover:bg-gray-100 text-primary-gray text-xl cursor-pointer", className)}>
+        <button className={cn("rounded p-2 hover:bg-gray-100  text-primary-gray text-xl cursor-pointer", className)}>
           <Share2/>
         </button>
       )}

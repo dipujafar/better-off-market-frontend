@@ -24,9 +24,9 @@ export default function OfferReceivedContainer() {
   const offerId = params["offer-id"] as string;
   const router = useRouter();
   const [rejectOffer] = useRejectOfferMutation();
-  const [acceptOffer, { isLoading: isAcceptingOffer }] =
-    useAcceptOfferMutation();
+  const [acceptOffer] = useAcceptOfferMutation();
   const [openRejectModal, setOpenRejectModal] = useState(false);
+  const [openAcceptModal, setOpenAcceptModal] = useState(false);
 
   const { data, isLoading } = useGetSingleOfferQuery(offerId, {
     skip: !offerId,
@@ -86,15 +86,15 @@ export default function OfferReceivedContainer() {
   );
 
   const handleAcceptOffer = async () => {
+    toast.loading("Accepting offer...", { id: "accept" });
     try {
       await acceptOffer(offerId).unwrap();
-      toast.success("Offer accepted successfully!");
+      toast.success("Offer accepted successfully!", { id: "accept" });
+      router.push(`/sign-agreement-contact?offerId=${offerId}&actionBy=seller`);
     } catch (error) {
       const errorMessage = errorModification(error);
-      toast.error(errorMessage);
+      toast.error(errorMessage, { id: "accept" });
     }
-    console.log("accept offer");
-    // router.push("/sign-agreement-contact")
   };
 
   const handleRejectOffer = async () => {
@@ -128,7 +128,7 @@ export default function OfferReceivedContainer() {
         offer={consolidatedOfferData}
         lastActionBy={lastActionBy}
         status={offer.status}
-        onAcceptOffer={() => handleAcceptOffer()}
+        onAcceptOffer={() => setOpenAcceptModal(true)}
         onReject={() => setOpenRejectModal(true)}
       />
       <AppDialog
@@ -145,6 +145,23 @@ export default function OfferReceivedContainer() {
           {
             label: "Confirm",
             onClick: () => handleRejectOffer(),
+          },
+        ]}
+      />
+      <AppDialog
+        open={openAcceptModal}
+        onOpenChange={setOpenAcceptModal}
+        title="Accept offer"
+        description="Are you sure you want to accept this offer and proceed to agreement?"
+        actions={[
+          {
+            label: "Cancel",
+            variant: "outline",
+            onClick: () => setOpenAcceptModal(false),
+          },
+          {
+            label: "Confirm",
+            onClick: () => handleAcceptOffer(),
           },
         ]}
       />

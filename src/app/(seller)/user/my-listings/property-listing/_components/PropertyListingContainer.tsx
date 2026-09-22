@@ -143,6 +143,7 @@ export default function PropertyListingContainer() {
         defaultValues={defaultValues}
         onSubmit={handleSubmit}
         onError={handleError}
+        isEditMode={isEditMode}
       />
     </div>
   );

@@ -23,12 +23,14 @@ interface PropertyListingFormProps {
   defaultValues?: Partial<PropertyListingFormValues>;
   onSubmit: (values: PropertyListingFormValues) => Promise<boolean | void>;
   onError?: (errors: any) => void;
+  isEditMode?: boolean;
 }
 
 export function PropertyListingForm({
   defaultValues,
   onSubmit,
   onError,
+  isEditMode = false,
 }: PropertyListingFormProps) {
   const methods = useForm<PropertyListingFormValues>({
     // @ts-ignore
@@ -106,8 +108,10 @@ export function PropertyListingForm({
                 <span className="mr-2 mt-1">
                   <LoaderIcon />
                 </span>
-                <span>Publishing...</span>
+                <span>{isEditMode ? "Updating..." : "Publishing..."}</span>
               </div>
+            ) : isEditMode ? (
+              "Update Changes"
             ) : (
               "Publish Listing Now"
             )}

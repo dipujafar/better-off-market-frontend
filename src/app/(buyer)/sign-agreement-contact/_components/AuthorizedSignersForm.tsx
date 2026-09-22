@@ -2,16 +2,30 @@
 
 import { useState } from "react";
 import { User, Send } from "lucide-react";
+import {
+  useAddBuyerAuthorizationMutation,
+  useAddSellerAuthorizationMutation,
+} from "@/redux/api/agreementApi";
+import { useSearchParams } from "next/navigation";
+import { errorModification } from "@/lib/errors/errorModification";
+import { toast } from "sonner";
 
 interface Signer {
   fullName: string;
   email: string;
 }
 
+interface SignerErrors {
+  fullName?: string;
+  email?: string;
+}
+
 interface AuthorizedSignersProps {
   initialSigners?: Signer[];
   onSubmit?: (signers: Signer[]) => void;
 }
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function AuthorizedSignersForm({
   initialSigners = [
@@ -21,6 +35,11 @@ export function AuthorizedSignersForm({
   onSubmit,
 }: AuthorizedSignersProps) {
   const [signers, setSigners] = useState<Signer[]>(initialSigners);
+  const [errors, setErrors] = useState<SignerErrors[]>([{}, {}]);
+  const [addSellerAuthorizedSigner] = useAddSellerAuthorizationMutation();
+  const [addBuyerAuthorizedSigner] = useAddBuyerAuthorizationMutation();
+  const actionBy = useSearchParams().get("actionBy");
+  const offerId = useSearchParams().get("offerId");
 
   const updateSigner = (index: number, field: keyof Signer, value: string) => {
     setSigners((prev) =>
@@ -28,10 +47,75 @@ export function AuthorizedSignersForm({
         i === index ? { ...signer, [field]: value } : signer,
       ),
     );
+    // Clear that field's error as soon as the user edits it
+    setErrors((prev) =>
+      prev.map((err, i) =>
+        i === index ? { ...err, [field]: undefined } : err,
+      ),
+    );
   };
 
-  const handleSubmit = () => {
-    onSubmit?.(signers);
+  const isSignerEmpty = (signer: Signer) =>
+    !signer.fullName.trim() && !signer.email.trim();
+
+  const validate = (): boolean => {
+    const nextErrors: SignerErrors[] = signers.map((signer, index) => {
+      const isRequired = index === 0; // first signer always required
+      const isPartiallyFilled =
+        !isRequired && (signer.fullName.trim() || signer.email.trim());
+
+      // Second signer left completely blank -> valid, nothing to check
+      if (!isRequired && isSignerEmpty(signer)) return {};
+
+      const fieldErrors: SignerErrors = {};
+
+      if (isRequired || isPartiallyFilled) {
+        if (!signer.fullName.trim()) {
+          fieldErrors.fullName = "Full name is required";
+        }
+        if (!signer.email.trim()) {
+          fieldErrors.email = "Email address is required";
+        } else if (!EMAIL_REGEX.test(signer.email.trim())) {
+          fieldErrors.email = "Enter a valid email address";
+        }
+      }
+
+      return fieldErrors;
+    });
+
+    setErrors(nextErrors);
+    return nextErrors.every((err) => !err.fullName && !err.email);
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) return;
+
+    const formattedData = signers.map((signer) => ({
+      name: signer.fullName,
+      email: signer.email,
+    }));
+
+    try {
+      if (actionBy === "buyer") {
+        await addBuyerAuthorizedSigner({
+          offerId,
+          data: formattedData,
+        }).unwrap();
+      } else {
+        await addSellerAuthorizedSigner({
+          offerId,
+          data: formattedData,
+        }).unwrap();
+      }
+    } catch (err) {
+      const error = errorModification(err);
+      toast.error(error);
+    }
+
+    // Only send signers that actually have data — drops a fully-empty
+    // optional second signer from the payload rather than sending {fullName: "", email: ""}
+    const filledSigners = signers.filter((s) => !isSignerEmpty(s));
+    onSubmit?.(filledSigners);
   };
 
   return (
@@ -54,6 +138,14 @@ export function AuthorizedSignersForm({
               <User className="size-4 text-primary-color" />
               <span className="text-sm font-medium tracking-wide text-[#594139] uppercase">
                 Authorized Signer #{index + 1}
+                {index === 0 ? (
+                  <span className="text-red-500"> *</span>
+                ) : (
+                  <span className="normal-case text-[#9CA3AF] font-normal">
+                    {" "}
+                    (optional)
+                  </span>
+                )}
               </span>
             </div>
 
@@ -71,8 +163,17 @@ export function AuthorizedSignersForm({
                   placeholder={
                     index === 0 ? "e.g. Johnathan Doe" : "e.g. Jane Smith"
                   }
-                  className="w-full rounded-md border border-primary-border-color bg-white px-3.5 py-2.5 text-sm text-primary-black placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#1F4E8B]/20 focus:border-[#1F4E8B]"
+                  className={`w-full rounded-md border bg-white px-3.5 py-2.5 text-sm text-primary-black placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#1F4E8B]/20 focus:border-[#1F4E8B] ${
+                    errors[index]?.fullName
+                      ? "border-red-400"
+                      : "border-primary-border-color"
+                  }`}
                 />
+                {errors[index]?.fullName && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].fullName}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -86,8 +187,15 @@ export function AuthorizedSignersForm({
                   placeholder={
                     index === 0 ? "john@example.com" : "jane@example.com"
                   }
-                  className="w-full rounded-md border border-[#F3B896] bg-white px-3.5 py-2.5 text-sm text-primary-black placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#1F4E8B]/20 focus:border-[#1F4E8B]"
+                  className={`w-full rounded-md border bg-white px-3.5 py-2.5 text-sm text-primary-black placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#1F4E8B]/20 focus:border-[#1F4E8B] ${
+                    errors[index]?.email ? "border-red-400" : "border-[#F3B896]"
+                  }`}
                 />
+                {errors[index]?.email && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors[index].email}
+                  </p>
+                )}
               </div>
             </div>
           </div>
