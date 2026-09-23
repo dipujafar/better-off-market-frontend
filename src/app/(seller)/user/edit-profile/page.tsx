@@ -1,8 +1,8 @@
 import ProfileEditForm from "./_components/ProfileForm";
 
 export const metadata = {
-  title: "Edit Profile",
-  description: "This the official website of Better Off Market",
+  title: "Profile",
+  description: "Manage your own profile and update your information.",
 };
 
 export default function EditProfilePage() {

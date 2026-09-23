@@ -10,14 +10,13 @@ interface OffersReceivedActionBarProps {
   sellerId?: string;
   offerId: string;
   onAcceptOffer?: () => void;
-  onCounterOffer?: () => void;
-  onMessageBuyer?: () => void;
   onReject?: () => void;
   isSubmitting?: boolean;
   className?: string;
 
   lastActionBy?: "buyer" | "seller";
   status: (typeof OFFER_STATUS)[keyof typeof OFFER_STATUS];
+  isBuyerAddedAuthorizedSigner?: boolean;
 }
 
 const baseButton =
@@ -27,13 +26,12 @@ export function OffersSentActionBar({
   sellerId,
   offerId,
   onAcceptOffer,
-  onCounterOffer,
-  onMessageBuyer,
   onReject,
   isSubmitting,
   className,
   lastActionBy = "buyer",
   status,
+  isBuyerAddedAuthorizedSigner,
 }: OffersReceivedActionBarProps) {
   const showFullActions = lastActionBy !== "buyer";
   const isStatusClosed = CLOSED_OFFER_STATUSES.includes(status);
@@ -45,27 +43,40 @@ export function OffersSentActionBar({
         className,
       )}
     >
-      {showFullActions && !isStatusClosed ? (
-        <Link href={"/sign-agreement-contact"}>
+      {!isBuyerAddedAuthorizedSigner && status === "accepted" ? (
+        <Link
+          href={`/sign-agreement-contact?offerId=${offerId}&actionBy=buyer`}
+        >
           <button
             type="button"
-            onClick={onAcceptOffer}
             disabled={isSubmitting}
             className={cn(
               baseButton,
-              "bg-[#0D6F3A] text-white rounded-md hover:bg-emerald-700 cursor-pointer",
+              "bg-[#0F2A4D] hover:bg-[#0F2A4D]/90 text-white rounded-md cursor-pointer",
             )}
           >
-            Accept Offer
+            Add Authorized Signer
           </button>
         </Link>
+      ) : null}
+      {showFullActions && !isStatusClosed ? (
+        <button
+          type="button"
+          onClick={onAcceptOffer}
+          disabled={isSubmitting}
+          className={cn(
+            baseButton,
+            "bg-[#0D6F3A] text-white rounded-md hover:bg-emerald-700 cursor-pointer",
+          )}
+        >
+          Accept Offer
+        </button>
       ) : null}
 
       {showFullActions && !isStatusClosed ? (
         <Link href={`/send-counter-offer?offer=${offerId}`}>
           <button
             type="button"
-            onClick={onCounterOffer}
             disabled={isSubmitting}
             className={cn(
               baseButton,
@@ -80,7 +91,6 @@ export function OffersSentActionBar({
       <Link href={`/message?user=${sellerId}`}>
         <button
           type="button"
-          onClick={onMessageBuyer}
           disabled={isSubmitting}
           className={cn(
             baseButton,

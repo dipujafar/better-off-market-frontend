@@ -28,13 +28,11 @@ import ProfileCard from "@/app/(public)/properties-list/[property-id]/_component
 interface ConsolidatedSentOfferCardProps {
   seller: IUser;
   data: ConsolidatedOfferData;
-  onEditOfferDetails?: () => void;
 }
 
 export function ConsolidatedSentOfferCard({
   seller,
   data,
-  onEditOfferDetails,
 }: ConsolidatedSentOfferCardProps) {
   return (
     <div className="border border-primary-border-color bg-card p-3 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 rounded-lg">
@@ -49,11 +47,7 @@ export function ConsolidatedSentOfferCard({
       </h4>
       <section className="rounded-xl md:mt-5 mt-3 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
         <div className="lg:col-span-2 space-y-4">
-          <OfferSubSection
-            title="Offer Details"
-            icon={<DollarIcon />}
-            onEdit={onEditOfferDetails}
-          >
+          <OfferSubSection title="Offer Details" icon={<DollarIcon />}>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
               <SummaryField
                 label="Offer amount"

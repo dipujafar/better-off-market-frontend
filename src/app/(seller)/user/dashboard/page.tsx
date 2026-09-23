@@ -4,6 +4,11 @@ import RecentProperties from "./_components/RecentProperties";
 import RecentOffers from "./_components/RecentOffers";
 import GreetingMessage from "./_components/GreetingMessage";
 
+export const metadata = {
+  title: "Dashboard",
+  description: "Manage your properties and track their performance.",
+};
+
 export default function DashboardPage() {
   return (
     <div className="space-y-6">

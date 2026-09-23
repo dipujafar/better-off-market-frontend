@@ -1,5 +1,6 @@
 "use client";
 import {
+  useAcceptOfferMutation,
   useGetSingleOfferQuery,
   useRejectOfferMutation,
 } from "@/redux/api/offerApi";
@@ -18,12 +19,13 @@ import {
 } from "@/app/(seller)/user/offers-received/[offer-id]/_components/offers-received/utils.offer-received";
 import { OffersSent } from "./OffersSent";
 
-
 export default function ReviewSentOfferContainer() {
   const offerId = useSearchParams().get("offer");
   const router = useRouter();
   const [rejectOffer] = useRejectOfferMutation();
   const [openRejectModal, setOpenRejectModal] = useState(false);
+  const [openAcceptModal, setOpenAcceptModal] = useState(false);
+  const [acceptOffer] = useAcceptOfferMutation();
 
   const { data, isLoading } = useGetSingleOfferQuery(offerId, {
     skip: !offerId,
@@ -45,6 +47,7 @@ export default function ReviewSentOfferContainer() {
     currentRound,
     lastActionBy,
     supportingDocuments,
+    isBuyerAddedAuthorizedSigner,
   } = offer;
 
   const propertyLabel = `${property.propertyType} — ${property.streetAddress},  ${property.city}, ${property.state}, ${property.zipCode}, ${property.county}`;
@@ -81,8 +84,16 @@ export default function ReviewSentOfferContainer() {
     supportingDocuments,
   );
 
-  const handleAcceptOffer = () => {
-    console.log("accept offer");
+  const handleAcceptOffer = async () => {
+    toast.loading("Accepting offer...", { id: "accept" });
+    try {
+      await acceptOffer(offerId).unwrap();
+      toast.success("Offer accepted successfully!", { id: "accept" });
+      router.push(`/sign-agreement-contact?offerId=${offerId}&actionBy=buyer`);
+    } catch (error) {
+      const errorMessage = errorModification(error);
+      toast.error(errorMessage, { id: "accept" });
+    }
   };
 
   const handleRejectOffer = async () => {
@@ -115,11 +126,8 @@ export default function ReviewSentOfferContainer() {
         offer={consolidatedOfferData}
         lastActionBy={lastActionBy}
         status={offer.status}
-        onViewHistory={() => console.log("view history")}
-        onEditOfferDetails={() => console.log("edit offer details")}
-        onAcceptOffer={() => handleAcceptOffer()}
-        onCounterOffer={() => console.log("counter")}
-        onMessageBuyer={() => console.log("message")}
+        isBuyerAddedAuthorizedSigner={isBuyerAddedAuthorizedSigner}
+        onAcceptOffer={() => setOpenAcceptModal(true)}
         onReject={() => setOpenRejectModal(true)}
       />
       <AppDialog
@@ -136,6 +144,23 @@ export default function ReviewSentOfferContainer() {
           {
             label: "Confirm",
             onClick: () => handleRejectOffer(),
+          },
+        ]}
+      />
+      <AppDialog
+        open={openAcceptModal}
+        onOpenChange={setOpenAcceptModal}
+        title="Accept offer"
+        description="Are you sure you want to accept this offer and proceed to agreement?"
+        actions={[
+          {
+            label: "Cancel",
+            variant: "outline",
+            onClick: () => setOpenAcceptModal(false),
+          },
+          {
+            label: "Confirm",
+            onClick: () => handleAcceptOffer(),
           },
         ]}
       />

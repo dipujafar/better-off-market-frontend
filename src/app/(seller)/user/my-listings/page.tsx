@@ -3,6 +3,11 @@ import { Plus } from "lucide-react";
 import MyListingContainer from "./_components/MyListingContainer";
 import Link from "next/link";
 
+export const metadata = {
+  title: "My Listing",
+  description: "Manage your properties and track their performance.",
+};
+
 export default function MyListingPage() {
   return (
     <div>

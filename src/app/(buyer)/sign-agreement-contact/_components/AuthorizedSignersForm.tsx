@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { User, Send } from "lucide-react";
+import { User, Send, Loader } from "lucide-react";
 import {
   useAddBuyerAuthorizationMutation,
   useAddSellerAuthorizationMutation,
 } from "@/redux/api/agreementApi";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { errorModification } from "@/lib/errors/errorModification";
 import { toast } from "sonner";
 
@@ -36,10 +36,13 @@ export function AuthorizedSignersForm({
 }: AuthorizedSignersProps) {
   const [signers, setSigners] = useState<Signer[]>(initialSigners);
   const [errors, setErrors] = useState<SignerErrors[]>([{}, {}]);
-  const [addSellerAuthorizedSigner] = useAddSellerAuthorizationMutation();
-  const [addBuyerAuthorizedSigner] = useAddBuyerAuthorizationMutation();
+  const [addSellerAuthorizedSigner, { isLoading }] =
+    useAddSellerAuthorizationMutation();
+  const [addBuyerAuthorizedSigner, { isLoading: isLoadingBuyer }] =
+    useAddBuyerAuthorizationMutation();
   const actionBy = useSearchParams().get("actionBy");
   const offerId = useSearchParams().get("offerId");
+  const router = useRouter();
 
   const updateSigner = (index: number, field: keyof Signer, value: string) => {
     setSigners((prev) =>
@@ -101,12 +104,17 @@ export function AuthorizedSignersForm({
           offerId,
           data: formattedData,
         }).unwrap();
+        router.replace(`/my-offer`);
       } else {
         await addSellerAuthorizedSigner({
           offerId,
           data: formattedData,
         }).unwrap();
+        router.replace(`/user/offers-received`);
       }
+      toast.success(
+        "Authorized signers added successfully! They received an email with legal documents.",
+      );
     } catch (err) {
       const error = errorModification(err);
       toast.error(error);
@@ -204,10 +212,15 @@ export function AuthorizedSignersForm({
 
       <button
         onClick={handleSubmit}
-        className="inline-flex items-center gap-2 bg-[#0F2A4D] hover:bg-[#0F2A4D]/90 text-white text-sm font-medium px-5 py-3 rounded-lg transition-colors cursor-pointer group"
+        disabled={isLoading || isLoadingBuyer}
+        className="inline-flex items-center gap-2 bg-[#0F2A4D] hover:bg-[#0F2A4D]/90 text-white text-sm font-medium px-5 py-3 rounded-lg transition-colors cursor-pointer group disabled:cursor-not-allowed disabled:opacity-70"
       >
         Send Contract for Signature
-        <Send className="size-4 group-hover:rotate-45 duration-300 transition-all" />
+        {isLoading || isLoadingBuyer ? (
+          <Loader className="size-4 animate-spin group-hover:rotate-45 duration-300 transition-all" />
+        ) : (
+          <Send className="size-4 group-hover:rotate-45 duration-300 transition-all" />
+        )}
       </button>
     </div>
   );

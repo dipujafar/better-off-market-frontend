@@ -23,14 +23,12 @@ interface ConsolidatedOfferCardProps {
   buyerId: string;
   name: string;
   data: ConsolidatedOfferData;
-  onEditOfferDetails?: () => void;
 }
 
 export function ConsolidatedOfferCard({
   buyerId,
   name: buyerName,
   data,
-  onEditOfferDetails,
 }: ConsolidatedOfferCardProps) {
   return (
     <div className="border border-primary-border-color bg-card p-5 shadow-[0_10px_30px_0_rgba(15,23,42,0.05)] sm:p-6 rounded-lg">
@@ -44,11 +42,7 @@ export function ConsolidatedOfferCard({
         </Link>
       </h4>
       <section className=" space-y-4 rounded-xl lg:mt-5 mt-3">
-        <OfferSubSection
-          title="Offer Details"
-          icon={<DollarIcon />}
-          onEdit={onEditOfferDetails}
-        >
+        <OfferSubSection title="Offer Details" icon={<DollarIcon />}>
           <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
             <SummaryField
               label="Offer amount"
@@ -238,7 +232,6 @@ export function ConsolidatedOfferCard({
             </p>
           </OfferSubSection>
         ) : null}
-        
       </section>
     </div>
   );

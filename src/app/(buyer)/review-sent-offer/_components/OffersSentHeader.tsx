@@ -7,7 +7,6 @@ interface OffersReceivedHeaderProps {
   propertyId: string;
   propertyLabel: string;
   offersSubmittedCount: number;
-  onViewHistory?: () => void;
 }
 
 export function OffersSentHeader({
@@ -15,7 +14,6 @@ export function OffersSentHeader({
   propertyId,
   propertyLabel,
   offersSubmittedCount,
-  onViewHistory,
 }: OffersReceivedHeaderProps) {
   const showHistoryButton = offersSubmittedCount > 1;
 
@@ -43,7 +41,6 @@ export function OffersSentHeader({
           <Link href={`/offer-negotiation-story?offer=${offerId}`}>
             <button
               type="button"
-              onClick={onViewHistory}
               className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-primary-border-color bg-card px-3 py-1.5 text-sm font-medium text-primary-color hover:bg-muted/50 sm:self-auto cursor-pointer"
             >
               <History size={14} />

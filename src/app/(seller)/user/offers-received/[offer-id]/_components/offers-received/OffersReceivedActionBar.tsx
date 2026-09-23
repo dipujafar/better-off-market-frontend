@@ -7,13 +7,12 @@ interface OffersReceivedActionBarProps {
   buyerId?: string;
   offerId: string;
   onAcceptOffer?: () => void;
-  onCounterOffer?: () => void;
-  onMessageBuyer?: () => void;
   onReject?: () => void;
   isSubmitting?: boolean;
   className?: string;
   lastActionBy?: "buyer" | "seller";
   status: (typeof OFFER_STATUS)[keyof typeof OFFER_STATUS];
+  isSellerAddedAuthorizedSigner?: boolean;
 }
 
 const baseButton =
@@ -23,13 +22,12 @@ export function OffersReceivedActionBar({
   buyerId,
   offerId,
   onAcceptOffer,
-  onCounterOffer,
-  onMessageBuyer,
   onReject,
   isSubmitting,
   className,
   lastActionBy = "buyer",
   status,
+  isSellerAddedAuthorizedSigner,
 }: OffersReceivedActionBarProps) {
   const showFullActions = lastActionBy !== "seller";
   const isStatusClosed = CLOSED_OFFER_STATUSES.includes(status);
@@ -41,6 +39,23 @@ export function OffersReceivedActionBar({
         className,
       )}
     >
+      {!isSellerAddedAuthorizedSigner && status === "accepted" ? (
+        <Link
+          href={`/sign-agreement-contact?offerId=${offerId}&actionBy=seller`}
+        >
+          <button
+            type="button"
+            disabled={isSubmitting}
+            className={cn(
+              baseButton,
+              "bg-[#0F2A4D] hover:bg-[#0F2A4D]/90 text-white rounded-md cursor-pointer",
+            )}
+          >
+            Add Authorized Signer
+          </button>
+        </Link>
+      ) : null}
+
       {showFullActions && !isStatusClosed ? (
         <button
           type="button"
@@ -59,7 +74,6 @@ export function OffersReceivedActionBar({
         <Link href={`/send-counter-offer?offer=${offerId}`}>
           <button
             type="button"
-            onClick={onCounterOffer}
             disabled={isSubmitting}
             className={cn(
               baseButton,
@@ -74,7 +88,6 @@ export function OffersReceivedActionBar({
       <Link href={`/message?user=${buyerId}`}>
         <button
           type="button"
-          onClick={onMessageBuyer}
           disabled={isSubmitting}
           className={cn(
             baseButton,

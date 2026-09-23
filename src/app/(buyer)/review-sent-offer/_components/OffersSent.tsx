@@ -24,11 +24,8 @@ interface OffersReceivedProps {
   offer: ConsolidatedOfferData;
   lastActionBy?: "buyer" | "seller";
   status: (typeof OFFER_STATUS)[keyof typeof OFFER_STATUS];
-  onViewHistory?: () => void;
-  onEditOfferDetails?: () => void;
+  isBuyerAddedAuthorizedSigner?: boolean;
   onAcceptOffer?: () => void;
-  onCounterOffer?: () => void;
-  onMessageBuyer?: () => void;
   onReject?: () => void;
   isSubmitting?: boolean;
 }
@@ -47,11 +44,8 @@ export function OffersSent({
   offer,
   lastActionBy,
   status,
-  onViewHistory,
-  onEditOfferDetails,
+  isBuyerAddedAuthorizedSigner,
   onAcceptOffer,
-  onCounterOffer,
-  onMessageBuyer,
   onReject,
   isSubmitting,
 }: OffersReceivedProps) {
@@ -63,7 +57,6 @@ export function OffersSent({
         propertyId={propertyId}
         propertyLabel={propertyLabel}
         offersSubmittedCount={offersSubmittedCount}
-        onViewHistory={onViewHistory}
       />
 
       <OfferComparisonRow
@@ -76,7 +69,7 @@ export function OffersSent({
       <ConsolidatedSentOfferCard
         seller={seller}
         data={offer}
-        onEditOfferDetails={onEditOfferDetails}
+
       />
 
       <OffersSentActionBar
@@ -84,12 +77,11 @@ export function OffersSent({
         offerId={offerId}
         className="mt-6"
         onAcceptOffer={onAcceptOffer}
-        onCounterOffer={onCounterOffer}
-        onMessageBuyer={onMessageBuyer}
         onReject={onReject}
         isSubmitting={isSubmitting}
         lastActionBy={lastActionBy}
         status={status}
+        isBuyerAddedAuthorizedSigner={isBuyerAddedAuthorizedSigner}
       />
     </div>
   );

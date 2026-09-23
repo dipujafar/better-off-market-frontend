@@ -1,13 +1,18 @@
 import { CircleAlert } from "lucide-react";
 import OfferListContainer from "./_components/OfferListContainer";
 
+export const metadata = {
+  title: "Offers Received",
+  description: "Find all received offers on Better Off Market.",
+};
+
 export default function OffersReceivedPage() {
   return (
     <div>
       {/* ===========================  page title =============================*/}
       <div className="flex-between flex-wrap gap-1">
         <h4 className="lg:text-[32px] md:text-3xl text-2xl font-semibold">
-         Offers Received
+          Offers Received
         </h4>
         <div className="flex gap-1 items-center text-sm text-primary-gray">
           <CircleAlert size={20} />
