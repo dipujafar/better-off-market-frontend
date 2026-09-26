@@ -10,14 +10,14 @@ interface PdfViewerProps {
 export default function PdfViewer({
   pdfUrl = "/pdf.pdf",
   title = "Agreement PDF",
-  maxHeight = "75vh",
+  maxHeight = "85vh",
   className = "",
 }: PdfViewerProps) {
   const safeUrl = pdfUrl || "/pdf.pdf";
 
   return (
     <div className={className}>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <div className="text-lg font-medium text-primary-color">{title}</div>
       </div>
 

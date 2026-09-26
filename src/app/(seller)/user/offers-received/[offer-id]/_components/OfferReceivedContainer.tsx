@@ -128,6 +128,7 @@ export default function OfferReceivedContainer() {
         offer={consolidatedOfferData}
         lastActionBy={lastActionBy}
         status={offer.status}
+        isSellerAddedAuthorizedSigner={offer?.isSellerAddedAuthorizedSigner}
         onAcceptOffer={() => setOpenAcceptModal(true)}
         onReject={() => setOpenRejectModal(true)}
       />
