@@ -5,27 +5,48 @@ import {
   useGetSingleAgreementQuery,
   useSignDocumentMutation,
 } from "@/redux/api/agreementApi";
-import { useParams, useSearchParams } from "next/navigation";
-import { useRef } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import { PdfViewerSkeleton } from "./PdfViewerSkeleton";
 import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
+import { IAgreement } from "@/types";
+import { cn } from "@/lib/utils";
+
+const isReadySigned = (agreement: IAgreement, email: string, role: string) => {
+  if (role === "buyer") {
+    return agreement.buyerAuthorizeSigner.some((signer) => signer.email === email && signer.isSigned);
+  } else {
+    return agreement.sellerAuthorizeSigner.some((signer) => signer.isSigned);
+  }
+};
 
 export default function AgreementContainer() {
+  const [isRedDoc, setIsRedDoc] = useState(false);
   const { offerId } = useParams();
   const email = useSearchParams().get("email");
-  const { data: offerData, isLoading } = useGetSingleAgreementQuery(offerId, {
+  const user = useSearchParams().get("user");
+  const {
+    data: offerData,
+    isFetching,
+    isLoading,
+  } = useGetSingleAgreementQuery(offerId, {
     skip: !offerId,
   });
   const [signDoc, { isLoading: isSigning }] = useSignDocumentMutation();
+  const router = useRouter();
 
   const sigRef = useRef<SignatureCanvas>(null);
+
 
   const handleSubmit = async () => {
     if (sigRef.current?.isEmpty())
       return toast.error("Please sign before submitting");
 
+    toast.loading("Please wait without reload. Document signing in progress.", {
+      id: "signing",
+    });
     const signatureImage = sigRef
       .current!.getTrimmedCanvas()
       .toDataURL("image/png");
@@ -36,10 +57,11 @@ export default function AgreementContainer() {
         offerId,
         data: { email, signatureImage },
       }).unwrap();
-      toast.success("Thanks for signing!");
+      toast.success("Document signed successfully", { id: "signing" });
+      router.refresh();
     } catch (error) {
       const errorMessage = errorModification(error);
-      toast.error(errorMessage);
+      toast.error(errorMessage, { id: "signing" });
     }
 
     // const res = await signDoc({
@@ -51,7 +73,7 @@ export default function AgreementContainer() {
     // }
   };
 
-  if (isLoading)
+  if (isLoading || isFetching)
     return (
       <div className="space-y-8">
         <PdfViewerSkeleton />
@@ -64,7 +86,11 @@ export default function AgreementContainer() {
       <div className="space-y-10">
         <PdfViewer
           pdfUrl={offerData?.data?.agreementMainDoc}
-          title="Agreement Document"
+          title="Platform Agreement Document"
+        />
+        <PdfViewer
+          pdfUrl={offerData?.data?.propertyAgreementDoc}
+          title="Property Details Agreement Document"
         />
         {/* <PdfViewer
           pdfUrl="/ohio_pdf.pdf"
@@ -72,7 +98,12 @@ export default function AgreementContainer() {
         /> */}
       </div>
 
-      <div className="mt-5 space-y-2">
+      <div
+        className={cn(
+          "mt-5 space-y-2",
+          isReadySigned(offerData?.data, email as string, user as string) && "hidden",
+        )}
+      >
         <h1 className="text-2xl font-bold text-primary-color">Sign Here</h1>
         <SignatureCanvas
           ref={sigRef}
@@ -83,15 +114,28 @@ export default function AgreementContainer() {
               "border rounded-lg bg-slate-100 border-gray-200 md:w-[500px] w-[300px] h-[150px]",
           }}
         />
+        <label
+          htmlFor="redDoc"
+          className="flex mt-2  gap-2 text-sm text-gray-700 ml-1"
+        >
+          <input
+            id="redDoc"
+            type="checkbox"
+            checked={isRedDoc}
+            onChange={(e) => setIsRedDoc(e.target.checked)}
+            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 transition focus:ring-blue-500 accent-primary-color"
+          />
+          <span>I have carefully read documents and agree to sign.</span>
+        </label>
         <Button
-          className="bg-black rounded"
+          className="bg-black rounded cursor-pointer"
           onClick={() => sigRef.current?.clear()}
         >
           Clear
         </Button>
         <Button
-          disabled={isSigning}
-          className="bg-primary-color disabled:bg-gray-400 rounded"
+          disabled={isSigning || !isRedDoc}
+          className="bg-primary-color disabled:bg-primary-color/80 rounded cursor-pointer ml-1"
           onClick={handleSubmit}
         >
           Submit Signature {isSigning && "..."}

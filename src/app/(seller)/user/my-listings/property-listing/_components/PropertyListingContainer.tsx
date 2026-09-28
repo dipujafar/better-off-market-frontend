@@ -20,10 +20,6 @@ const mapPropertyToFormValues = (
   useType: property?.useType ?? undefined,
   useTypeOther: property?.useTypeOther ?? undefined,
   ownership: property?.ownership ?? "own",
-  assignableContractFile:
-    property?.assignableContractFile?.url ??
-    property?.assignableContractFile ??
-    null,
   location: property?.location ?? { type: "Point", coordinates: [0, 0] },
   streetAddress: property?.streetAddress ?? "",
   state: property?.state ?? "",
@@ -107,12 +103,6 @@ export default function PropertyListingContainer() {
       );
       uploadedDocuments.forEach((file) => formData.append("documents", file));
 
-      if (values.assignableContractFile instanceof File) {
-        formData.append(
-          "assignableContractFile",
-          values.assignableContractFile,
-        );
-      }
 
       if (propertyId && data?.data) {
         await updateProperty({ id: propertyId, formData }).unwrap();

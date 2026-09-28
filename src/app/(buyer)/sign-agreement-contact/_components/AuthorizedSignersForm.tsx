@@ -98,6 +98,10 @@ export function AuthorizedSignersForm({
       email: signer.email,
     }));
 
+    toast.loading(
+      "Please wait without reload. Document are getting ready and send to authorized signers email.",
+      { id: "sendingDoc" },
+    );
     try {
       if (actionBy === "buyer") {
         await addBuyerAuthorizedSigner({
@@ -113,11 +117,13 @@ export function AuthorizedSignersForm({
         router.replace(`/user/offers-received`);
       }
       toast.success(
-        "Authorized signers added successfully! They received an email with legal documents.",
+        "Authorized signers added successfully! They received an email with legal documents.", {
+          id: "sendingDoc",
+        }
       );
     } catch (err) {
       const error = errorModification(err);
-      toast.error(error);
+      toast.error(error, { id: "sendingDoc" });
     }
 
     // Only send signers that actually have data — drops a fully-empty

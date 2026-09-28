@@ -8,12 +8,12 @@ interface PdfViewerProps {
 }
 
 export default function PdfViewer({
-  pdfUrl = "/pdf.pdf",
+  pdfUrl = "",
   title = "Agreement PDF",
   maxHeight = "85vh",
   className = "",
 }: PdfViewerProps) {
-  const safeUrl = pdfUrl || "/pdf.pdf";
+  const safeUrl = pdfUrl ;
 
   return (
     <div className={className}>

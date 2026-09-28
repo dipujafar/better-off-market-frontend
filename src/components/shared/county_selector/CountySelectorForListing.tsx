@@ -28,10 +28,17 @@ export const COUNTY_DATA = {
   ],
 };
 
+export type CountyType = keyof typeof COUNTY_DATA; // "OHIO" | "KENTUCKY"
+
+export interface SelectedCounty {
+  county: string;
+  countyType: CountyType;
+}
+
 interface CountySelectorForListingProps {
   error?: string;
   selectedCounty: string | null | undefined;
-  onCountyChange: (county: string | null) => void;
+  onCountyChange: (county: SelectedCounty | null) => void;
   className?: string;
 }
 
@@ -43,7 +50,6 @@ export function CountySelectorForListing({
 }: CountySelectorForListingProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -59,8 +65,8 @@ export function CountySelectorForListing({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const selectCounty = (county: string) => {
-    onCountyChange(county);
+  const selectCounty = (county: string, countyType: CountyType) => {
+    onCountyChange({ county, countyType });
     setIsOpen(false);
   };
 
@@ -120,36 +126,38 @@ export function CountySelectorForListing({
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
           {/* States and Counties */}
           <div className="flex justify-between flex-wrap gap-2 mb-3 max-h-80 overflow-y-auto px-5 pt-5 pb-5">
-            {Object.entries(COUNTY_DATA).map(([state, counties]) => (
-              <div key={state}>
-                <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">
-                  {state}
-                </h3>
-                <div className="space-y-1">
-                  {counties.map((county) => {
-                    const isSelected = selectedCounty === county;
-                    return (
-                      <button
-                        type="button"
-                        key={county}
-                        onClick={() => selectCounty(county)}
-                        className={cn(
-                          "w-full flex items-center justify-between gap-2.5 px-3 py-1.5 rounded-md text-sm text-left cursor-pointer transition-colors",
-                          isSelected
-                            ? "bg-[#E0EEFF] text-primary-black font-medium"
-                            : "text-primary-black hover:bg-gray-50",
-                        )}
-                      >
-                        <span>{county}</span>
-                        {isSelected && (
-                          <Check size={16} className="text-primary-color" />
-                        )}
-                      </button>
-                    );
-                  })}
+            {(Object.entries(COUNTY_DATA) as [CountyType, string[]][]).map(
+              ([state, counties]) => (
+                <div key={state}>
+                  <h3 className="font-semibold text-primary-gray mb-3 text-sm uppercase tracking-wide">
+                    {state}
+                  </h3>
+                  <div className="space-y-1">
+                    {counties.map((county) => {
+                      const isSelected = selectedCounty === county;
+                      return (
+                        <button
+                          type="button"
+                          key={county}
+                          onClick={() => selectCounty(county, state)}
+                          className={cn(
+                            "w-full flex items-center justify-between gap-2.5 px-3 py-1.5 rounded-md text-sm text-left cursor-pointer transition-colors",
+                            isSelected
+                              ? "bg-[#E0EEFF] text-primary-black font-medium"
+                              : "text-primary-black hover:bg-gray-50",
+                          )}
+                        >
+                          <span>{county}</span>
+                          {isSelected && (
+                            <Check size={16} className="text-primary-color" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </div>
       )}

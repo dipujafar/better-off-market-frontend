@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { useFormContext } from "react-hook-form";
 import { TextField } from "../form-fields/TextField";
 import { TextareaField } from "../form-fields/TextareaField";
@@ -65,23 +65,16 @@ export function BasicInformationSection() {
               <FieldTooltip text="This can be found on the County Auditor's website under Property Search." />
             }
           />
-          {/* <SelectField
-            label="County"
-            required
-            name="county"
-            control={control}
-            options={COUNTY_OPTIONS}
-            placeholder="Select county"
-            error={errors.county?.message}
-            tooltip={
-              <FieldTooltip text="If the County is not on the dropdown list, then this property is unfortunately outside our current scope, and you will not be able to add this listing. Please contact support with any questions." />
-            }
-          /> */}
 
           <CountySelectorForListing
             error={errors?.county?.message}
             selectedCounty={county}
-            onCountyChange={(newCounty) => setValue("county", newCounty ?? "")}
+            onCountyChange={(newCounty) => {
+              setValue("county", newCounty?.county ?? "", {
+                shouldValidate: true,
+              });
+              setValue("countyType", newCounty?.countyType ?? "");
+            }}
           />
         </div>
 

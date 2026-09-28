@@ -36,7 +36,6 @@ export const propertyListingSchema = z
     ownership: z.enum(["own", "assignable"], {
       error: "Select an ownership type",
     }),
-    assignableContractFile: fileOrUrlSchema.optional().nullable(),
 
     // map location
     location: locationSchema,
@@ -47,6 +46,7 @@ export const propertyListingSchema = z
     county: z
       .string({ message: "County is required" })
       .min(1, "County is required"),
+    countyType: z.string().min(1, "County type is required"),
     city: z.string().min(1, "City is required"),
     zipCode: z.string().min(5, "Enter a valid ZIP code"),
     // county: z.string().min(1, "County is required"),
@@ -105,7 +105,9 @@ export const propertyListingSchema = z
     closingDate: z.string().min(1, "Closing preference is required"),
 
     // Files
-    photos: z.array(fileOrUrlSchema).min(5, "At least 5 property photos required"),
+    photos: z
+      .array(fileOrUrlSchema)
+      .min(5, "At least 5 property photos required"),
     documents: z.array(fileOrUrlSchema).optional(),
   })
   .superRefine((data, ctx) => {
@@ -125,13 +127,7 @@ export const propertyListingSchema = z
         message: "Buy it now price is required",
       });
     }
-    if (data.ownership === "assignable" && !data.assignableContractFile) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["assignableContractFile"],
-        message: "Assignable contract PDF is required for verification",
-      });
-    }
+
     if (data.hasHoa === "yes" && !data.hoaAmount) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

@@ -104,7 +104,6 @@ export interface IPropertyResponse {
 
   // Ownership
   ownership: "own" | "assignable";
-  assignableContractFile?: IDocument;
 
   location: ILocation;
 
@@ -287,4 +286,26 @@ export interface IOffer {
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IAuthorizeSigner {
+  name: string;
+  email: string;
+  isSigned: boolean;
+  signatureImage?: string;
+  signedAt?: Date | string | null;
+}
+
+export interface IAgreement {
+  _id: string;
+  offer: string;
+  property: string;
+  buyer: string;
+  seller: string;
+  status: "processing" | "completed";
+  agreementMainDoc: string;
+  propertyAgreementDoc: string;
+  buyerAuthorizeSigner: IAuthorizeSigner[];
+  sellerAuthorizeSigner: IAuthorizeSigner[];
+  isDeleted: boolean;
 }

@@ -29,11 +29,8 @@ export default function PropertyContainer({
         <div className="lg:col-span-4 space-y-6">
           <BasicPropertyDetails property={property} />
           <PropertyInfo property={property} />
-          {property?.documents?.length || property?.assignableContractFile ? (
-            <Documents
-              documents={property?.documents}
-              assignableContractFile={property?.assignableContractFile}
-            />
+          {property?.documents?.length ? (
+            <Documents documents={property?.documents} />
           ) : (
             ""
           )}

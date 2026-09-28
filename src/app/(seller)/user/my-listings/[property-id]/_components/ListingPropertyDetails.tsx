@@ -23,7 +23,7 @@ export default function ListingPropertyDetails({
       <BasicPropertyDetails property={property} />
       <PropertyInfo property={property} />
       {property?.documents?.length ? (
-        <Documents documents={property?.documents} assignableContractFile={property?.assignableContractFile} />
+        <Documents documents={property?.documents}  />
       ) : (
         ""
       )}
