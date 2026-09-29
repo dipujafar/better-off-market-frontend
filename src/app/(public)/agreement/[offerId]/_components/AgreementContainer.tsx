@@ -13,16 +13,30 @@ import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
 import { IAgreement } from "@/types";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const isReadySigned = (agreement: IAgreement, email: string, role: string) => {
   if (role === "buyer") {
-    return agreement.buyerAuthorizeSigner.some((signer) => signer.email === email && signer.isSigned);
+    return agreement.buyerAuthorizeSigner.some(
+      (signer) => signer.email === email && signer.isSigned,
+    );
   } else {
     return agreement.sellerAuthorizeSigner.some((signer) => signer.isSigned);
   }
 };
 
 export default function AgreementContainer() {
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [isRedDoc, setIsRedDoc] = useState(false);
   const { offerId } = useParams();
   const email = useSearchParams().get("email");
@@ -39,10 +53,15 @@ export default function AgreementContainer() {
 
   const sigRef = useRef<SignatureCanvas>(null);
 
-
   const handleSubmit = async () => {
     if (sigRef.current?.isEmpty())
       return toast.error("Please sign before submitting");
+
+    if (!offerId && !user) {
+      return toast.error(
+        "Something went wrong! please go back to your received email and enter again.",
+      );
+    }
 
     toast.loading("Please wait without reload. Document signing in progress.", {
       id: "signing",
@@ -55,9 +74,10 @@ export default function AgreementContainer() {
     try {
       await signDoc({
         offerId,
-        data: { email, signatureImage },
+        data: { email, signatureImage, role: user },
       }).unwrap();
-      toast.success("Document signed successfully", { id: "signing" });
+      // toast.success("Document signed successfully", { id: "signing" });
+      setOpenSuccessModal(true);
       router.refresh();
     } catch (error) {
       const errorMessage = errorModification(error);
@@ -84,10 +104,12 @@ export default function AgreementContainer() {
   return (
     <div>
       <div className="space-y-10">
-        <PdfViewer
-          pdfUrl={offerData?.data?.agreementMainDoc}
-          title="Platform Agreement Document"
-        />
+        {user === "buyer" && (
+          <PdfViewer
+            pdfUrl={offerData?.data?.agreementMainDoc}
+            title="Platform Agreement Document"
+          />
+        )}
         <PdfViewer
           pdfUrl={offerData?.data?.propertyAgreementDoc}
           title="Property Details Agreement Document"
@@ -101,7 +123,8 @@ export default function AgreementContainer() {
       <div
         className={cn(
           "mt-5 space-y-2",
-          isReadySigned(offerData?.data, email as string, user as string) && "hidden",
+          isReadySigned(offerData?.data, email as string, user as string) &&
+            "hidden",
         )}
       >
         <h1 className="text-2xl font-bold text-primary-color">Sign Here</h1>
@@ -142,5 +165,31 @@ export default function AgreementContainer() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export function AlertDialogDemo({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Congratulations!</AlertDialogTitle>
+          <AlertDialogDescription>
+            You have successfully signed the document. Once every authorizer
+            will sign the document then you will get email with completed
+            document
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="bg-primary-color hover:bg-primary-color/80">Got it</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
