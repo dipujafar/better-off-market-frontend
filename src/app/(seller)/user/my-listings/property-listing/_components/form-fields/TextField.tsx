@@ -11,7 +11,13 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   registration?: UseFormRegisterReturn;
   tooltip?: ReactNode;
   extraClassName?: string;
+  wholeNumbersOnly?: boolean; // blocks decimals, letters, e/+/- etc.
 }
+
+const ALLOWED_NAV_KEYS = [
+  "Backspace", "Delete", "ArrowLeft", "ArrowRight",
+  "ArrowUp", "ArrowDown", "Tab", "Home", "End",
+];
 
 export function TextField({
   label,
@@ -21,10 +27,12 @@ export function TextField({
   tooltip,
   className,
   extraClassName,
+  wholeNumbersOnly,
+  onKeyDown,
   ...props
 }: TextFieldProps) {
   return (
-    <div className={cn("w-full",  extraClassName)}>
+    <div className={cn("w-full", extraClassName)}>
       {label && (
         <Label className="mb-1.5 flex items-center gap-1 text-sm font-semibold text-primary-black">
           {label}
@@ -35,6 +43,30 @@ export function TextField({
       <Input
         {...registration}
         {...props}
+        type={wholeNumbersOnly ? "text" : props.type}
+        inputMode={wholeNumbersOnly ? "numeric" : props.inputMode}
+        onKeyDown={(e) => {
+          if (wholeNumbersOnly) {
+            if (ALLOWED_NAV_KEYS.includes(e.key)) {
+              // allow
+            } else if (
+              (e.ctrlKey || e.metaKey) &&
+              ["a", "c", "v", "x"].includes(e.key.toLowerCase())
+            ) {
+              // allow copy/paste/select-all
+            } else if (!/^[0-9]$/.test(e.key)) {
+              e.preventDefault();
+            }
+          }
+          onKeyDown?.(e);
+        }}
+        onChange={(e) => {
+          if (wholeNumbersOnly) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+          }
+          registration?.onChange(e);
+          props.onChange?.(e);
+        }}
         className={`bg-[#F2F4F6] py-5 rounded-md ${error ? "border-red-400" : "border-[#E2E8F0]"} ${
           className ?? ""
         }`}

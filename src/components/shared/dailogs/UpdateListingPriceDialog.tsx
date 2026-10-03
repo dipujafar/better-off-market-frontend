@@ -129,7 +129,7 @@ export function UpdateListingPriceDialog({
                         {...field}
                         type="number"
                         step="0.01"
-                        placeholder="0.00"
+                        placeholder="0"
                         className="pl-9 border-[#F3B896] focus-visible:ring-[#F3B896]/20 focus-visible:border-[#F3B896] py-6"
                       />
                     </div>

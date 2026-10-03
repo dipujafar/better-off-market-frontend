@@ -1,58 +1,60 @@
 "use client";
 
 import { getToken } from "firebase/messaging";
-import { getFcmMessaging } from "@/lib/firebase/messaging-client";
-import { useEffect, useState } from "react";
 import { envConfig } from "@/config";
+import { getFcmMessaging } from "@/lib/firebase/messaging-client";
+import { useState } from "react";
 
 const useFcmToken = () => {
   const [token, setToken] = useState("");
   const [notificationPermissionStatus, setNotificationPermissionStatus] =
     useState("");
 
-  useEffect(() => {
-    const retrieveToken = async () => {
-      try {
-        if (typeof window === "undefined") return;
-        if (!("serviceWorker" in navigator)) return;
-        if (!("Notification" in window)) return;
-
-        const messaging = await getFcmMessaging();
-        if (!messaging) return;
-
-        // 👇 Check current permission BEFORE requesting
-        // so we don't re-prompt if already denied
-        const currentPermission = Notification.permission;
-        setNotificationPermissionStatus(currentPermission);
-
-        if (currentPermission === "denied") return; // let the component handle the toast
-
-        const registration = await navigator.serviceWorker.register(
-          "/firebase-messaging-sw.js",
-        );
-
-        const permission = await Notification.requestPermission();
-        setNotificationPermissionStatus(permission);
-
-        if (permission !== "granted") return;
-
-        const currentToken = await getToken(messaging, {
-          vapidKey: envConfig.firebaseVapidKey,
-          serviceWorkerRegistration: registration,
-        });
-
-        if (currentToken) {
-          setToken(currentToken);
-        }
-      } catch (error) {
-        console.log("An error occurred while retrieving token:", error);
+  const requestFcmToken = async () => {
+    try {
+      if (
+        typeof window === "undefined" ||
+        !("serviceWorker" in navigator) ||
+        !("Notification" in window)
+      ) {
+        return null;
       }
-    };
 
-    retrieveToken();
-  }, []);
+      const permission =
+        Notification.permission === "default"
+          ? await Notification.requestPermission()
+          : Notification.permission;
+      setNotificationPermissionStatus(permission);
 
-  return { fcmToken: token, notificationPermissionStatus };
+      if (permission !== "granted") return null;
+      if (!envConfig.firebaseVapidKey) {
+        console.error("NEXT_PUBLIC_FIREBASE_VAPID_KEY is not configured.");
+        return null;
+      }
+
+      const [messaging, registration] = await Promise.all([
+        getFcmMessaging(),
+        navigator.serviceWorker.register("/firebase-messaging-sw.js"),
+      ]);
+      if (!messaging) return null;
+
+      const currentToken = await getToken(messaging, {
+        vapidKey: envConfig.firebaseVapidKey,
+        serviceWorkerRegistration: registration,
+      });
+      setToken(currentToken);
+      return currentToken || null;
+    } catch (error) {
+      console.error("Unable to retrieve Firebase messaging token:", error);
+      return null;
+    }
+  };
+
+  return {
+    fcmToken: token,
+    notificationPermissionStatus,
+    requestFcmToken,
+  };
 };
 
 export default useFcmToken;

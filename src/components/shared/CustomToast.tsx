@@ -1,11 +1,9 @@
 "use client";
 
 import type React from "react";
-
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-// import { useGetNotificationsQuery } from "@/redux/api/notificationApi";
 
 type TCustomToastProps = {
   title?: string;

@@ -28,7 +28,7 @@ export function CurrencyFormField<T extends FieldValues>({
   name,
   label,
   disabled,
-  placeholder = "0.00",
+  placeholder = "0",
 }: CurrencyFormFieldProps<T>) {
   return (
     <FormField
@@ -36,7 +36,9 @@ export function CurrencyFormField<T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-base text-primary-gray font-medium">{label}</FormLabel>
+          <FormLabel className="text-base text-primary-gray font-medium">
+            {label}
+          </FormLabel>
           <FormControl>
             <div className="relative">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
@@ -44,13 +46,43 @@ export function CurrencyFormField<T extends FieldValues>({
               </span>
               <Input
                 {...field}
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                min="0"
+                type="text"
+                inputMode="numeric"
                 disabled={disabled}
                 placeholder={placeholder}
                 className="pl-7 border border-primary-border-color bg-[#F2F4F6] py-5.5"
+                onKeyDown={(e) => {
+                  const allowedKeys = [
+                    "Backspace",
+                    "Delete",
+                    "ArrowLeft",
+                    "ArrowRight",
+                    "ArrowUp",
+                    "ArrowDown",
+                    "Tab",
+                    "Home",
+                    "End",
+                  ];
+
+                  if (allowedKeys.includes(e.key)) return;
+
+                  if (
+                    (e.ctrlKey || e.metaKey) &&
+                    ["a", "c", "v", "x"].includes(e.key.toLowerCase())
+                  ) {
+                    return;
+                  }
+
+                  // Block everything that isn't a digit (no "." allowed at all)
+                  if (!/^[0-9]$/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => {
+                  // Strip out anything that isn't a digit (handles paste too)
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(value);
+                }}
               />
             </div>
           </FormControl>

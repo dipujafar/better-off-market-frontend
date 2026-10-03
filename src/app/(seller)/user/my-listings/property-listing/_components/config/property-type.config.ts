@@ -125,13 +125,13 @@ export const PROPERTY_SPECIFICATIONS_CONFIG: Record<PropertyType, SpecRow[]> = {
           name: "totalRent",
           label: "Total Rent ($)",
           type: "number",
-          placeholder: "0.00",
+          placeholder: "0",
         },
         {
           name: "avgRentPerUnit",
           label: "Avg. Rent/Unit ($)",
           type: "number",
-          placeholder: "0.00",
+          placeholder: "0",
         },
         {
           name: "waterPaidBy",

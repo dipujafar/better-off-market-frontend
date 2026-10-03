@@ -78,7 +78,23 @@ export const offerFormSchema = z
     }),
     agentName: z.string().max(120).optional(),
     brokerageName: z.string().max(120).optional(),
-    commission: z.string().max(20).optional(),
+    commission: z
+      .string()
+      .max(20)
+      .optional()
+      .refine(
+        (v) => {
+          if (!v) return true;
+          const percentMatch = v.match(/^(\d+)%$/);
+          if (percentMatch) {
+            return Number(percentMatch[1]) < 101; // 0–100% only
+          }
+          return /^\d+$/.test(v); // plain whole-number dollar amount
+        },
+        {
+          message: "Enter a whole dollar amount, or a percentage up to 100%",
+        },
+      ),
     paidBy: z.enum(["buyer", "seller"]).optional(),
 
     personalPropertyIncluded: z.string().max(2000).optional(),

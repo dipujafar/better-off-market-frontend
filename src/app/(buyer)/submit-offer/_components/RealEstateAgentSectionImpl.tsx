@@ -141,9 +141,60 @@ function RealEstateAgentSectionImpl() {
               <FormControl>
                 <Input
                   {...field}
+                  type="text"
+                  inputMode="numeric"
                   disabled={!isWorkingWithAgent}
                   placeholder="e.g. 3% or 5000"
                   className="border border-primary-border-color bg-[#F2F4F6] py-5.5"
+                  onKeyDown={(e) => {
+                    const allowedKeys = [
+                      "Backspace",
+                      "Delete",
+                      "ArrowLeft",
+                      "ArrowRight",
+                      "ArrowUp",
+                      "ArrowDown",
+                      "Tab",
+                      "Home",
+                      "End",
+                    ];
+                    if (allowedKeys.includes(e.key)) return;
+
+                    if (
+                      (e.ctrlKey || e.metaKey) &&
+                      ["a", "c", "v", "x"].includes(e.key.toLowerCase())
+                    ) {
+                      return;
+                    }
+
+                    const currentValue = e.currentTarget.value;
+
+                    // Allow digits always
+                    if (/^[0-9]$/.test(e.key)) return;
+
+                    // Allow a single "%" only once, anywhere a digit already exists
+                    if (
+                      e.key === "%" &&
+                      !currentValue.includes("%") &&
+                      currentValue.length > 0
+                    )
+                      return;
+
+                    e.preventDefault();
+                  }}
+                  onChange={(e) => {
+                    let value = e.target.value;
+
+                    // Strip anything that isn't a digit or %
+                    value = value.replace(/[^0-9%]/g, "");
+
+                    // Collapse multiple % into one, forced to the end
+                    const hasPercent = value.includes("%");
+                    value = value.replace(/%/g, "");
+                    if (hasPercent) value += "%";
+
+                    field.onChange(value);
+                  }}
                 />
               </FormControl>
               <FormMessage />

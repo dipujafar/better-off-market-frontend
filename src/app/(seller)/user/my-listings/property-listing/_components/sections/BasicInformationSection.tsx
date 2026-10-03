@@ -98,10 +98,11 @@ export function BasicInformationSection() {
         >
           <TextField
             label="Listing Price ($)"
+            wholeNumbersOnly
             required
             type="number"
             step="0.01"
-            placeholder="0.00"
+            placeholder="0"
             registration={register("listingPrice")}
             error={errors.listingPrice?.message}
           />
@@ -111,16 +112,17 @@ export function BasicInformationSection() {
               required
               type="number"
               step="0.01"
-              placeholder="0.00"
+              placeholder="0"
               registration={register("buyItNowPrice")}
               error={errors.buyItNowPrice?.message}
             />
           )}
           <TextField
             label="ARV ($)"
+            wholeNumbersOnly
             type="number"
             step="0.01"
-            placeholder="0.00"
+            placeholder="0"
             registration={register("arv")}
             error={errors.arv?.message}
             tooltip={

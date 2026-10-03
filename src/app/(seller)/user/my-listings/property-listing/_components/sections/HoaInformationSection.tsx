@@ -63,7 +63,7 @@ export function HoaInformationSection() {
           label="Amount ($)"
           type="number"
           step="0.01"
-          placeholder="0.00"
+          placeholder="0"
           disabled={hasHoa === "no"}
           registration={register("hoaAmount")}
           error={errors.hoaAmount?.message}
