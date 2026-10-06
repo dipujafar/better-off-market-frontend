@@ -29,7 +29,7 @@ export function Documents({
         {displayDocuments?.map((doc) => (
           <div
             key={doc?._id}
-            className="flex items-center gap-4 bg-white border-2 border-primary-border-color p-3 rounded-lg hover:bg-gray-150 transition-colors"
+            className="flex items-center gap-4 bg-white border-2 border-primary-border-color px-3 py-2 rounded-lg hover:bg-gray-150 transition-colors"
           >
             <PDFIcon className="w-5 h-5 text-gray-600 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">

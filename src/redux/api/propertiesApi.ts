@@ -72,7 +72,6 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.property],
     }),
-
     increaseRSVPCount: build.mutation({
       query: (id) => ({
         url: `/properties/increase-rsvp/${id}`,
@@ -80,7 +79,6 @@ const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.property],
     }),
-
     deleteProperty: build.mutation({
       query: (id) => ({
         url: `/properties/${id}`,

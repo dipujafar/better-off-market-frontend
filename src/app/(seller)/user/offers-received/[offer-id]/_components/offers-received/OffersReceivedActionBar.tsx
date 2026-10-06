@@ -32,8 +32,6 @@ export function OffersReceivedActionBar({
   const showFullActions = lastActionBy !== "seller";
   const isStatusClosed = CLOSED_OFFER_STATUSES.includes(status);
 
-  console.log(isSellerAddedAuthorizedSigner)
-
   return (
     <div
       className={cn(

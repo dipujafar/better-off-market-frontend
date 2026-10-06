@@ -13,8 +13,6 @@ export default function TermContainer() {
         <TermsContentSkeleton />
       </Container>
     );
-
-  console.log(data?.data?.data?.[0]?.termsAndConditions);
   return (
     <Container>
       <ContentWrapper content={data?.data?.data?.[0]?.termsAndConditions} />

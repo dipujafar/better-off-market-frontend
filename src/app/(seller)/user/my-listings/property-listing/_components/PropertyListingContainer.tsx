@@ -12,6 +12,7 @@ import {
 import { errorModification } from "@/lib/errors/errorModification";
 import { useSearchParams } from "next/navigation";
 import SectionTitle from "@/components/shared/titles/SectionTitle";
+import { revalidateProperties } from "@/lib/actions/revalidate";
 
 const mapPropertyToFormValues = (
   property: Record<string, any>,
@@ -107,6 +108,7 @@ export default function PropertyListingContainer() {
       if (propertyId && data?.data) {
         await updateProperty({ id: propertyId, formData }).unwrap();
         toast.success("Property updated successfully.");
+        await revalidateProperties();
         return true;
       }
 

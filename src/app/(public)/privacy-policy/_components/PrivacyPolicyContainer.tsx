@@ -13,8 +13,6 @@ export default function PrivacyPolicyContainer() {
         <TermsContentSkeleton />
       </Container>
     );
-
-  console.log(data?.data?.data?.[0]?.privacyPolicy);
   return (
     <Container>
       <ContentWrapper content={data?.data?.data?.[0]?.privacyPolicy} />

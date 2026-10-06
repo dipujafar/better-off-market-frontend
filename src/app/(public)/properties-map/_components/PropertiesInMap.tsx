@@ -4,7 +4,7 @@ import { GoogleMap, OverlayView } from "@react-google-maps/api";
 import { CardContent } from "@/components/ui/card";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IPropertyResponse } from "@/types";
 
 const containerStyle = {
@@ -14,8 +14,6 @@ const containerStyle = {
 
 // Default fallback center — Dhaka, Bangladesh
 const DHAKA_CENTER = { lat: 23.8103, lng: 90.4125 };
-
-
 
 interface LocationMapProps {
   properties: IPropertyResponse[];
@@ -66,6 +64,7 @@ export function PropertiesInMap({
   } | null>(null);
 
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const activeId = activeIdProp ?? internalActiveId;
@@ -77,7 +76,6 @@ export function PropertiesInMap({
     if (Number.isFinite(latParam) && Number.isFinite(lngParam)) {
       return { lat: latParam, lng: lngParam };
     }
-
     return null;
   }, [searchParams]);
 
@@ -133,8 +131,14 @@ export function PropertiesInMap({
     (property: IPropertyResponse) => {
       setInternalActiveId(property._id);
       onMarkerClick?.(property);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("lat", String(property.location.coordinates[1]));
+      params.set("lng", String(property.location.coordinates[0]));
+      router.push(
+        `${pathname}?${params.toString()}#property-${property._id}`,
+      );
     },
-    [onMarkerClick],
+    [onMarkerClick, pathname, router, searchParams],
   );
 
   return (
@@ -160,16 +164,16 @@ export function PropertiesInMap({
               {properties.map((property) => (
                 <OverlayView
                   key={property._id}
-                  position={{ lat: property.location.coordinates[1], lng: property.location.coordinates[0] }}
+                  position={{
+                    lat: property.location.coordinates[1],
+                    lng: property.location.coordinates[0],
+                  }}
                   mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                   <PriceMarker
                     price={property.listingPrice}
                     active={activeId === property._id}
-                    onClick={() => {
-                      handleMarkerClick(property);
-                      router.push(`#property-${property._id}`);
-                    }}
+                    onClick={() => handleMarkerClick(property)}
                   />
                 </OverlayView>
               ))}
