@@ -4,13 +4,13 @@ importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLf0Wzys9fFvnoJ8xLYUxanbtSrWcHmXM",
-  authDomain: "betteroffmarket-4e241.firebaseapp.com",
-  projectId: "betteroffmarket-4e241",
-  storageBucket: "betteroffmarket-4e241.firebasestorage.app",
-  messagingSenderId: "670954792583",
-  appId: "1:670954792583:web:4b48763c8b8eaea461fa22",
-  measurementId: "G-DB8WLZZ7FR"
+  apiKey: "AIzaSyAPkbsjBz-mdjwd6yWaQe1F8CCWZgGP57U",
+  authDomain: "better-off-market-a7f30.firebaseapp.com",
+  projectId: "better-off-market-a7f30",
+  storageBucket: "better-off-market-a7f30.firebasestorage.app",
+  messagingSenderId: "779229615323",
+  appId: "1:779229615323:web:52875b40560e35703728fe",
+  measurementId: "G-MY3GLJMRY2"
 };
 
 // eslint-disable-next-line no-undef

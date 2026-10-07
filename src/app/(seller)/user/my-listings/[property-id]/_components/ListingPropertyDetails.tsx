@@ -35,7 +35,6 @@ export default function ListingPropertyDetails({
       toast.success("Property status updated to Under Contract.");
       await revalidateProperties();
       router.back();
-
     } catch (error) {
       const errorMessage = errorModification(error);
       toast.error(
